@@ -13,12 +13,12 @@
 <style>
   :root{
     --paper:#FFFFFF;
-    --paper-alt:#F5F4F1;
-    --ink:#1B1F23;
-    --slate:#525B63;
-    --slate-soft:#7A828A;
-    --rule:#E4E1D9;
-    --rule-strong:#D6D1C3;
+    --paper-alt:#FAFAF9;
+    --ink:#22262B;
+    --slate:#5B646C;
+    --slate-soft:#8A9198;
+    --rule:#EEECE7;
+    --rule-strong:#E2DFD7;
     --brass:#8A6A38;
     --brass-soft:#B08B52;
     --sage:#4F6459;
@@ -115,7 +115,23 @@
     transition:width .25s ease;
   }
   nav a:hover::after{width:100%;}
+  nav a.current{color:var(--ink);}
+  nav a.current::after{width:100%;}
   .nav-toggle{display:none;}
+
+  /* ---------- Page routing ---------- */
+  main .page{display:none;}
+  main .page.active-page{
+    display:block;
+    animation:page-in .35s ease;
+  }
+  @keyframes page-in{
+    from{opacity:0; transform:translateY(6px);}
+    to{opacity:1; transform:translateY(0);}
+  }
+  @media (prefers-reduced-motion: reduce){
+    main .page.active-page{animation:none;}
+  }
 
   /* ---------- Hero ---------- */
   .hero{
@@ -571,6 +587,7 @@
         <li><a href="#research">Research</a></li>
         <li><a href="#publications">Publications</a></li>
         <li><a href="#working-papers">Working Papers</a></li>
+        <li><a href="#data">Data</a></li>
         <li><a href="#cv">CV &amp; Contact</a></li>
       </ul>
     </nav>
@@ -580,19 +597,13 @@
 <main>
 
   <!-- ---------- HERO + ABOUT ---------- -->
-  <section class="hero" id="about">
+  <section class="hero page" id="about">
     <div class="wrap">
       <p class="eyebrow">Post-Doctoral Researcher &amp; Lecturer</p>
-      <h1>Where climate concern meets the <em>fragility</em> of democratic support.</h1>
-      <p class="hero-lede">I study why citizens lose faith in democracy — and why some are willing to bypass it. My work spans political sociology and psychology, with a focus on climate politics, political trust, and free speech, using surveys and survey experiments.</p>
-      <div class="hero-cta">
-        <a class="btn primary" href="#publications">Read the research</a>
-        <a class="btn" href="https://janmenzner.org/wp-content/uploads/2026/04/CV_Menzner_April26.pdf.pdf">Download CV (PDF)</a>
-      </div>
 
-      <div class="hero-about-grid">
+      <div class="hero-about-grid" style="margin-top:24px; padding-top:0; border-top:none;">
         <div>
-           <img src="jan_foto.png" alt="Jan Menzner" class="about-photo">
+          <div class="photo-placeholder" role="img" aria-label="Foto-Platzhalter">Foto</div>
           <p class="photo-placeholder-cap">Chair of Political Sociology &amp; Social Policy, HU Berlin</p>
         </div>
 
@@ -630,7 +641,7 @@
   </section>
 
   <!-- ---------- RESEARCH PILLARS ---------- -->
-  <section class="alt" id="research">
+  <section class="alt page" id="research">
     <div class="wrap">
       <div class="section-head">
         <h2>Research focus</h2>
@@ -657,7 +668,7 @@
   </section>
 
   <!-- ---------- PUBLICATIONS ---------- -->
-  <section id="publications">
+  <section class="page" id="publications">
     <div class="wrap">
       <div class="section-head">
         <h2>Peer-reviewed publications</h2>
@@ -758,7 +769,7 @@
   </section>
 
   <!-- ---------- WORKING PAPERS / WIP ---------- -->
-  <section class="alt" id="working-papers">
+  <section class="alt page" id="working-papers">
     <div class="wrap">
       <div class="section-head">
         <h2>Working papers &amp; work in progress</h2>
@@ -876,7 +887,7 @@
   </section>
 
   <!-- ---------- DATA COLLECTIONS ---------- -->
-  <section id="data">
+  <section class="page" id="data">
     <div class="wrap">
       <div class="section-head">
         <h2>Data collection</h2>
@@ -920,7 +931,7 @@
   </section>
 
   <!-- ---------- CV + CONTACT ---------- -->
-  <section class="alt" id="cv">
+  <section class="alt page" id="cv">
     <div class="wrap">
       <div class="section-head">
         <h2>CV &amp; Contact</h2>
@@ -955,6 +966,57 @@
     <span>Department of Social Sciences, Humboldt-University of Berlin</span>
   </div>
 </footer>
+
+<script>
+  (function(){
+    var pages = Array.prototype.slice.call(document.querySelectorAll('main .page'));
+    var navLinks = Array.prototype.slice.call(document.querySelectorAll('nav a[href^="#"]'));
+    var defaultId = 'about';
+
+    function idFromHash(){
+      var id = (location.hash || '').replace('#','');
+      var exists = pages.some(function(p){ return p.id === id; });
+      return exists ? id : defaultId;
+    }
+
+    function showPage(id, opts){
+      pages.forEach(function(p){
+        p.classList.toggle('active-page', p.id === id);
+      });
+      navLinks.forEach(function(a){
+        var target = a.getAttribute('href').replace('#','');
+        a.classList.toggle('current', target === id);
+      });
+      if(!opts || !opts.skipScroll){
+        window.scrollTo(0,0);
+      }
+    }
+
+    // Intercept nav clicks so switching sections behaves like a page change
+    navLinks.forEach(function(a){
+      a.addEventListener('click', function(e){
+        var target = a.getAttribute('href').replace('#','');
+        if(pages.some(function(p){ return p.id === target; })){
+          e.preventDefault();
+          if(location.hash !== '#'+target){
+            history.pushState(null, '', '#'+target);
+          }
+          showPage(target);
+        }
+      });
+    });
+
+    window.addEventListener('popstate', function(){
+      showPage(idFromHash());
+    });
+
+    // Initial load
+    if(!location.hash){
+      history.replaceState(null, '', '#'+defaultId);
+    }
+    showPage(idFromHash(), {skipScroll:true});
+  })();
+</script>
 
 </body>
 </html>
