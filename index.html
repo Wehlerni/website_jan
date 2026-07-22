@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jan Menzner — Political Scientist</title>
+<meta name="description" content="Jan Menzner, post-doctoral researcher and lecturer at the Chair of Political Sociology and Social Policy, Humboldt-University of Berlin. Research on democratic resilience, climate politics, and free speech.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --paper:#FFFFFF;
+    --paper-alt:#F5F4F1;
+    --ink:#1B1F23;
+    --slate:#525B63;
+    --slate-soft:#7A828A;
+    --rule:#E4E1D9;
+    --rule-strong:#D6D1C3;
+    --brass:#8A6A38;
+    --brass-soft:#B08B52;
+    --sage:#4F6459;
+    --max:1080px;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    font-size:16px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:var(--brass); color:var(--paper);}
+
+  a{color:inherit;}
+  a:focus-visible, button:focus-visible, summary:focus-visible{
+    outline:2px solid var(--brass);
+    outline-offset:3px;
+  }
+
+  h1,h2,h3{
+    font-family:'Spectral',serif;
+    font-weight:500;
+    margin:0;
+    color:var(--ink);
+  }
+
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:.72rem;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--brass);
+  }
+
+  .wrap{
+    max-width:var(--max);
+    margin:0 auto;
+    padding:0 32px;
+  }
+
+  /* ---------- Header ---------- */
+  header{
+    position:sticky;
+    top:0;
+    z-index:50;
+    background:rgba(255,255,255,.92);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--rule);
+  }
+  .nav-inner{
+    max-width:var(--max);
+    margin:0 auto;
+    padding:18px 32px;
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    gap:24px;
+  }
+  .brand{
+    font-family:'Spectral',serif;
+    font-size:1.05rem;
+    font-weight:500;
+    letter-spacing:.01em;
+    white-space:nowrap;
+  }
+  .brand em{font-style:italic; color:var(--brass);}
+  nav ul{
+    list-style:none;
+    display:flex;
+    gap:28px;
+    margin:0; padding:0;
+  }
+  nav a{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:.75rem;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    text-decoration:none;
+    color:var(--slate);
+    position:relative;
+    padding-bottom:4px;
+  }
+  nav a:hover{color:var(--ink);}
+  nav a::after{
+    content:"";
+    position:absolute; left:0; bottom:0;
+    width:0; height:1px; background:var(--brass);
+    transition:width .25s ease;
+  }
+  nav a:hover::after{width:100%;}
+  .nav-toggle{display:none;}
+
+  /* ---------- Hero ---------- */
+  .hero{
+    padding:88px 0 64px;
+    position:relative;
+    overflow:hidden;
+  }
+  .hero-grid{
+    display:grid;
+    grid-template-columns:1.5fr 1fr;
+    gap:64px;
+    align-items:end;
+  }
+  .hero-about-grid{
+    display:grid;
+    grid-template-columns:220px 1fr 240px;
+    gap:48px;
+    align-items:start;
+    margin-top:64px;
+    padding-top:56px;
+    border-top:1px solid var(--rule-strong);
+  }
+  .photo-placeholder{
+    width:100%;
+    aspect-ratio:4/5;
+    border:1.5px dashed var(--rule-strong);
+    background:var(--paper-alt);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    color:var(--slate-soft);
+    font-family:'IBM Plex Mono',monospace;
+    font-size:.72rem;
+    letter-spacing:.05em;
+    text-transform:uppercase;
+    padding:16px;
+  }
+  .photo-placeholder-cap{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:.7rem;
+    color:var(--slate-soft);
+    margin-top:10px;
+    letter-spacing:.02em;
+  }
+  .hero-bio p{
+    margin:0 0 16px;
+    color:var(--slate);
+    max-width:60ch;
+    font-size:.96rem;
+  }
+  .hero-bio p:last-child{margin-bottom:0;}
+  .hero-bio strong{color:var(--ink); font-weight:600;}
+  .hero h1{
+    font-size:clamp(2.1rem, 4vw, 3.05rem);
+    line-height:1.18;
+    font-weight:400;
+    max-width:16ch;
+  }
+  .hero h1 em{
+    font-style:italic;
+    color:var(--brass);
+  }
+  .hero-lede{
+    margin-top:22px;
+    max-width:46ch;
+    color:var(--slate);
+    font-size:1.02rem;
+  }
+  .hero-cta{
+    margin-top:32px;
+    display:flex;
+    gap:14px;
+    flex-wrap:wrap;
+  }
+  .btn{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:.78rem;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    text-decoration:none;
+    padding:11px 20px;
+    border:1px solid var(--ink);
+    color:var(--ink);
+    transition:background .2s ease, color .2s ease;
+  }
+  .btn:hover{background:var(--ink); color:var(--paper);}
+  .btn.primary{background:var(--ink); color:var(--paper);}
+  .btn.primary:hover{background:var(--brass); border-color:var(--brass); color:var(--paper);}
+
+  /* affiliation stack + trend line signature */
+  .affil{
+    position:relative;
+    padding-left:26px;
+  }
+  .affil-svg{
+    position:absolute;
+    left:0; top:2px; bottom:2px;
+    width:14px;
+    height:calc(100% - 4px);
+  }
+  .affil-path{
+    fill:none;
+    stroke:var(--brass-soft);
+    stroke-width:1.4;
+    stroke-dasharray:260;
+    stroke-dashoffset:260;
+    animation:draw 1.6s ease forwards .3s;
+  }
+  @keyframes draw{ to{ stroke-dashoffset:0; } }
+  .affil-item{
+    padding-bottom:22px;
+    position:relative;
+  }
+  .affil-item:last-child{padding-bottom:0;}
+  .affil-item .yr{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:.72rem;
+    color:var(--slate-soft);
+    letter-spacing:.04em;
+  }
+  .affil-item .role{
+    font-size:.92rem;
+    margin-top:2px;
+  }
+  .affil-item .role strong{font-weight:600;}
+
+  @media (prefers-reduced-motion: reduce){
+    .affil-path{animation:none; stroke-dashoffset:0;}
+  }
+
+  /* ---------- Section shell ---------- */
+  section{padding:76px 0;}
+  section.alt{background:var(--paper-alt);}
+  .section-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    gap:24px;
+    margin-bottom:44px;
+    border-bottom:1px solid var(--rule-strong);
+    padding-bottom:18px;
+  }
+  .section-head h2{
+    font-size:clamp(1.5rem,2.4vw,1.9rem);
+    font-weight:400;
+  }
+  .section-head .count{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:.75rem;
+    color:var(--slate-soft);
+    white-space:nowrap;
+  }
+
+  /* ---------- About ---------- */
+  .about-grid{
+    display:grid;
+    grid-template-columns:280px 1fr;
+    gap:56px;
+    align-items:start;
+  }
+  .about-photo{
+    width:100%;
+    aspect-ratio:4/5;
+    object-fit:cover;
+    filter:grayscale(45%) contrast(1.02);
+    border:1px solid var(--rule-strong);
+  }
+  .about-photo-cap{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:.7rem;
+    color:var(--slate-soft);
+    margin-top:10px;
+    letter-spacing:.02em;
+  }
+  .about-text p{
+    margin:0 0 18px;
+    color:var(--slate);
+    max-width:62ch;
+  }
+  .about-text p:last-child{margin-bottom:0;}
+  .about-text strong{color:var(--ink); font-weight:600;}
+
+  /* ---------- Research pillars ---------- */
+  .pillars{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:1px;
+    background:var(--rule-strong);
+    border:1px solid var(--rule-strong);
+  }
+  .pillar{
+    background:var(--paper);
+    padding:30px 28px;
+  }
+  section.alt .pillar{background:var(--paper-alt);}
+  .pillar .idx{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:.72rem;
+    color:var(--brass);
+    letter-spacing:.08em;
+  }
+  .pillar h3{
+    font-size:1.15rem;
+    font-weight:500;
+    margin:12px 0 12px;
+  }
+  .pillar p{
+    color:var(--slate);
+    font-size:.92rem;
+    margin:0;
+  }
+
+  /* ---------- Publications ---------- */
+  .pub-list{
+    position:relative;
+    border-left:1px solid var(--rule-strong);
+  }
+  .pub{
+    position:relative;
+    padding:0 0 40px 32px;
+  }
+  .pub:last-child{padding-bottom:0;}
+  .pub::before{
+    content:"";
+    position:absolute;
+    left:-5px; top:4px;
+    width:9px; height:9px;
+    background:var(--paper);
+    border:1.5px solid var(--brass);
+    border-radius:50%;
+  }
+  .pub .yr{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:.75rem;
+    color:var(--slate-soft);
+  }
+  .pub h3{
+    font-size:1.12rem;
+    font-weight:500;
+    margin:6px 0 6px;
+    line-height:1.4;
+  }
+  .pub .authors{
+    font-size:.88rem;
+    color:var(--slate);
+    margin-bottom:2px;
+  }
+  .pub .journal{
+    font-style:italic;
+    font-size:.9rem;
+    color:var(--sage);
+    margin-bottom:12px;
+  }
+  .pub details{margin-top:6px;}
+  .pub summary{
+    cursor:pointer;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:.72rem;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    color:var(--brass);
+    list-style:none;
+  }
+  .pub summary::-webkit-details-marker{display:none;}
+  .pub summary::before{content:"+ "; }
+  .pub details[open] summary::before{content:"– ";}
+  .pub .abstract{
+    margin-top:12px;
+    color:var(--slate);
+    font-size:.93rem;
+    max-width:70ch;
+  }
+  .pub .links{
+    margin-top:14px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px 16px;
+  }
+  .pub .links a{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:.72rem;
+    letter-spacing:.03em;
+    text-decoration:none;
+    color:var(--ink);
+    border-bottom:1px solid var(--rule-strong);
+    padding-bottom:1px;
+  }
+  .pub .links a:hover{border-color:var(--brass); color:var(--brass);}
+
+  /* ---------- Working papers / WIP ---------- */
+  .wip-group{margin-bottom:36px;}
+  .wip-group:last-child{margin-bottom:0;}
+  .wip-group h3{
+    font-size:1rem;
+    font-weight:600;
+    font-family:'IBM Plex Mono',monospace;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    color:var(--sage);
+    margin-bottom:18px;
+  }
+  .wip{
+    border-top:1px solid var(--rule);
+    padding:18px 0;
+  }
+  .wip:last-child{border-bottom:1px solid var(--rule);}
+  .wip-title{
+    font-size:1rem;
+    margin:0 0 4px;
+  }
+  .wip-with{
+    font-size:.85rem;
+    color:var(--slate-soft);
+    margin-bottom:8px;
+  }
+  .wip details summary{
+    cursor:pointer;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:.72rem;
+    letter-spacing:.05em;
+    text-transform:uppercase;
+    color:var(--brass);
+    list-style:none;
+  }
+  .wip details summary::-webkit-details-marker{display:none;}
+  .wip details summary::before{content:"+ ";}
+  .wip details[open] summary::before{content:"– ";}
+  .wip .abstract{
+    margin-top:10px;
+    color:var(--slate);
+    font-size:.9rem;
+    max-width:70ch;
+  }
+  .wip .status{
+    display:inline-block;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:.65rem;
+    letter-spacing:.05em;
+    text-transform:uppercase;
+    color:var(--brass);
+    border:1px solid var(--brass-soft);
+    padding:2px 8px;
+    margin-bottom:8px;
+  }
+
+  /* ---------- Data collections ---------- */
+  .data-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:1px;
+    background:var(--rule);
+  }
+  .data-card{
+    background:var(--paper);
+    padding:24px 26px;
+  }
+  section.alt .data-card{background:var(--paper-alt);}
+  .data-card h3{
+    font-size:1rem;
+    font-weight:500;
+    font-style:italic;
+    margin-bottom:10px;
+  }
+  .data-card dl{
+    margin:0;
+    font-size:.85rem;
+    color:var(--slate);
+  }
+  .data-card dt{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:.68rem;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    color:var(--slate-soft);
+    margin-top:10px;
+  }
+  .data-card dt:first-child{margin-top:0;}
+  .data-card dd{margin:2px 0 0;}
+  .data-card a{color:var(--brass); text-decoration:none; border-bottom:1px solid var(--brass-soft);}
+
+  /* ---------- CV + Contact ---------- */
+  .cv-contact{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:64px;
+  }
+  .cv-box, .contact-box{
+    border:1px solid var(--rule-strong);
+    padding:32px;
+  }
+  .cv-box h3, .contact-box h3{
+    font-size:1.1rem;
+    font-weight:500;
+    margin-bottom:14px;
+  }
+  .cv-box p{color:var(--slate); font-size:.92rem; margin-bottom:22px;}
+  address{
+    font-style:normal;
+    color:var(--slate);
+    font-size:.92rem;
+    line-height:1.9;
+  }
+  address a{color:var(--brass); text-decoration:none;}
+
+  /* ---------- Footer ---------- */
+  footer{
+    border-top:1px solid var(--rule);
+    padding:28px 0;
+  }
+  .footer-inner{
+    display:flex;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:12px;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:.72rem;
+    color:var(--slate-soft);
+  }
+  footer a{color:var(--slate-soft); text-decoration:none;}
+  footer a:hover{color:var(--brass);}
+
+  /* ---------- Responsive ---------- */
+  @media (max-width:860px){
+    .hero-grid{grid-template-columns:1fr; gap:40px;}
+    .hero-about-grid{grid-template-columns:1fr; gap:32px;}
+    .photo-placeholder{max-width:220px;}
+    .about-grid{grid-template-columns:1fr;}
+    .about-photo{max-width:220px;}
+    .pillars{grid-template-columns:1fr;}
+    .data-grid{grid-template-columns:1fr;}
+    .cv-contact{grid-template-columns:1fr;}
+    nav ul{gap:16px;}
+  }
+  @media (max-width:600px){
+    .wrap{padding:0 20px;}
+    .nav-inner{padding:16px 20px;}
+    nav ul{display:none;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav-inner">
+    <div class="brand">Jan Menzner</div>
+    <nav aria-label="Main navigation">
+      <ul>
+        <li><a href="#about">About</a></li>
+        <li><a href="#research">Research</a></li>
+        <li><a href="#publications">Publications</a></li>
+        <li><a href="#working-papers">Working Papers</a></li>
+        <li><a href="#cv">CV &amp; Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <!-- ---------- HERO + ABOUT ---------- -->
+  <section class="hero" id="about">
+    <div class="wrap">
+      <p class="eyebrow">Post-Doctoral Researcher &amp; Lecturer</p>
+      <h1>Where climate concern meets the <em>fragility</em> of democratic support.</h1>
+      <p class="hero-lede">I study why citizens lose faith in democracy — and why some are willing to bypass it. My work spans political sociology and psychology, with a focus on climate politics, political trust, and free speech, using surveys and survey experiments.</p>
+      <div class="hero-cta">
+        <a class="btn primary" href="#publications">Read the research</a>
+        <a class="btn" href="https://janmenzner.org/wp-content/uploads/2026/04/CV_Menzner_April26.pdf.pdf">Download CV (PDF)</a>
+      </div>
+
+      <div class="hero-about-grid">
+        <div>
+          <div class="photo-placeholder" role="img" aria-label="Foto-Platzhalter">Foto</div>
+          <p class="photo-placeholder-cap">Chair of Political Sociology &amp; Social Policy, HU Berlin</p>
+        </div>
+
+        <div class="hero-bio">
+          <p>In April 2025, I joined the <strong>Department of Social Sciences</strong> at Humboldt-University of Berlin, where I currently work as a post-doctoral researcher and lecturer, affiliated with Prof. Hanna Schwander's Chair of Political Sociology and Social Policy. Since July 2025, I additionally serve as Acting Academic Manager of the <strong>Berlin Graduate School of Sciences</strong>.</p>
+          <p>Previously, I completed my PhD in Political Science at the <strong>University of Mannheim</strong>, graduating magna cum laude under the supervision of Prof. Richard Traunmüller, and hold an M.A. in Political Science (LMU Munich) and a B.A. in International Journalism (University of Applied Sciences Bremen).</p>
+          <p>In my dissertation, I examine the democratic consequences of climate change-related attitudes and concerns — showing that rising climate concern is causally related to reduced satisfaction with democracy, and using an original double list experiment to uncover citizens' willingness to support undemocratic measures in pursuit of their climate political agenda.</p>
+          <p>Beyond climate change, my research interests span <strong>political participation and trust, social equality, and democratic resilience</strong> — including candidate gender cues in elections, the political inclusion of citizens with low literacy, and attitudes towards militant democracy. Methodologically, I rely primarily on surveys and survey experiments.</p>
+          <p>Prior to Berlin, I was a doctoral research assistant at the Research Institute Social Cohesion at Goethe-University Frankfurt, and worked as a lecturer at the University of Mannheim.</p>
+        </div>
+
+        <div class="affil">
+          <svg class="affil-svg" viewBox="0 0 14 220" preserveAspectRatio="none" aria-hidden="true">
+            <path class="affil-path" d="M7 4 L7 60 L7 100 L7 160 L7 216" pathLength="260"/>
+          </svg>
+          <div class="affil-item">
+            <div class="yr">Since Apr 2026</div>
+            <div class="role">Acting Academic Manager, <strong>Berlin Graduate School of Sciences</strong></div>
+          </div>
+          <div class="affil-item">
+            <div class="yr">Since Apr 2025</div>
+            <div class="role">Post-Doc &amp; Lecturer, <strong>Humboldt-University of Berlin</strong></div>
+          </div>
+          <div class="affil-item">
+            <div class="yr">PhD, magna cum laude</div>
+            <div class="role">Political Science, <strong>University of Mannheim</strong></div>
+          </div>
+          <div class="affil-item">
+            <div class="yr">M.A. / B.A.</div>
+            <div class="role">LMU Munich · Hochschule Bremen</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------- RESEARCH PILLARS ---------- -->
+  <section class="alt" id="research">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Research focus</h2>
+        <span class="count">01</span>
+      </div>
+      <div class="pillars">
+        <div class="pillar">
+          <span class="idx">I</span>
+          <h3>Climate Change &amp; Democracy</h3>
+          <p>Whether rising climate concern — for or against action — erodes democratic satisfaction and support, and pushes citizens toward technocratic or undemocratic alternatives.</p>
+        </div>
+        <div class="pillar">
+          <span class="idx">II</span>
+          <h3>Democracy &amp; Political Sociology</h3>
+          <p>Political trust, militant democracy, radical right support, and the descriptive representation of gender in electoral outcomes.</p>
+        </div>
+        <div class="pillar">
+          <span class="idx">III</span>
+          <h3>Subjective Free Speech</h3>
+          <p>Why citizens increasingly feel they cannot speak freely, how polarization shapes self-censorship, and what it costs democratic culture.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------- PUBLICATIONS ---------- -->
+  <section id="publications">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Peer-reviewed publications</h2>
+        <span class="count">02</span>
+      </div>
+
+      <div class="pub-list">
+
+        <article class="pub">
+          <div class="yr">2026</div>
+          <h3>The Underlying Structure of Political Support</h3>
+          <p class="authors">Menzner, J. and D. Schweizer</p>
+          <p class="journal">Politics &amp; Governance, 14</p>
+          <details>
+            <summary>Abstract</summary>
+            <p class="abstract">Using 29 waves of the German Longitudinal Election Study, we test the dimensionality of political support. Specific support (e.g. satisfaction with government) fluctuates substantially, while diffuse support (e.g. institutional trust) is more stable. Both load onto a single latent trait, and changes in either indicator tend to predict subsequent changes in the other — evidence of self-reinforcing dynamics rather than a buffering "reservoir of goodwill."</p>
+          </details>
+          <div class="links">
+            <a href="https://janmenzner.org/wp-content/uploads/2026/04/PaG-14-The-Underlying-Structure-of-Political-Support.pdf">Manuscript</a>
+            <a href="https://janmenzner.org/wp-content/uploads/2026/04/11791-Supplementary-File.pdf">Supplementary File</a>
+            <a href="https://osf.io/jp9eg">Replication File</a>
+            <a href="https://doi.org/10.17645/pag.11791">Publisher Site</a>
+          </div>
+        </article>
+
+        <article class="pub">
+          <div class="yr">2025</div>
+          <h3>The Importance of Descriptive Representation &amp; Cue-Taking in Free List Local Elections</h3>
+          <p class="authors">Menzner, J., C. Schmid and L. Rettig</p>
+          <p class="journal">German Politics</p>
+          <details>
+            <summary>Abstract</summary>
+            <p class="abstract">Analyzing the 2024 Mannheim municipal elections — where voters distributed 48 votes among 508 candidates on a free-list ballot — we find party affiliation, ballot position, and incumbency significantly shape vote totals, while gender and occupation cues show no direct effect. Candidates gain markedly from running in their own residential district and from an age profile matching that district's demographics.</p>
+          </details>
+          <div class="links">
+            <a href="https://osf.io/gqnfz">Pre-Registration</a>
+            <a href="https://osf.io/mvp4y">Preprint</a>
+            <a href="https://doi.org/10.1080/09644008.2025.2570714">Publisher Site</a>
+          </div>
+        </article>
+
+        <article class="pub">
+          <div class="yr">2023</div>
+          <h3>Securing Moral Authority: A Cross-National Analysis of Protestant Engagement in the Implementation of Morality Policies in Western Europe</h3>
+          <p class="authors">Mettang, O., E.-M. Euchner, L. Fischer and J. Menzner</p>
+          <p class="journal">VOLUNTAS</p>
+          <details>
+            <summary>Abstract</summary>
+            <p class="abstract">Examining Protestant churches' involvement in four morality policy areas across Germany, England, and Denmark, we show that variation in religious engagement is driven mainly by churches' room to maneuver and policy congruence with state goals — governance capacity plays a secondary role. Providing social services remains a means through which churches can still exert moral authority.</p>
+          </details>
+          <div class="links">
+            <a href="https://janmenzner.org/wp-content/uploads/2024/03/Voluntas.pdf">PDF</a>
+            <a href="https://link.springer.com/article/10.1007/s11266-023-00614-7">Publisher Site</a>
+          </div>
+        </article>
+
+        <article class="pub">
+          <div class="yr">2022</div>
+          <h3>The Potential of Open Lists for the Election of Women to the German Bundestag. Results of a Survey Experiment</h3>
+          <p class="authors">Rudolph, L., Däubler, T. and J. Menzner</p>
+          <p class="journal">Politische Vierteljahresschrift &nbsp;·&nbsp; <span style="color:var(--brass); font-style:normal;">1st Prize, Fritz-Thyssen-Foundation Award</span></p>
+          <details>
+            <summary>Abstract</summary>
+            <p class="abstract">In a quota-representative survey experiment (N=2,640), we test whether German voters would choose female candidates from open party lists. Both female and male voters factor in candidate gender as expected, female candidates are rarely disadvantaged overall, and voters tend to level out gender-imbalanced lists — evidence that open lists merit more attention in electoral reform debates.</p>
+          </details>
+          <div class="links">
+            <a href="https://janmenzner.org/wp-content/uploads/2022/08/Rudolph_Däubler_Menzner_Open-Lists.pdf">PDF</a>
+            <a href="https://static-content.springer.com/esm/art%3A10.1007%2Fs11615-022-00412-8/MediaObjects/11615_2022_412_MOESM1_ESM.pdf">Online Appendix</a>
+            <a href="https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/SM7LZK">Replication Material</a>
+            <a href="https://link.springer.com/article/10.1007/s11615-022-00412-8">Publisher Site</a>
+            <a href="https://www.spiegel.de/politik/deutschland/friedrich-merz-und-die-frauenquote-in-der-cdu-auf-keinen-fall-nein-vielleicht-a-1913141c-17ca-48a1-a8dd-6ede1c315e9e">Media Mention</a>
+          </div>
+        </article>
+
+        <article class="pub">
+          <div class="yr">2022</div>
+          <h3>Subjective Freedom of Speech: Why Do Citizens Think They Cannot Speak Freely?</h3>
+          <p class="authors">Menzner, J. and R. Traunmüller</p>
+          <p class="journal">Politische Vierteljahresschrift</p>
+          <details>
+            <summary>Abstract</summary>
+            <p class="abstract">The first systematic study of subjective free speech in Germany, using a pre-registered analysis of GLES 2021 data. Three factors are significantly and consistently related to citizens feeling they cannot speak freely: political preferences, populist attitudes, and identification with the Alternative for Germany party.</p>
+          </details>
+          <div class="links">
+            <a href="https://janmenzner.org/wp-content/uploads/2022/08/Menzner_Traunmüller_SubjectiveFreeSpeech.pdf">PDF</a>
+            <a href="https://janmenzner.org/wp-content/uploads/2024/03/Menzner_Traunmuller_SubjectiveFreeSpeech_Appendix.pdf">Online Appendix</a>
+            <a href="https://osf.io/8fkh9?view_only=4692968e083b4337ac34149c1b8496a7">Pre-Registration</a>
+            <a href="https://link.springer.com/article/10.1007/s11615-022-00414-6">Publisher Site</a>
+          </div>
+        </article>
+
+      </div>
+
+      <p style="margin-top:40px; font-size:.9rem; color:var(--slate-soft);">
+        Further articles &amp; contributions, including book chapters and the <em>Concluding Remarks on the GLES Open Science Challenge 2021</em>, are listed in the full <a href="https://janmenzner.org/wp-content/uploads/2026/04/CV_Menzner_April26.pdf.pdf" style="color:var(--brass);">CV</a>.
+      </p>
+    </div>
+  </section>
+
+  <!-- ---------- WORKING PAPERS / WIP ---------- -->
+  <section class="alt" id="working-papers">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Working papers &amp; work in progress</h2>
+        <span class="count">03</span>
+      </div>
+
+      <div class="wip-group">
+        <h3>Under review</h3>
+
+        <div class="wip">
+          <span class="status">R&amp;R</span>
+          <p class="wip-title">Citizens' Two-Sided Demand for Undemocratic Climate Governance</p>
+          <details>
+            <summary>Abstract</summary>
+            <p class="abstract">Using original German survey data (N=2,101) and two list experiments, I show that stronger climate preferences — for or against action — are robustly linked to support for non-democratic governance, including restricting activism, ignoring pro-climate court rulings, and censoring denial. 'True' support for undemocratic climate (in)action reaches roughly 35–39%, with skeptics least willing to disclose it openly.</p>
+          </details>
+        </div>
+
+        <div class="wip">
+          <p class="wip-title">National, Partisan or Ideological Biases? How EU Officials' Characteristics can Influence Infringement Proceeding Outcomes</p>
+          <p class="wip-with">with Johannes Lattmann</p>
+          <details>
+            <summary>Abstract</summary>
+            <p class="abstract">Combining 19,352 EU infringement proceedings (2002–2020) with data on responsible officials, we find a nationality bias among Commissioners overseeing cases from their home country — but no evidence of bias linked to ideology or partisanship.</p>
+          </details>
+          <div class="links" style="margin-top:10px;"><a href="https://osf.io/487h2" style="font-family:'IBM Plex Mono',monospace; font-size:.72rem; color:var(--ink); border-bottom:1px solid var(--rule-strong); text-decoration:none;">Working Paper</a></div>
+        </div>
+
+        <div class="wip">
+          <p class="wip-title">A Case of Strategic Issue Emphasis: Comparing Easy-Read and Regular Manifestos Using NLP</p>
+          <p class="wip-with">with Lukas Isermann &amp; Julius Diener · presented MZES 2024, CompText 2023</p>
+          <details>
+            <summary>Abstract</summary>
+            <p class="abstract">NLP analysis of 62 easy-read manifestos from five German parties shows welfare issues over-emphasised by 10 percentage points while economic issues are downplayed — parties appear to use easy-read manifestos for strategic gain rather than equal political participation.</p>
+          </details>
+        </div>
+
+        <div class="wip">
+          <p class="wip-title">How Growing Climate Concern Erodes Political Support</p>
+          <p class="wip-with">with David Schweizer · presented DVPW AK Umwelt 2023, EPSA 2023</p>
+          <details>
+            <summary>Abstract</summary>
+            <p class="abstract">Applying random-effects-within-between models to German panel data (2010–2021) across nine concerns, we show climate concern is causally linked to declining democratic satisfaction — an effect that has grown stronger in recent waves and is amplified among Green partisans and post-materialists.</p>
+          </details>
+        </div>
+
+        <div class="wip">
+          <p class="wip-title">Uncovering Uneven Class Awareness: A Heteroskedastic Regression Approach to Subjective Class Placement</p>
+          <p class="wip-with">with Franziska Veit</p>
+          <details>
+            <summary>Abstract</summary>
+            <p class="abstract">Objective class markers (education, income, occupational prestige) predict subjective class more precisely for those who score highly on them; citizens from objectively lower classes show more dispersed subjective perceptions.</p>
+          </details>
+        </div>
+      </div>
+
+      <div class="wip-group">
+        <h3>Climate change &amp; democracy</h3>
+        <div class="wip">
+          <p class="wip-title">Losing Satisfaction or Withdrawing Support? How Climate Change Concerns Shape Democratic Support</p>
+          <details>
+            <summary>Abstract</summary>
+            <p class="abstract">Using original German panel data (2021–2023, N&gt;10,000) and pre-registered mediation analyses, I trace whether climate concern moves citizens from specific evaluations (government trust) to diffuse ones (support for democracy itself) — a chain moderated by climate salience and attenuated by political efficacy.</p>
+          </details>
+        </div>
+        <div class="wip">
+          <p class="wip-title">How Water Use Restrictions Impact Climate Concerns and State Evaluations</p>
+          <p class="wip-with">with Dennis Abel</p>
+        </div>
+        <div class="wip">
+          <p class="wip-title">Re-Assessing the Impact of Climate Change Concern on Democratic Outcomes Comparatively</p>
+          <p class="wip-with">with Chiara Schmid</p>
+        </div>
+      </div>
+
+      <div class="wip-group">
+        <h3>Democracy</h3>
+        <div class="wip">
+          <p class="wip-title">Lonely on the Land: Surplus Males and Support for the Far Right</p>
+          <p class="wip-with">with Mark Kayser, Arndt Leininger, Dani Sandu, Hanna Schwander &amp; Thomas Tichelbäcker</p>
+        </div>
+        <div class="wip">
+          <p class="wip-title">Everyone Loves Democracy, But Who Wants to Protect It? Examining Support for Militant Democracy</p>
+          <p class="wip-with">with Luke Shuttleworth &amp; Hanna Schwander</p>
+          <details>
+            <summary>Abstract</summary>
+            <p class="abstract">Based on an original survey of 4,000 respondents fielded in February 2026, we show support for militant democracy is shaped by citizens' conceptions of democracy, the threat posed by targeted organisations, and ideological distance to them — with institutional trust central to whether pre-emptive measures are seen as legitimate.</p>
+          </details>
+        </div>
+        <div class="wip">
+          <p class="wip-title">Lonely on the Land: Surplus Males and Support for the Far Right (Clinic Closures)</p>
+          <p class="wip-with">with Mark Kayser, Heike Klüver &amp; Hanna Schwander</p>
+        </div>
+      </div>
+
+      <div class="wip-group">
+        <h3>Subjective free speech</h3>
+        <div class="wip">
+          <p class="wip-title">The Costs of Speaking Freely in a Liberal Democracy</p>
+          <p class="wip-with">with Richard Traunmüller · presented EPSA 2024</p>
+        </div>
+        <div class="wip">
+          <p class="wip-title">Who Self-Censors about What? Evaluating Double List Experiments in a Bayesian Framework</p>
+          <p class="wip-with">with Richard Traunmüller</p>
+        </div>
+        <div class="wip">
+          <p class="wip-title">The Political Correlates of Declining Subjective Freedom of Speech</p>
+        </div>
+        <div class="wip">
+          <p class="wip-title">Does Political Polarization Harm Subjective Freedom of Speech?</p>
+          <p class="wip-with">with João Areal &amp; Richard Traunmüller · presented RISC-Workshop 2022, EPSA 2023</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------- DATA COLLECTIONS ---------- -->
+  <section id="data">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Data collection</h2>
+        <span class="count">04</span>
+      </div>
+      <div class="data-grid">
+        <div class="data-card">
+          <h3>Survey: Militant Democracy</h3>
+          <dl>
+            <dt>Collected</dt><dd>2026, with Luke Shuttleworth &amp; Hanna Schwander</dd>
+            <dt>Keywords</dt><dd>Militant Democracy, Democratic Conceptions, Radical Right, Democratic Resilience</dd>
+            <dt>Documentation</dt><dd><a href="https://janmenzner.org/wp-content/uploads/2026/04/Militant-Democracy-Variables.docx">Questionnaire</a></dd>
+          </dl>
+        </div>
+        <div class="data-card">
+          <h3>Survey: Clinic Closures</h3>
+          <dl>
+            <dt>Collected</dt><dd>First wave 2025, with Mark Kayser, Heike Klüver &amp; Hanna Schwander</dd>
+            <dt>Keywords</dt><dd>Infrastructure, Regional Deprivation, Radical Right Support</dd>
+            <dt>Documentation</dt><dd><a href="https://janmenzner.org/wp-content/uploads/2026/04/Clinic-Reform-Codebook.xlsx">Codebook</a></dd>
+          </dl>
+        </div>
+        <div class="data-card">
+          <h3>Module: Climate Policy — Emotions, Attitudes and Trade-Offs</h3>
+          <dl>
+            <dt>Collected</dt><dd>SOEP-Innovation Sample 2023, with D. Schweizer</dd>
+            <dt>Keywords</dt><dd>Climate Change, Democracy, List Experiments, Emotions</dd>
+            <dt>Documentation</dt><dd><a href="https://janmenzner.org/wp-content/uploads/2024/03/SOEP-IS2023_Menzner.pdf">Module Questionnaire</a> · <a href="https://www.diw.de/en/diw_01.c.601784.en/soep-is_innovative_modules.html">SOEP-IS Website</a></dd>
+          </dl>
+        </div>
+        <div class="data-card">
+          <h3>Survey: Subjective Free Speech and Related Concepts</h3>
+          <dl>
+            <dt>Collected</dt><dd>Two waves, Sep &amp; Nov 2022, with R. Traunmüller</dd>
+            <dt>Keywords</dt><dd>Self-Censorship, Tolerance, De-Platforming, Hate Speech</dd>
+            <dt>Documentation</dt><dd><a href="https://janmenzner.org/wp-content/uploads/2022/12/SFS1-Codebook.nb_.html">Codebook Wave 1</a> · <a href="https://janmenzner.org/wp-content/uploads/2022/12/SFS2-Codebook.nb_.html">Codebook Wave 2</a></dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------- CV + CONTACT ---------- -->
+  <section class="alt" id="cv">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>CV &amp; Contact</h2>
+        <span class="count">05</span>
+      </div>
+      <div class="cv-contact">
+        <div class="cv-box">
+          <h3>Curriculum Vitae</h3>
+          <p>A full record of appointments, education, publications, teaching, and awards.</p>
+          <a class="btn primary" href="https://janmenzner.org/wp-content/uploads/2026/04/CV_Menzner_April26.pdf.pdf">Download CV (PDF)</a>
+        </div>
+        <div class="contact-box">
+          <h3>Get in touch</h3>
+          <address>
+            Jan Menzner<br>
+            Humboldt-University of Berlin<br>
+            Chair for Political Sociology and Social Policy<br>
+            Universitätsstr. 3b, 10117 Berlin<br>
+            <a href="mailto:jan.menzner@hu-berlin.com">jan.menzner@hu-berlin.com</a>
+          </address>
+          <p style="margin-top:16px; color:var(--slate); font-size:.92rem;">Please get in touch with questions about my work, or to discuss collaboration on projects aligned with my research interests.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap footer-inner">
+    <span>© 2026 Jan Menzner</span>
+    <span>Department of Social Sciences, Humboldt-University of Berlin</span>
+  </div>
+</footer>
+
+</body>
+</html>
