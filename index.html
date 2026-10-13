@@ -119,7 +119,28 @@
   nav a:hover::after{width:100%;}
   nav a.current{color:var(--brass);}
   nav a.current::after{width:100%;}
-  .nav-toggle{display:none;}
+  .nav-toggle{
+    display:none;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:5px;
+    width:44px; height:40px;
+    padding:0;
+    background:#fff;
+    border:1px solid var(--rule-strong);
+    border-radius:6px;
+    cursor:pointer;
+  }
+  .nav-toggle span{
+    display:block;
+    width:20px; height:2px;
+    background:var(--ink);
+    transition:transform .2s ease, opacity .2s ease;
+  }
+  .nav-open .nav-toggle span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+  .nav-open .nav-toggle span:nth-child(2){opacity:0;}
+  .nav-open .nav-toggle span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
 
   /* ---------- Page routing ---------- */
   main .page{display:none;}
@@ -643,10 +664,30 @@
     .cv-contact{grid-template-columns:1fr;}
     nav ul{gap:16px;}
   }
+  @media (max-width:720px){
+    .nav-inner{align-items:center;}
+    .nav-toggle{display:flex;}
+    nav ul{
+      display:none;
+      position:absolute;
+      left:0; right:0; top:100%;
+      flex-direction:column;
+      gap:0;
+      padding:4px 20px 12px;
+      background:#fff;
+      border-bottom:1px solid var(--rule);
+      box-shadow:0 12px 24px rgba(0,0,0,.08);
+    }
+    .nav-open nav ul{display:flex;}
+    nav li{border-bottom:1px solid var(--rule);}
+    nav li:last-child{border-bottom:none;}
+    nav a{display:block; padding:15px 0; font-size:.82rem;}
+    nav a::after{display:none;}
+    nav a.current{color:var(--brass); font-weight:500;}
+  }
   @media (max-width:600px){
     .wrap{padding:0 20px;}
-    .nav-inner{padding:16px 20px;}
-    nav ul{display:none;}
+    .nav-inner{padding:12px 20px;}
   }
 </style>
 </head>
@@ -656,7 +697,7 @@
   <div class="nav-inner">
     <div class="brand">Jan Menzner</div>
     <nav aria-label="Main navigation">
-      <ul>
+      <ul id="main-nav-list">
         <li><a href="#about">About</a></li>
         <li><a href="#publications">Publications</a></li>
         <li><a href="#research">Current Research</a></li>
@@ -664,6 +705,9 @@
         <li><a href="#cv">CV &amp; Contact</a></li>
       </ul>
     </nav>
+    <button class="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav-list">
+      <span></span><span></span><span></span>
+    </button>
   </div>
 </header>
 
@@ -1103,6 +1147,25 @@
       history.replaceState(null, '', '#'+defaultId);
     }
     showPage(idFromHash(), {skipScroll:true});
+  })();
+
+  // ---------- Mobile menu ----------
+  (function(){
+    var header = document.querySelector('header');
+    var btn = document.querySelector('.nav-toggle');
+    if(!header || !btn) return;
+    function setOpen(open){
+      header.classList.toggle('nav-open', open);
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      btn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    }
+    btn.addEventListener('click', function(){ setOpen(!header.classList.contains('nav-open')); });
+    document.querySelectorAll('nav a').forEach(function(a){
+      a.addEventListener('click', function(){ setOpen(false); });
+    });
+    document.addEventListener('keydown', function(e){ if(e.key === 'Escape') setOpen(false); });
+    document.addEventListener('click', function(e){ if(!header.contains(e.target)) setOpen(false); });
+    window.addEventListener('resize', function(){ if(window.innerWidth > 720) setOpen(false); });
   })();
 
   // ---------- Topic filter (publications + working papers) ----------
