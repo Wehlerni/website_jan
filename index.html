@@ -607,10 +607,10 @@
     font-size:.66rem;
     letter-spacing:.04em;
     padding:2px 9px;
-    border:1px solid #EAD9BC;
+    border:1px solid #D4B07E;
     border-radius:999px;
     background:var(--paper-alt);
-    color:#8A5A2B;
+    color:#6B4216;
   }
   .tag:hover{border-color:var(--brass); color:var(--brass);}
   .wip-list .wip:first-child{border-top:none; padding-top:0;}
@@ -634,6 +634,21 @@
   }
   .access-note strong{display:block; color:var(--ink); font-weight:600; margin-bottom:4px;}
   .access-note a{color:var(--brass); font-weight:500;}
+  .copy-btn{
+    margin-left:10px;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:.68rem;
+    letter-spacing:.04em;
+    text-transform:uppercase;
+    padding:2px 9px;
+    border:1px solid var(--brass-soft);
+    border-radius:999px;
+    background:transparent;
+    color:var(--brass);
+    cursor:pointer;
+    vertical-align:1px;
+  }
+  .copy-btn:hover{background:var(--brass); color:#fff; border-color:var(--brass);}
 
   /* ---------- Footer ---------- */
   footer{
@@ -1069,7 +1084,8 @@
       </div>
       <div class="access-note">
         <strong>Interested in access to one of these data sets, or in collaborating on them?</strong>
-        Please <a href="mailto:jan.menzner@hu-berlin.de">get in contact</a> — I am always happy to share data and ideas.
+        I am always happy to share data and ideas. Please get in touch at
+        <a href="mailto:jan.menzner@hu-berlin.de">jan.menzner@hu-berlin.de</a><button type="button" class="copy-btn" data-copy="jan.menzner@hu-berlin.de">Copy</button>
       </div>
       </div>
     </div>
@@ -1240,6 +1256,24 @@
       apply('All');
     });
   })();
+
+  // ---------- Copy e-mail address ----------
+  document.querySelectorAll('.copy-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var text = btn.getAttribute('data-copy');
+      function done(){
+        btn.textContent = 'Copied';
+        setTimeout(function(){ btn.textContent = 'Copy'; }, 2000);
+      }
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(done);
+      } else {
+        var t = document.createElement('textarea');
+        t.value = text; document.body.appendChild(t); t.select();
+        document.execCommand('copy'); document.body.removeChild(t); done();
+      }
+    });
+  });
 </script>
 
 </body>
