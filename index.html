@@ -469,6 +469,24 @@
     max-width:70ch;
   }
 
+  /* ---------- Compact publication entries ---------- */
+  .pub .yr{display:flex; align-items:center; flex-wrap:wrap; gap:6px 10px;}
+  .pub .yr .tags{margin-top:0;}
+  .pub .authors, .pub .journal{display:inline; margin:0;}
+  .pub .journal::before{content:"\00b7\00a0"; font-style:normal; color:var(--slate-soft);}
+  .pub .meta-row{
+    display:flex; flex-wrap:wrap; align-items:baseline;
+    gap:10px 0; margin-top:14px;
+  }
+  .pub .meta-row details{margin-top:0;}
+  .pub .meta-row details[open]{flex-basis:100%;}
+  .pub .meta-row .links{
+    margin-top:0; margin-left:14px; padding-left:14px;
+    border-left:1px solid var(--rule-strong);
+  }
+  .pub .meta-row details[open] + .links,
+  .pub .meta-row .links:first-child{margin-left:0; padding-left:0; border-left:none;}
+
   /* ---------- Abstract formatting (justified) ---------- */
   .pub .abstract, .wip .abstract{
     position:relative;
@@ -1285,7 +1303,8 @@ these social services are related to moral issues.</p>
             b.addEventListener('click', function(){ apply(b.textContent); });
             box.appendChild(b);
           });
-          it.appendChild(box);
+          var yr = it.classList.contains('pub') ? it.querySelector('.yr') : null;
+          (yr || it).appendChild(box);
         }
       });
 
@@ -1324,6 +1343,17 @@ these social services are related to moral issues.</p>
       apply('All');
     });
   })();
+
+  // ---------- Compact rows: abstract toggle + links side by side ----------
+  document.querySelectorAll('.pub').forEach(function(p){
+    var d = p.querySelector(':scope > details');
+    var l = p.querySelector(':scope > .links');
+    if(!d && !l) return;
+    var row = document.createElement('div'); row.className = 'meta-row';
+    (d || l).parentNode.insertBefore(row, d || l);
+    if(d) row.appendChild(d);
+    if(l) row.appendChild(l);
+  });
 
   // ---------- Animate abstract line on open ----------
   document.querySelectorAll('details').forEach(function(d){
