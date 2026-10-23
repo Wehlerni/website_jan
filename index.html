@@ -385,7 +385,7 @@
   .pub .journal{
     font-style:italic;
     font-size:.9rem;
-    color:var(--sage);
+    color:#7A3E0A;
     margin-bottom:12px;
   }
   .pub details{margin-top:6px;}
@@ -481,7 +481,6 @@
     hyphens:auto;
     -webkit-hyphens:auto;
     overflow-wrap:break-word;
-    animation:abs-fade .5s ease both .15s;
   }
   .pub .abstract::before, .wip .abstract::before{
     content:"";
@@ -489,15 +488,14 @@
     left:0; top:0;
     width:2px; height:100%;
     background:var(--brass-soft);
-    transform:scaleY(0);
     transform-origin:top;
-    animation:abs-line .7s ease forwards;
   }
-  @keyframes abs-line{ to{ transform:scaleY(1); } }
+  .abstract.run{animation:abs-fade .6s ease both .2s;}
+  .abstract.run::before{animation:abs-line .9s cubic-bezier(.4,0,.2,1) both;}
+  @keyframes abs-line{ from{ transform:scaleY(0); } to{ transform:scaleY(1); } }
   @keyframes abs-fade{ from{ opacity:0; } to{ opacity:1; } }
   @media (prefers-reduced-motion: reduce){
-    .pub .abstract, .wip .abstract{animation:none;}
-    .pub .abstract::before, .wip .abstract::before{animation:none; transform:scaleY(1);}
+    .abstract.run, .abstract.run::before{animation:none;}
   }
   @media (max-width:600px){
     .pub .abstract, .wip .abstract{
@@ -646,10 +644,11 @@
     font-size:.66rem;
     letter-spacing:.04em;
     padding:2px 9px;
-    border:1px solid #D4B07E;
+    border:1px solid #B07A3A;
     border-radius:999px;
     background:var(--paper-alt);
-    color:#6B4216;
+    color:#4F2E0C;
+    font-weight:500;
   }
   .tag:hover{border-color:var(--brass); color:var(--brass);}
   .wip-list .wip:first-child{border-top:none; padding-top:0;}
@@ -1325,6 +1324,16 @@ these social services are related to moral issues.</p>
       apply('All');
     });
   })();
+
+  // ---------- Animate abstract line on open ----------
+  document.querySelectorAll('details').forEach(function(d){
+    d.addEventListener('toggle', function(){
+      var a = d.querySelector('.abstract');
+      if(!a) return;
+      a.classList.remove('run');
+      if(d.open){ void a.offsetWidth; a.classList.add('run'); }
+    });
+  });
 
   // ---------- Copy e-mail address ----------
   document.querySelectorAll('.copy-btn').forEach(function(btn){
