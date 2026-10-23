@@ -468,6 +468,45 @@
     font-size:.9rem;
     max-width:70ch;
   }
+
+  /* ---------- Abstract formatting (justified) ---------- */
+  .pub .abstract, .wip .abstract{
+    position:relative;
+    max-width:78ch;
+    margin:12px 0 4px;
+    padding:2px 0 2px 18px;
+    line-height:1.7;
+    text-align:justify;
+    text-justify:inter-word;
+    hyphens:auto;
+    -webkit-hyphens:auto;
+    overflow-wrap:break-word;
+    animation:abs-fade .5s ease both .15s;
+  }
+  .pub .abstract::before, .wip .abstract::before{
+    content:"";
+    position:absolute;
+    left:0; top:0;
+    width:2px; height:100%;
+    background:var(--brass-soft);
+    transform:scaleY(0);
+    transform-origin:top;
+    animation:abs-line .7s ease forwards;
+  }
+  @keyframes abs-line{ to{ transform:scaleY(1); } }
+  @keyframes abs-fade{ from{ opacity:0; } to{ opacity:1; } }
+  @media (prefers-reduced-motion: reduce){
+    .pub .abstract, .wip .abstract{animation:none;}
+    .pub .abstract::before, .wip .abstract::before{animation:none; transform:scaleY(1);}
+  }
+  @media (max-width:600px){
+    .pub .abstract, .wip .abstract{
+      text-align:left;
+      hyphens:manual;
+      -webkit-hyphens:manual;
+      padding-left:14px;
+    }
+  }
   .wip .status{
     display:inline-block;
     font-family:'IBM Plex Mono',monospace;
