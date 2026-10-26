@@ -31,7 +31,7 @@
     --brass:#B45309;
     --brass-soft:#F59E0B;
     --sage:#157A5B;
-    --max:1520px;
+    --max:1600px;
   }
 
   /* ---------- Dark mode ---------- */
@@ -52,7 +52,7 @@
   :root[data-theme="dark"] .nav-toggle{background:var(--paper);}
   :root[data-theme="dark"] .tag{border-color:#6E5236; color:#E4C9A3; background:var(--paper-alt);}
   :root[data-theme="dark"] .about-photo{filter:saturate(1.05) brightness(.92);}
-  @media (max-width:720px){
+  @media (max-width:900px){
     :root[data-theme="dark"] nav ul{background:var(--paper); box-shadow:0 12px 24px rgba(0,0,0,.4);}
   }
   body{transition:background .25s ease, color .25s ease;}
@@ -148,6 +148,7 @@
     margin:0; padding:0;
   }
   nav a{
+    white-space:nowrap;
     font-family:'IBM Plex Mono',monospace;
     font-size:.75rem;
     letter-spacing:.08em;
@@ -627,27 +628,30 @@
   .wrap .filter.stuck{border-bottom-color:var(--rule);}
 
   /* ---------- Mobile: less top space, topic dropdown ---------- */
-  .filter-select{display:none;}
+  .filter-select{
+    display:none; flex:1; min-width:0; max-width:420px;
+    font-family:'IBM Plex Mono',monospace; font-size:.8rem; letter-spacing:.03em;
+    color:var(--ink); background:var(--paper);
+    border:1px solid var(--rule-strong); border-radius:999px;
+    padding:9px 36px 9px 16px;
+    -webkit-appearance:none; appearance:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23B45309' stroke-width='1.6'/%3E%3C/svg%3E");
+    background-repeat:no-repeat; background-position:right 14px center;
+  }
+  .filter-select:focus, .filter-select:focus-visible{
+    outline:none; border-color:var(--brass);
+    box-shadow:0 0 0 3px rgba(180,83,9,.18);
+  }
+  /* too many chips for two rows: switch to the dropdown */
+  .wrap .filter.use-select{align-items:center; flex-wrap:nowrap;}
+  .filter.use-select .filter-bar{display:none;}
+  .filter.use-select .filter-select{display:block;}
   @media (max-width:720px){
     .hero{padding:32px 0 40px;}
     section{padding:32px 0 48px;}
     .wrap .filter{margin-bottom:28px; align-items:center; flex-wrap:nowrap;}
     .filter .filter-bar{display:none;}
-    .filter-select{
-      display:block; flex:1; min-width:0;
-      font-family:'IBM Plex Mono',monospace; font-size:.8rem; letter-spacing:.03em;
-      color:var(--ink); background:var(--paper);
-      border:1px solid var(--rule-strong); border-radius:999px;
-      padding:9px 36px 9px 16px;
-      -webkit-appearance:none; appearance:none;
-      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23B45309' stroke-width='1.6'/%3E%3C/svg%3E");
-      background-repeat:no-repeat; background-position:right 14px center;
-    }
-    .wrap .filter{margin-left:-20px; margin-right:-20px; padding:10px 20px;}
-    .filter-select:focus, .filter-select:focus-visible{
-      outline:none; border-color:var(--brass);
-      box-shadow:0 0 0 3px rgba(180,83,9,.18);
-    }
+    .filter-select{display:block; max-width:none;}
     .section-head{margin-bottom:32px;}
   }
 
@@ -916,7 +920,7 @@
     .cv-contact{grid-template-columns:1fr;}
     nav ul{gap:16px;}
   }
-  @media (max-width:720px){
+  @media (max-width:900px){
     .nav-inner{align-items:center;}
     .nav-toggle{display:flex;}
     nav ul{
@@ -1513,7 +1517,7 @@
     });
     document.addEventListener('keydown', function(e){ if(e.key === 'Escape') setOpen(false); });
     document.addEventListener('click', function(e){ if(!header.contains(e.target)) setOpen(false); });
-    window.addEventListener('resize', function(){ if(window.innerWidth > 720) setOpen(false); });
+    window.addEventListener('resize', function(){ if(window.innerWidth > 900) setOpen(false); });
   })();
 
   // ---------- Topic filter (publications + working papers) ----------
@@ -1650,6 +1654,25 @@
       obs.observe(p, {attributes:true, attributeFilter:['class']});
       if(p._wasActive) play(p);
     });
+  })();
+
+  // ---------- Topic chips -> dropdown when they would need 3+ rows ----------
+  (function(){
+    function check(){
+      document.querySelectorAll('main .page.active-page .filter').forEach(function(f){
+        f.classList.remove('use-select');
+        var chips = f.querySelectorAll('.chip');
+        if(!chips.length || getComputedStyle(f.querySelector('.filter-bar')).display === 'none') return;
+        var rows = {};
+        chips.forEach(function(c){ rows[Math.round(c.offsetTop)] = 1; });
+        if(Object.keys(rows).length > 2) f.classList.add('use-select');
+      });
+    }
+    var t; window.addEventListener('resize', function(){ clearTimeout(t); t = setTimeout(check, 80); });
+    var obs = new MutationObserver(check);
+    document.querySelectorAll('main .page').forEach(function(p){ obs.observe(p, {attributes:true, attributeFilter:['class']}); });
+    check();
+    if(document.fonts && document.fonts.ready) document.fonts.ready.then(check);
   })();
 
   // ---------- Sticky topic dropdown on phones ----------
