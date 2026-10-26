@@ -549,25 +549,13 @@
   }
 
   /* ---------- Teaching ---------- */
-  .teaching-note{margin:-24px 0 36px; font-size:.85rem; color:var(--slate-soft);}
-  .teach-group + .teach-group{margin-top:40px;}
-  .teach-group h3{font-size:1.3rem; font-weight:400; margin-bottom:14px;}
-  .teach-list{list-style:none; margin:0; padding:0;}
-  .teach-list li{
-    font-size:.95rem; color:var(--slate); line-height:1.6;
-    padding:0 0 12px 18px; position:relative;
-  }
-  .teach-list li::before{
-    content:""; position:absolute; left:0; top:.62em;
-    width:6px; height:6px; border-radius:50%; background:var(--brass-soft);
-  }
-  .teach-list em{color:var(--ink);}
-  .teach-sem{color:var(--slate-soft); white-space:nowrap;}
-  .teach-syl{
-    margin-left:10px; font-family:'IBM Plex Mono',monospace; font-size:.72rem; letter-spacing:.03em;
-    text-decoration:none; color:var(--brass); border-bottom:1px solid var(--brass-soft); white-space:nowrap;
-  }
-  .teach-syl:hover{color:var(--ink); border-color:var(--ink);}
+  .teaching-note{margin:0 0 40px; font-family:'IBM Plex Mono',monospace; font-size:.7rem; letter-spacing:.12em; text-transform:uppercase; color:var(--slate-soft);}
+  .course h3{margin-top:0;}
+  .course::before{top:8px;}
+  .teach-list.pub-list::before{top:12px;}
+  .course-meta{font-size:.88rem; color:var(--slate); margin:0;}
+  .course-sep{color:var(--slate-soft);}
+  .course .links{margin-top:10px;}
 
   /* ---------- Abstract formatting (justified) ---------- */
   .abstract p{margin:0 0 10px;}
@@ -1259,24 +1247,54 @@
   <!-- ---------- TEACHING ---------- -->
   <section class="page" id="teaching">
     <div class="wrap">
-      <div class="section-head">
-        <h2>Teaching</h2>
-      </div>
       <p class="teaching-note">All courses taught in German.</p>
-      <div class="teach-group">
-        <h3>Humboldt-Universität zu Berlin</h3>
-        <ul class="teach-list">
-          <li><em>Klima und Konflikte in demokratischen Gesellschaften</em> (Climate and Conflicts in Democratic Societies), Reading Seminar, M.A. <span class="teach-sem">— Winter 2026/27</span> <a class="teach-syl" href="files/Syllabus%20Klima%20%26%20Konflikte%202026.pdf" target="_blank" rel="noopener noreferrer">Syllabus</a></li>
-          <li><em>Vertrauen, Zufriedenheit &amp; Legitimität – Politische Unterstützung im Wandel?</em> (Trust, Satisfaction &amp; Legitimacy – Political Support in Transition?), Seminar, B.A. <span class="teach-sem">— Summer 2026</span></li>
-          <li><em>Klimawandel als politische Herausforderung</em> (Climate Change as a Political Challenge), Specialization Seminar, B.A. <span class="teach-sem">— Winter 2025/26</span></li>
-          <li><em>Internationale und Vergleichende Politik</em> (International and Comparative Politics), Tutorial Seminar, B.A. <span class="teach-sem">— Summer 2025, Summer 2026 (two groups)</span></li>
-        </ul>
+
+      <div class="block">
+      <div class="section-head">
+        <h2>Humboldt-Universität zu Berlin</h2>
       </div>
-      <div class="teach-group">
-        <h3>University of Mannheim</h3>
-        <ul class="teach-list">
-          <li><em>Datenauswertung mit Stata</em> (Data Analysis with Stata), Tutorial, B.A. <span class="teach-sem">— Spring 2023</span></li>
-        </ul>
+      <div class="pub-list teach-list">
+        <article class="pub course">
+          <h3>Klima und Konflikte in demokratischen Gesellschaften</h3>
+          <p class="course-meta">Climate and Conflicts in Democratic Societies <span class="course-sep">·</span> Reading Seminar, M.A. <span class="course-sep">·</span> Winter 2026/27</p>
+          <div class="links">
+            <a href="files/Syllabus%20Klima%20%26%20Konflikte%202026.pdf" target="_blank" rel="noopener noreferrer">Syllabus</a>
+          </div>
+        </article>
+
+        <article class="pub course">
+          <h3>Vertrauen, Zufriedenheit &amp; Legitimität – Politische Unterstützung im Wandel?</h3>
+          <p class="course-meta">Trust, Satisfaction &amp; Legitimacy – Political Support in Transition? <span class="course-sep">·</span> Seminar, B.A. <span class="course-sep">·</span> Summer 2026</p>
+          <div class="links">
+            <a href="files/Syllabus_Politische_Unterstuetzung.pdf" target="_blank" rel="noopener noreferrer">Syllabus</a>
+          </div>
+        </article>
+
+        <article class="pub course">
+          <h3>Klimawandel als politische Herausforderung</h3>
+          <p class="course-meta">Climate Change as a Political Challenge <span class="course-sep">·</span> Specialization Seminar, B.A. <span class="course-sep">·</span> Winter 2025/26</p>
+          <div class="links">
+            <a href="files/Syllabus_Klimawandel_Herausforderung_2025.pdf" target="_blank" rel="noopener noreferrer">Syllabus</a>
+          </div>
+        </article>
+
+        <article class="pub course">
+          <h3>Internationale und Vergleichende Politik</h3>
+          <p class="course-meta">International and Comparative Politics <span class="course-sep">·</span> Tutorial Seminar, B.A. <span class="course-sep">·</span> Summer 2025, Summer 2026 (two groups)</p>
+        </article>
+      </div>
+      </div>
+
+      <div class="block">
+      <div class="section-head">
+        <h2>University of Mannheim</h2>
+      </div>
+      <div class="pub-list teach-list">
+        <article class="pub course">
+          <h3>Datenauswertung mit Stata</h3>
+          <p class="course-meta">Data Analysis with Stata <span class="course-sep">·</span> Tutorial, B.A. <span class="course-sep">·</span> Spring 2023</p>
+        </article>
+      </div>
       </div>
     </div>
   </section>
