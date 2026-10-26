@@ -567,6 +567,7 @@
   .course .links{margin-top:10px;}
 
   /* ---------- Abstract formatting (justified) ---------- */
+  details .abstract{cursor:pointer;}
   .abstract p{margin:0 0 10px;}
   .abstract p:last-child{margin-bottom:0;}
   .pub .abstract, .wip .abstract{
@@ -1552,6 +1553,18 @@
       if(p._wasActive) play(p);
     });
   })();
+
+  // ---------- Close an abstract by clicking/tapping its text ----------
+  document.querySelectorAll('details .abstract').forEach(function(a){
+    a.addEventListener('click', function(){
+      if(String(window.getSelection ? window.getSelection() : '').length) return; // allow copying text
+      var d = a.closest('details');
+      if(!d) return;
+      d.open = false;
+      var s = d.querySelector('summary');
+      if(s && s.getBoundingClientRect().top < 70){ s.scrollIntoView({block:'center', behavior:'smooth'}); }
+    });
+  });
 
   // ---------- Animate abstract line on open ----------
   document.querySelectorAll('details').forEach(function(d){
