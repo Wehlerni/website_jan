@@ -631,6 +631,10 @@
       background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23B45309' stroke-width='1.6'/%3E%3C/svg%3E");
       background-repeat:no-repeat; background-position:right 14px center;
     }
+    .filter-select:focus, .filter-select:focus-visible{
+      outline:none; border-color:var(--brass);
+      box-shadow:0 0 0 3px rgba(180,83,9,.18);
+    }
     .section-head{margin-bottom:32px;}
   }
 
@@ -893,6 +897,7 @@
     .photo-placeholder{max-width:220px;}
     .about-grid{grid-template-columns:1fr;}
     .hero-bio .about-photo{float:none; margin:0 auto 24px; width:240px; max-width:100%;}
+    .hero .eyebrow{text-align:center;}
     .pillars{grid-template-columns:1fr;}
     .data-grid{grid-template-columns:1fr;}
     .cv-contact{grid-template-columns:1fr;}
