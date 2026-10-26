@@ -506,6 +506,22 @@
   }
   .pub-list::before{top:8px;}
   .wip-list::before{top:10px;}
+
+  /* timeline draws downward when the page opens */
+  .pub-list::before, .wip-list::before{transform-origin:top;}
+  main .page.active-page .pub-list::before,
+  main .page.active-page .wip-list::before{animation:tl-draw 1.6s cubic-bezier(.4,0,.2,1) both .2s;}
+  @keyframes tl-draw{ from{transform:scaleY(0);} to{transform:scaleY(1);} }
+
+  /* circle fills on hover */
+  .pub::before, .wip-list .wip::before{transition:background .2s ease, transform .2s ease;}
+  .pub:hover::before, .wip-list .wip:hover::before{background:var(--brass); transform:scale(1.15);}
+
+  @media (prefers-reduced-motion: reduce){
+    main .page.active-page .pub-list::before,
+    main .page.active-page .wip-list::before{animation:none;}
+    .pub::before, .wip-list .wip::before{transition:none;}
+  }
   .wip-list > .wip:last-child{border-bottom:none !important;}
   .wip-list .wip,
   .wip-list .wip:first-child,
