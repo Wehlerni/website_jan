@@ -31,7 +31,7 @@
     --brass:#B45309;
     --brass-soft:#F59E0B;
     --sage:#157A5B;
-    --max:1400px;
+    --max:1520px;
   }
 
   /* ---------- Dark mode ---------- */
@@ -614,6 +614,18 @@
   .course-sep{color:var(--slate-soft);}
   .course .links{margin-top:10px;}
 
+  /* ---------- Topic bar: compact chips, pinned below the header ---------- */
+  .chip{padding:7px 11px;}
+  .filter-bar{gap:6px;}
+  .wrap .filter{
+    position:sticky; top:var(--header-h, 66px); z-index:40;
+    background:var(--paper);
+    margin-left:-32px; margin-right:-32px; padding:12px 32px;
+    border-bottom:1px solid transparent;
+    transition:border-color .2s ease;
+  }
+  .wrap .filter.stuck{border-bottom-color:var(--rule);}
+
   /* ---------- Mobile: less top space, topic dropdown ---------- */
   .filter-select{display:none;}
   @media (max-width:720px){
@@ -631,14 +643,7 @@
       background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23B45309' stroke-width='1.6'/%3E%3C/svg%3E");
       background-repeat:no-repeat; background-position:right 14px center;
     }
-    .wrap .filter{
-      position:sticky; top:var(--header-h, 66px); z-index:40;
-      background:var(--paper);
-      margin-left:-20px; margin-right:-20px; padding:10px 20px;
-      border-bottom:1px solid transparent;
-      transition:border-color .2s ease;
-    }
-    .wrap .filter.stuck{border-bottom-color:var(--rule);}
+    .wrap .filter{margin-left:-20px; margin-right:-20px; padding:10px 20px;}
     .filter-select:focus, .filter-select:focus-visible{
       outline:none; border-color:var(--brass);
       box-shadow:0 0 0 3px rgba(180,83,9,.18);
