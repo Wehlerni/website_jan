@@ -495,7 +495,18 @@
   .data-card .title-row .tags{margin:0;}
 
   /* ---------- Research list as timeline (like publications) ---------- */
-  .wip-list{position:relative; border-left:1px solid var(--rule-strong);}
+  .wip-list{position:relative;}
+  .pub-list{border-left:none !important;}
+  .pub-list::before, .wip-list::before{
+    content:"";
+    position:absolute;
+    left:-1px; bottom:0;
+    width:1px;
+    background:var(--rule-strong);
+  }
+  .pub-list::before{top:8px;}
+  .wip-list::before{top:10px;}
+  .wip-list > .wip:last-child{border-bottom:none !important;}
   .wip-list .wip,
   .wip-list .wip:first-child,
   .wip-list .wip:last-child{
