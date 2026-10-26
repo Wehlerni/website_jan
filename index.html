@@ -139,6 +139,8 @@
     white-space:nowrap;
   }
   .brand em{font-style:italic; color:var(--brass);}
+  a.brand{color:var(--ink); text-decoration:none;}
+  a.brand:hover{color:var(--brass);}
   nav ul{
     list-style:none;
     display:flex;
@@ -907,7 +909,7 @@
 
 <header>
   <div class="nav-inner">
-    <div class="brand">Jan Menzner</div>
+    <a class="brand" href="#about">Jan Menzner</a>
     <nav aria-label="Main navigation">
       <ul id="main-nav-list">
         <li><a href="#about">About</a></li>
@@ -1410,7 +1412,7 @@
 <script>
   (function(){
     var pages = Array.prototype.slice.call(document.querySelectorAll('main .page'));
-    var navLinks = Array.prototype.slice.call(document.querySelectorAll('nav a[href^="#"]'));
+    var navLinks = Array.prototype.slice.call(document.querySelectorAll('nav a[href^="#"], a.brand'));
     var defaultId = 'about';
 
     function idFromHash(){
