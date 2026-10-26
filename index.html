@@ -494,6 +494,26 @@
   .data-card .title-row h3{margin:0;}
   .data-card .title-row .tags{margin:0;}
 
+  /* ---------- Research list as timeline (like publications) ---------- */
+  .wip-list{position:relative; border-left:1px solid var(--rule-strong);}
+  .wip-list .wip,
+  .wip-list .wip:first-child,
+  .wip-list .wip:last-child{
+    position:relative;
+    border:none;
+    padding:0 0 36px 32px;
+  }
+  .wip-list .wip:last-child{padding-bottom:0;}
+  .wip-list .wip::before{
+    content:"";
+    position:absolute;
+    left:-5px; top:6px;
+    width:9px; height:9px;
+    background:var(--paper);
+    border:1.5px solid var(--brass);
+    border-radius:50%;
+  }
+
   /* ---------- Abstract formatting (justified) ---------- */
   .abstract p{margin:0 0 10px;}
   .abstract p:last-child{margin-bottom:0;}
