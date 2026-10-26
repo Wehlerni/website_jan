@@ -509,13 +509,13 @@
 
   /* timeline draws downward when the page opens */
   .pub-list::before, .wip-list::before{transform-origin:top;}
-  main .page.active-page .pub-list::before,
-  main .page.active-page .wip-list::before{animation:tl-draw 1.6s cubic-bezier(.4,0,.2,1) both .2s;}
+  main .page.animate .pub-list::before,
+  main .page.animate .wip-list::before{animation:tl-draw 1.6s cubic-bezier(.4,0,.2,1) both .2s;}
   @keyframes tl-draw{ from{transform:scaleY(0);} to{transform:scaleY(1);} }
 
   /* circles pop in as the line reaches them (delay set by script) */
-  main .page.active-page .pub::before,
-  main .page.active-page .wip-list .wip::before{animation:dot-in .35s ease-out backwards; animation-delay:var(--d, .2s);}
+  main .page.animate .pub::before,
+  main .page.animate .wip-list .wip::before{animation:dot-in .35s ease-out backwards; animation-delay:var(--d, .2s);}
   @keyframes dot-in{ from{transform:scale(0); opacity:0;} to{transform:scale(1); opacity:1;} }
 
   /* circle fills on hover */
@@ -523,10 +523,10 @@
   .pub:hover::before, .wip-list .wip:hover::before{background:var(--brass); transform:scale(1.15);}
 
   @media (prefers-reduced-motion: reduce){
-    main .page.active-page .pub-list::before,
-    main .page.active-page .wip-list::before{animation:none;}
-    main .page.active-page .pub::before,
-    main .page.active-page .wip-list .wip::before{animation:none;}
+    main .page.animate .pub-list::before,
+    main .page.animate .wip-list::before{animation:none;}
+    main .page.animate .pub::before,
+    main .page.animate .wip-list .wip::before{animation:none;}
     .pub::before, .wip-list .wip::before{transition:none;}
   }
   .wip-list > .wip:last-child{border-bottom:none !important;}
@@ -1406,6 +1406,7 @@
         });
       }
       apply('All');
+      root._resetFilter = function(){ apply('All'); };
     });
   })();
 
@@ -1444,12 +1445,28 @@
       });
     }
     var pages = document.querySelectorAll('main .page');
+    // play only when a page is opened, not when filtering
+    function play(p){
+      if(p._playing) return;
+      p._playing = true;
+      setDelays(p);
+      p.classList.add('animate');
+      setTimeout(function(){ p.classList.remove('animate'); p._playing = false; }, (DELAY + DUR) * 1000 + 600);
+    }
     var obs = new MutationObserver(function(ms){
-      ms.forEach(function(m){ if(m.target.classList.contains('active-page')) setDelays(m.target); });
+      ms.forEach(function(m){
+        var p = m.target, on = p.classList.contains('active-page');
+        if(on && !p._wasActive){
+          p.querySelectorAll('[data-filterable]').forEach(function(r){ if(r._resetFilter) r._resetFilter(); });
+          play(p);
+        }
+        p._wasActive = on;
+      });
     });
     pages.forEach(function(p){
+      p._wasActive = p.classList.contains('active-page');
       obs.observe(p, {attributes:true, attributeFilter:['class']});
-      if(p.classList.contains('active-page')) setDelays(p);
+      if(p._wasActive) play(p);
     });
   })();
 
