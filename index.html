@@ -1668,7 +1668,13 @@
         if(Object.keys(rows).length > 2) f.classList.add('use-select');
       });
     }
-    var t; window.addEventListener('resize', function(){ clearTimeout(t); t = setTimeout(check, 80); });
+    // re-check immediately whenever the available width changes (before the browser paints)
+    if(window.ResizeObserver){
+      var ro = new ResizeObserver(function(){ check(); });
+      document.querySelectorAll('[data-filterable]').forEach(function(w){ ro.observe(w); });
+    } else {
+      window.addEventListener('resize', check);
+    }
     var obs = new MutationObserver(check);
     document.querySelectorAll('main .page').forEach(function(p){ obs.observe(p, {attributes:true, attributeFilter:['class']}); });
     check();
