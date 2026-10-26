@@ -1555,16 +1555,29 @@
   })();
 
   // ---------- Close an abstract by clicking/tapping its text ----------
-  document.querySelectorAll('details .abstract').forEach(function(a){
-    a.addEventListener('click', function(){
-      if(String(window.getSelection ? window.getSelection() : '').length) return; // allow copying text
-      var d = a.closest('details');
-      if(!d) return;
+  (function(){
+    function close(a){
+      var d = a.closest('details'); if(!d || !d.open) return;
       d.open = false;
       var s = d.querySelector('summary');
       if(s && s.getBoundingClientRect().top < 70){ s.scrollIntoView({block:'center', behavior:'smooth'}); }
+    }
+    document.querySelectorAll('details .abstract').forEach(function(a){
+      var x0, y0, t0;
+      a.addEventListener('pointerdown', function(e){ x0 = e.clientX; y0 = e.clientY; t0 = Date.now(); });
+      a.addEventListener('pointerup', function(e){
+        if(t0 == null) return;
+        var moved = Math.abs(e.clientX - x0) > 10 || Math.abs(e.clientY - y0) > 10;
+        var slow = Date.now() - t0 > 600;              // long press = selecting text
+        var sel = window.getSelection && String(window.getSelection()).length;
+        t0 = null;
+        if(moved || slow || sel) return;              // scrolling or copying: keep open
+        e.preventDefault();
+        close(a);
+      });
+      a.addEventListener('pointercancel', function(){ t0 = null; });
     });
-  });
+  })();
 
   // ---------- Animate abstract line on open ----------
   document.querySelectorAll('details').forEach(function(d){
