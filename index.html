@@ -631,6 +631,14 @@
       background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23B45309' stroke-width='1.6'/%3E%3C/svg%3E");
       background-repeat:no-repeat; background-position:right 14px center;
     }
+    .wrap .filter{
+      position:sticky; top:var(--header-h, 66px); z-index:40;
+      background:var(--paper);
+      margin-left:-20px; margin-right:-20px; padding:10px 20px;
+      border-bottom:1px solid transparent;
+      transition:border-color .2s ease;
+    }
+    .wrap .filter.stuck{border-bottom-color:var(--rule);}
     .filter-select:focus, .filter-select:focus-visible{
       outline:none; border-color:var(--brass);
       box-shadow:0 0 0 3px rgba(180,83,9,.18);
@@ -1636,6 +1644,31 @@
       p._wasActive = p.classList.contains('active-page');
       obs.observe(p, {attributes:true, attributeFilter:['class']});
       if(p._wasActive) play(p);
+    });
+  })();
+
+  // ---------- Sticky topic dropdown on phones ----------
+  (function(){
+    var header = document.querySelector('header');
+    function setH(){ document.documentElement.style.setProperty('--header-h', header.offsetHeight + 'px'); }
+    setH(); window.addEventListener('resize', setH);
+    function mark(){
+      var h = header.offsetHeight;
+      document.querySelectorAll('.filter').forEach(function(f){
+        f.classList.toggle('stuck', f.getBoundingClientRect().top <= h + 1 && window.scrollY > 0);
+      });
+    }
+    window.addEventListener('scroll', mark, {passive:true});
+    // after choosing a topic further down, jump back to the start of the list
+    document.querySelectorAll('.filter-select').forEach(function(sel){
+      sel.addEventListener('change', function(){
+        var f = sel.closest('.filter');
+        if(f && f.classList.contains('stuck')){
+          var root = f.parentNode;
+          var y = root.getBoundingClientRect().top + window.scrollY - header.offsetHeight - 8;
+          window.scrollTo({top:y, behavior:'smooth'});
+        }
+      });
     });
   })();
 
