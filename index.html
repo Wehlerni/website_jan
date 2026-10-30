@@ -869,7 +869,6 @@
     border-bottom:1px solid var(--rule-strong);
     border-bottom-left-radius:10px;
   }
-  .wip .status.part{border-style:dashed;}
   @media (max-width:600px){
     .wip-list .wip.sub{padding-left:52px;}
     .wip-list .wip.sub::before{left:19px;}
@@ -1002,6 +1001,17 @@
     .hero-bio a.bio-link { text-decoration: none; }
     .hero-bio a.bio-link strong { transition: box-shadow .2s ease, color .2s ease; }
     .hero-bio a.bio-link:hover strong { box-shadow: inset 0 -1.1em 0 var(--wash); color: var(--brass); }
+    .bio-more-btn{
+      display:block; margin:-4px 0 16px; padding:0;
+      background:none; border:none; cursor:pointer;
+      font-family:'IBM Plex Mono',monospace; font-size:.72rem;
+      letter-spacing:.06em; text-transform:uppercase; color:var(--brass);
+    }
+    .bio-more-btn::before{content:"+ ";}
+    .bio-more-btn[aria-expanded="true"]::before{content:"– ";}
+    .bio-more-btn:hover{color:var(--ink);}
+    .hero-bio .bio-more{margin-bottom:16px; animation:abs-fade .25s ease both;}
+    .hero-bio .bio-more p:last-child{margin-bottom:0;}
   </style>
   <section class="hero page" id="about">
     <div class="wrap">
@@ -1012,9 +1022,12 @@
           <img src="jan_foto.png" alt="Jan Menzner" class="about-photo">
           <p>I am a political scientist at <a href="https://www.sowi.hu-berlin.de/de/lehrbereiche/sozpol" target="_blank" rel="noopener noreferrer" class="bio-link"><strong>Humboldt-Universität zu Berlin</strong></a>, where I work as a postdoctoral researcher and lecturer at Prof. Hanna Schwander's Chair of Political Sociology and Social Policy. Since July 2025, I also serve as Acting Managing Director of the <a href="https://www.bgss.hu-berlin.de/en" target="_blank" rel="noopener noreferrer" class="bio-link"><strong>Berlin Graduate School of Sciences</strong></a>.</p>
           <p>I see climate change as the defining societal transformation and political challenge of our time. In my dissertation and beyond, I thus aim to understand <a href="https://madoc.bib.uni-mannheim.de/71393/" target="_blank" rel="noopener noreferrer" class="bio-link"><strong>how climate change reshapes citizens' relationship with democratic politics</strong></a>: whether growing climate concern erodes satisfaction with and support for democracy, how far citizens on both sides of the climate debate would set aside democratic principles to get their way, and how first-hand experiences such as water use restrictions and heat stress shape the way they judge the state.</p>
+          <button type="button" class="bio-more-btn" aria-expanded="false" aria-controls="bio-more">More</button>
+          <div class="bio-more" id="bio-more" hidden>
           <p>Beyond climate change, I study how social change in citizens' everyday lives and communities shapes their political attitudes: for instance, how being able, or unable, to move affects people's political outlook, why some places become fertile ground for the radical right, and how increased visibility of gender and sexual diversity plays out politically.</p>
-          <p>What connects my work is a concern for democratic resilience and quality. This is why I also study questions of political representation, such as how voters respond to candidates' gender and how parties communicate with citizens with low literacy, as well as the conditions under which citizens support militant democracy. Methodologically, I mainly rely on original surveys, in part linked to structural data such as election results or regional statistics, as well as panel data and survey experiments. An overview of my current projects <a href="#research" class="bio-link"><strong>can be found here</strong></a>, and I am always open to collaboration.</p>
-          <p>My work has appeared in the <em>Journal of European Public Policy</em>, <em>Politics &amp; Governance</em> and <em>German Politics</em>, among others, and further manuscripts are currently under review. A full list of my publications <a href="Menzner_CV.pdf" target="_blank" rel="noopener noreferrer" class="bio-link"><strong>can be found in my CV</strong></a>.</p>
+          <p>What connects my work is a concern for democratic resilience and quality. This is why I also study questions of political representation, such as how voters respond to candidates' gender and how parties communicate with citizens with low literacy, as well as the conditions under which citizens support militant democracy. Methodologically, I mainly rely on original surveys, in part linked to structural data such as election results or regional statistics, as well as panel data and survey experiments.</p>
+          </div>
+          <p>An overview of my current projects <a href="#research" class="bio-link"><strong>can be found here</strong></a>, and I am always open to collaboration. My work has appeared in the <em>Journal of European Public Policy</em>, <em>Politics &amp; Governance</em> and <em>German Politics</em>, among others, and further manuscripts are currently under review. A full list of my publications <a href="Menzner_CV.pdf" target="_blank" rel="noopener noreferrer" class="bio-link"><strong>can be found in my CV</strong></a>.</p>
         </div>
 
         <div class="side">
@@ -1201,9 +1214,6 @@
           </div>
         </article>
       </div>
-      <p style="margin-top:32px; font-size:.9rem; color:var(--slate-soft);">
-        A complete list of all contributions is available in the full <a href="Menzner_CV.pdf" style="color:var(--brass);" target="_blank" rel="noopener noreferrer">CV</a>.
-      </p>
       </div>
     </div>
   </section>
@@ -1777,6 +1787,19 @@
       if(d.open){ void a.offsetWidth; a.classList.add('run'); }
     });
   });
+
+  // ---------- Bio "More" toggle ----------
+  (function(){
+    var btn = document.querySelector('.bio-more-btn');
+    var box = document.getElementById('bio-more');
+    if(!btn || !box) return;
+    btn.addEventListener('click', function(){
+      var open = box.hidden;
+      box.hidden = !open;
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      btn.textContent = open ? 'Less' : 'More';
+    });
+  })();
 
   // ---------- Copy e-mail address ----------
   document.querySelectorAll('.copy-btn').forEach(function(btn){
