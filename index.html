@@ -857,6 +857,25 @@
   .wip-list .wip:last-child{border-bottom:1px solid var(--rule);}
   .wip .status.rr{background:var(--brass); color:#fff;}
 
+  /* ---------- Sub-project nested under a parent project ---------- */
+  .wip-list .wip.sub{padding-left:64px;}
+  .wip-list .wip.sub::before{left:27px; width:8px; height:8px; top:7px;}
+  .wip-list .wip.sub::after{
+    content:"";
+    position:absolute;
+    left:-1px; top:-24px;
+    width:28px; height:35px;
+    border-left:1px solid var(--rule-strong);
+    border-bottom:1px solid var(--rule-strong);
+    border-bottom-left-radius:10px;
+  }
+  .wip .status.part{border-style:dashed;}
+  @media (max-width:600px){
+    .wip-list .wip.sub{padding-left:52px;}
+    .wip-list .wip.sub::before{left:19px;}
+    .wip-list .wip.sub::after{width:20px;}
+  }
+
   a.co{color:inherit; text-decoration:none; border-bottom:1px dotted var(--brass-soft);}
   a.co:hover{color:var(--brass); border-bottom-style:solid;}
   .wip .links{margin-top:12px; display:flex; flex-wrap:wrap; gap:8px 16px;}
@@ -1289,6 +1308,10 @@
 <div class="wip" data-topics="Climate Change|Social Change|Inequality">
           <p class="wip-title">DIFIS: ‘Social Policy Dimensions of Climate Adaptation’</p>
           <p class="wip-with">PIs: <a class="co" href="http://www.schwander-hanna.ch/" target="_blank" rel="noopener noreferrer">Hanna Schwander</a>, <a class="co" href="https://www.wiso.uni-hamburg.de/fachbereich-sozoek/professuren/zimmermann/team/zimmermann-katharina.html" target="_blank" rel="noopener noreferrer">Katharina Zimmermann</a> &amp; <a class="co" href="https://soz.ovgu.de/Politische+Soziologie+Europ%C3%A4ischer+Gesellschaften/Jun__Prof_+Dr_+rer_+pol_+Vincent+Gengnagel-p-3300.html" target="_blank" rel="noopener noreferrer">Vincent Gengnagel</a></p>        </div>
+<div class="wip sub" data-topics="Climate Change|Social Change|Inequality">
+          <p class="wip-title">Hot, Dry and Stressed: Local Climate Exposure and Support for Adaptation and Mitigation <span class="status part">DIFIS</span></p>
+          <p class="wip-with">with <a class="co" href="http://www.schwander-hanna.ch/" target="_blank" rel="noopener noreferrer">Hanna Schwander</a>, <a class="co" href="https://www.linkedin.com/in/antonia-pei%C3%9Fker-658704175/" target="_blank" rel="noopener noreferrer">Antonia Peißker</a> &amp; <a class="co" href="https://www.linkedin.com/in/pernilla-s%C3%B6derberg-12b648127/" target="_blank" rel="noopener noreferrer">Pernilla Söderberg</a></p>
+        </div>
         </div>
       </div>
 
