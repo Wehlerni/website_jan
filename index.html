@@ -1420,12 +1420,12 @@
           </div>
           <div class="tool-actions">
             <a class="btn primary" href="files/Gantt-Chart_Tool.html" download="Gantt-Chart_Tool.html">Download</a>
-            <a class="btn" href="files/Gantt-Chart_Tool.html" target="_blank" rel="noopener noreferrer">Open full screen</a>
+            <a class="btn tool-open" href="files/Gantt-Chart_Tool.html" target="_blank" rel="noopener noreferrer">Open full screen</a>
           </div>
         </div>
-        <p class="tool-note">Try it below. To save or export your plan, download the file first and open it from your computer.</p>
+        <p class="tool-note">Try it below. To save or export your plan, open it full screen or download it.</p>
         <div class="tool-frame">
-          <iframe src="files/Gantt-Chart_Tool.html" title="Gantt Chart Planner preview" loading="lazy"></iframe>
+          <iframe data-src="files/Gantt-Chart_Tool.html" title="Gantt Chart Planner preview" loading="lazy"></iframe>
         </div>
       </article>
       </div>
@@ -1797,7 +1797,25 @@
       var t = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
       document.documentElement.setAttribute('data-theme', t);
       try { localStorage.setItem('theme', t); } catch(e) {}
+      document.querySelectorAll('.tool-frame iframe').forEach(function(f){
+        try { f.contentWindow.postMessage({theme:t}, location.origin); } catch(e) {}
+      });
+      if(window.syncToolLinks) window.syncToolLinks();
     });
+  })();
+
+  // ---------- Tool preview + full-screen link: open in the same light / dark mode as the site ----------
+  (function(){
+    function theme(){ return document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light'; }
+    document.querySelectorAll('.tool-frame iframe[data-src]').forEach(function(f){
+      f.src = f.getAttribute('data-src') + '?theme=' + theme();
+    });
+    window.syncToolLinks = function(){
+      document.querySelectorAll('a.tool-open').forEach(function(a){
+        a.href = a.getAttribute('href').split('?')[0] + '?theme=' + theme();
+      });
+    };
+    window.syncToolLinks();
   })();
 
   // ---------- Close an abstract by clicking/tapping its text ----------
