@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Project Title</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@400&amp;display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#f7f6f3;--panel:#fff;--ink:#1d1f22;--muted:#71757c;--line:#e4e2dd;--accent:#1f5f8b;--soft:#e3edf5;--warn:#8a5a00;--warn-bg:#fff4d6;--dl:#b5532b;--bar:#9cc3e0;--bar-lock:#1a4a73;--ms:#1d1f22;--none-l:#a9adb3}
+  @media (prefers-color-scheme:dark){:root{--bg:#16181b;--panel:#1f2226;--ink:#e8e8e6;--muted:#9a9ea5;--line:#33373d;--accent:#6fa8d6;--soft:#24384a;--warn:#f0c46a;--warn-bg:#3a3020;--dl:#e08a62;--bar:#3f6f94;--bar-lock:#9fcbef;--ms:#e8e8e6;--none-l:#5c6066}}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 "IBM Plex Sans",system-ui,sans-serif}
+  .wrap{max-width:1200px;margin:0 auto;padding:32px 20px 60px}
+  header{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;margin:-32px -20px 22px;padding:16px 20px 12px;position:sticky;top:0;z-index:30;background:var(--bg);border-bottom:1px solid var(--line)}
+  h1{font-size:22px;font-weight:600;margin:0;flex:1;min-width:260px}
+  #title{font:inherit;padding:2px 6px;margin-left:-7px;max-width:640px}
+  .dl{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--muted)}
+  .me{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)}
+  .me input{width:260px;border-color:var(--line)}
+  select{font:inherit;color:var(--ink);background:transparent;border:1px solid transparent;border-radius:6px;padding:5px 4px;cursor:pointer}
+  select:hover{border-color:var(--line)}
+  select:focus{outline:none;border-color:var(--accent);background:var(--bg)}
+  .me select{border-color:var(--line);padding:6px 8px}
+  .filters{display:flex;gap:18px;flex-wrap:wrap;align-items:center}
+  .multi{position:relative;display:inline-block}
+  .mbtn{all:unset;cursor:pointer;border:1px solid var(--line);border-radius:6px;padding:6px 26px 6px 10px;min-width:90px;color:var(--ink);font-size:13px;position:relative;white-space:nowrap}
+  .mbtn::after{content:"▾";position:absolute;right:9px;color:var(--muted)}
+  .mpop{display:none;position:absolute;right:0;top:calc(100% + 4px);z-index:40;background:var(--panel);border:1px solid var(--line);border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,.12);padding:6px;min-width:160px}
+  .multi.open .mpop{display:block}
+  .mpop label{display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:5px;cursor:pointer;color:var(--ink);font-size:13px}
+  .mpop label:hover{background:var(--soft)}
+  .mpop input{width:auto;margin:0}
+  .mhead{display:flex;justify-content:space-between;padding:0 8px 4px;font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+  .mrow{display:flex;align-items:center;justify-content:space-between;border-radius:5px}
+  .mrow:hover{background:var(--soft)}
+  .mrow label:hover{background:none}
+  .mrow .xbox{padding:5px 10px}
+  .mrow input.exc{accent-color:#b5332b}
+  .mclear{all:unset;cursor:pointer;display:block;margin-top:4px;padding:5px 8px;border-top:1px solid var(--line);color:var(--accent);font-size:12px;width:calc(100% - 16px)}
+  .btns .hist{vertical-align:middle;margin-right:6px}
+  .hist{display:inline-flex;border:1px solid var(--line);border-radius:6px;overflow:hidden}
+  .hist button{all:unset;cursor:pointer;padding:4px 11px;font-size:16px;line-height:20px;color:var(--ink)}
+  .hist button+button{border-left:1px solid var(--line)}
+  .hist button:hover:not(:disabled){background:var(--soft)}
+  .hist button:disabled{color:var(--line);cursor:default}
+  tr.dim td{opacity:.35}
+  .bar.dim{filter:grayscale(1);opacity:.3}
+  .g-label.dim{opacity:.35}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:18px;margin-bottom:18px}
+  input{font:inherit;color:var(--ink);background:transparent;border:1px solid transparent;border-radius:6px;padding:6px 8px;min-width:0;width:100%}
+  input:hover{border-color:var(--line)}
+  input:focus{outline:none;border-color:var(--accent);background:var(--bg)}
+  table{width:100%;border-collapse:collapse}
+  th{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:500;text-align:left;padding:6px 8px;border-bottom:1px solid var(--line)}
+  td{padding:3px 2px;border-bottom:1px solid var(--line)}
+  td.n{color:var(--muted);font-size:12px;width:26px;text-align:center}
+  td.start{white-space:nowrap;width:150px}
+  .x{all:unset;cursor:pointer;color:var(--muted);padding:4px 8px;border-radius:5px;opacity:.5}
+  tr:hover .x{opacity:1}
+  .x:hover{background:var(--line);color:var(--ink)}
+  .fill{all:unset;cursor:pointer;color:var(--accent);font-weight:600;padding:4px 8px;border-radius:5px}
+  .fill:hover{background:var(--soft)}
+  tr.flash td{background:var(--soft);transition:background .6s}
+  .add{all:unset;cursor:pointer;color:var(--accent);padding:10px 8px 2px;font-size:13px}
+  .add.top{padding:0 8px 8px}
+  input.newteam{width:110px;border-color:var(--accent);padding:5px 6px}
+  .warn{background:var(--warn-bg);color:var(--warn);border-radius:6px;padding:8px 12px;margin-bottom:10px;font-size:13px}
+  .sumrow{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap}
+  .seg{display:inline-flex;border:1px solid var(--line);border-radius:6px;overflow:hidden;margin-bottom:14px}
+  .seg button{all:unset;cursor:pointer;padding:4px 10px;font-size:12px;color:var(--muted)}
+  .seg button.on{background:var(--ink);color:var(--panel)}
+  .summary{display:flex;gap:28px;flex-wrap:wrap;margin-bottom:14px;font-size:13px;color:var(--muted)}
+  .summary b{color:var(--ink);font-weight:600;font-size:15px;margin-left:6px}
+  .gantt{overflow-x:auto}
+  .g-row{display:flex;height:30px;align-items:stretch}
+  .g-label{position:sticky;left:0;z-index:2;background:var(--panel);width:220px;min-width:220px;padding-right:12px;display:flex;align-items:center;font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .g-row.g-sep{height:14px;background:linear-gradient(var(--line),var(--line)) 0 50%/100% 1px no-repeat}
+  .g-row.g-sep .g-label{background:linear-gradient(var(--line),var(--line)) 0 50%/100% 1px no-repeat,var(--panel)}
+  .g-track{position:relative;flex:none}
+  .pastbtn{all:unset;cursor:pointer;position:absolute;top:5px;transform:translateX(-50%);font-size:11px;color:var(--muted);background:var(--panel);border:1px dashed var(--muted);border-radius:10px;padding:1px 8px;white-space:nowrap;z-index:3}
+  .pastbtn:hover{color:var(--ink);border-style:solid}
+  .g-row.moved,.g-row.moved .g-label{animation:movedFlash 2.2s ease-out}
+  @keyframes movedFlash{0%,35%{background:var(--soft)}100%{background:var(--panel)}}
+  .bar.cut{border-top-left-radius:0;border-bottom-left-radius:0}
+  .bar.cutr{border-top-right-radius:0;border-bottom-right-radius:0}
+  .zoombar{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:12px}
+  .zscroll{position:relative;width:min(420px,50%);height:14px;border-radius:7px;background:var(--line);cursor:pointer}
+  .zthumb{position:absolute;top:0;bottom:0;left:0;width:100%;border-radius:7px;background:var(--muted);opacity:.55;cursor:grab}
+  .zthumb:hover{opacity:.8}
+  .zh{position:absolute;top:-3px;bottom:-3px;width:9px;cursor:ew-resize;border-radius:4px}
+  .zh.l{left:-2px}.zh.r{right:-2px}
+  .zthumb:hover .zh,.zscroll.drag .zh{background:var(--ink);opacity:.5}
+  .zscroll.drag .zthumb{cursor:grabbing;opacity:.9}
+  .zoombar button{all:unset;cursor:pointer;border:1px solid var(--line);border-radius:6px;padding:2px 10px;font-size:13px;line-height:20px;color:var(--ink);min-width:12px;text-align:center}
+  .zoombar button:hover{background:var(--soft)}
+  .zoombar input[type=date]{width:auto;border-color:var(--line);padding:3px 6px;font-size:12px;margin:0 6px}
+  .g-row.clip .g-track{overflow:hidden}
+  .ctx{position:absolute;z-index:50;width:260px;background:var(--panel);border:1px solid var(--line);border-radius:10px;box-shadow:0 8px 28px rgba(0,0,0,.18);padding:12px}
+  .ctx-t{font-weight:600;font-size:13px;margin-bottom:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .ctx-l{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin:8px 0 4px}
+  .ctx-c{display:flex;gap:6px;flex-wrap:wrap}
+  .ctx-c button{all:unset;cursor:pointer;width:20px;height:20px;border-radius:50%}
+  .ctx-c button.on{box-shadow:0 0 0 2px var(--panel),0 0 0 4px var(--ink)}
+  .ctx select,.ctx input{border-color:var(--line);width:100%}
+  .ctx-del{all:unset;cursor:pointer;display:block;margin-top:12px;padding:6px 8px;border-top:1px solid var(--line);color:#b5332b;font-size:13px;width:calc(100% - 16px)}
+  .ctx-del:hover{background:#fbeaea;border-radius:5px}
+  .gname{outline:none;border-radius:4px;padding:1px 4px;margin-left:-4px;cursor:text;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
+  .gname:hover{background:var(--soft)}
+  .gname:focus{background:var(--bg);box-shadow:0 0 0 1px var(--accent);text-overflow:clip}
+  .msl[contenteditable]{cursor:text;background:var(--panel);box-shadow:0 0 0 1px var(--accent);outline:none;border-radius:3px}
+  .g-track.draw{cursor:crosshair;background:repeating-linear-gradient(90deg,transparent 0 6px,rgba(127,127,127,.06) 6px 12px)}
+  .g-row.g-team{height:24px;border-top:1px solid var(--line)}
+  .gdot{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:7px;flex:none}
+  .g-row.g-team .g-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+  .wk{position:absolute;top:0;bottom:0;border-left:1px solid var(--line)}
+  .ms{position:absolute;top:0;bottom:0;border-left:2px solid var(--ms);z-index:1}
+  .msl{cursor:grab;user-select:none;touch-action:none;z-index:3}
+  .msl.dragging{cursor:grabbing;background:var(--panel);box-shadow:0 2px 8px rgba(0,0,0,.2);border-radius:3px}
+  .msl{position:absolute;font-size:11px;font-weight:500;color:var(--ms);white-space:nowrap;padding-left:4px;line-height:16px}
+  .msl.flip{padding-left:0;padding-right:4px}
+  .msl.flip::before{left:auto;right:-1px}
+  .msl::before{content:"";position:absolute;left:-1px;top:0;bottom:0;border-left:2px solid var(--ms)}
+  h2{font-size:12px;font-weight:500;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin:0 0 6px 8px}
+  .mo{position:absolute;top:6px;font-size:11px;color:var(--muted);white-space:nowrap;padding-left:4px}
+  .bar{position:absolute;z-index:2;top:7px;height:16px;border-radius:4px;background:var(--bar)}
+  .bar{cursor:grab;touch-action:none;user-select:none}
+  .bar.dragging{cursor:grabbing;box-shadow:0 2px 8px rgba(0,0,0,.25);z-index:4}
+  .bar .h{position:absolute;top:0;bottom:0;width:7px;cursor:ew-resize;z-index:1}
+  .bar .h.l{left:-2px}.bar .h.r{right:-2px}
+  .bar:hover .h{background:rgba(255,255,255,.35)}
+  .bar .h.l:hover,.bar .h.r:hover{background:rgba(255,255,255,.6)}
+  .bar .dt{display:none;font-style:normal}
+  .bar:hover .dt,.bar.open .dt{display:inline}
+  .bar:hover,.bar.open{z-index:3}
+  .sw{all:unset;cursor:pointer;width:16px;height:16px;border-radius:50%;display:block;margin:auto;box-shadow:0 0 0 1px rgba(0,0,0,.15) inset}
+  .pal{position:absolute;z-index:20;display:flex;gap:6px;padding:8px;background:var(--panel);border:1px solid var(--line);border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,.12)}
+  .pal button{all:unset;cursor:pointer;width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,var(--l) 50%,var(--d) 50%)}
+  .pal button.blk{background:var(--ms)}
+  .newcol{position:relative;width:20px;height:20px;border-radius:50%;border:1px dashed var(--muted);display:grid;place-items:center;font-size:14px;line-height:1;color:var(--muted);cursor:pointer;box-sizing:border-box}
+  .newcol:hover{color:var(--ink);border-color:var(--ink)}
+  .newcol input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;padding:0;border:0}
+  .pal button.on{box-shadow:0 0 0 2px var(--panel),0 0 0 4px var(--ink)}
+  th.sort{cursor:pointer;user-select:none}
+  th.sort:hover,th.sort.on{color:var(--ink)}
+  .bar span{position:absolute;left:100%;margin-left:6px;background:var(--panel);padding:0 3px;border-radius:3px;font-size:11px;color:var(--muted);white-space:nowrap;line-height:16px}
+  .vline{position:absolute;top:0;bottom:0;border-left:2px solid var(--dl);z-index:1}
+  .vline.today{border-left:2px dashed var(--muted)}
+  .legtitle{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:0 0 6px 2px}
+  .legend{display:grid;grid-template-rows:repeat(5,auto);grid-auto-flow:column;gap:2px 28px;align-items:center;justify-content:start}   /* max. 5 per column */
+  .legend label{display:flex;align-items:center;gap:6px}
+  .legend i{display:inline-block;width:14px;height:12px;border-radius:3px;flex:none}
+  .legend input{width:220px;padding:3px 6px;font-size:12px}
+  .foot{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-top:14px;font-size:12px;color:var(--muted)}
+  .btn{all:unset;cursor:pointer;border:1px solid var(--line);border-radius:6px;padding:6px 12px;font-size:13px;color:var(--ink)}
+  .btn:hover{border-color:var(--muted)}
+  .credit{margin:-10px 0 16px;text-align:center;font-size:11px;color:var(--muted)}
+  .toggles{margin:-6px 0 18px;display:flex;gap:6px}
+  .panel.hidden{display:none}
+  .hint{font-size:12px;color:var(--muted);margin:10px 8px 0}
+  #toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:8px 14px;border-radius:6px;font-size:13px;opacity:0;transition:opacity .2s;pointer-events:none}
+  #toast.show{opacity:1}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1><input id="title" spellcheck="false" title="Click to rename"></h1>
+    <div class="filters">
+      <span class="hist"><button class="undo" title="Undo (Ctrl/Cmd+Z)">↶</button><button class="redo" title="Redo (Ctrl/Cmd+Shift+Z)" disabled="">↷</button></span>
+      <span class="me">Tasks <span class="multi" id="partFilter"></span></span>
+      <span class="me">Milestones <span class="multi" id="msPartFilter"></span></span>
+      <label class="me">Your name <input id="me" placeholder="type your name to highlight your tasks"></label>
+    </div>
+  </header>
+
+  <div class="panel">
+    <div id="warnings"></div>
+    <div class="sumrow"><div class="summary" id="summary"></div>
+      <div class="seg" id="gsort"><button data-o="start" class="on">By start date</button><button data-o="group">By work package</button><button data-o="team">By team</button></div></div>
+    <div class="gantt"><div id="gantt"></div></div>
+    <div class="zoombar"><input type="date" id="zFrom" title="First date shown"><button data-z="out" title="Zoom out">−</button><div class="zscroll" title="Drag to move earlier / later"><div class="zthumb" style="left: 0%; width: 100%;"><i class="zh l" title="Drag to change the first date shown"></i><i class="zh r" title="Drag to change the last date shown"></i></div></div><button data-z="in" title="Zoom in">+</button><button data-z="fit" title="Whole plan (or double-click an empty spot in the chart)">Fit</button><input type="date" id="zTo" title="Last date shown"></div>
+    <div class="foot">
+      <div class="legwrap"><div class="legtitle">Work Package</div><div class="legend" id="legend"></div></div>
+      <span class="btns"><span class="hist"><button class="undo" title="Undo (Ctrl/Cmd+Z)">↶</button><button class="redo" title="Redo (Ctrl/Cmd+Shift+Z)" disabled="">↷</button></span> <button class="btn" id="exportTable">Export table</button> <button class="btn" id="exportPng">Export Gantt (PNG)</button> <button class="btn" id="saveAs">Save as…</button> <button class="btn" id="saveFile">Save file</button></span>
+    </div>
+  </div>
+
+  <div class="credit" id="credit">© Created by Jan Menzner · Version 1.1 · 17.11.2026</div>
+  <div class="toggles"><button class="btn" id="tglTasks">Show task list</button> <button class="btn" id="tglMs">Show milestones</button></div>
+
+  <div class="panel hidden" id="taskPanel">
+    <button class="add top" id="add">+ Add task</button>
+    <table>
+      <thead><tr><th></th><th style="width:30px"></th><th style="width:82px">Team</th><th>Task</th><th>Assigned to</th><th style="width:64px">Weeks</th><th style="width:64px">Days</th><th style="width:90px" title="Numbers of phases that must finish first">After #</th><th class="sort on" data-s="start" style="width:150px" title="Order rows by start date">Start ↕</th><th class="sort" data-s="end" style="width:150px" title="Order rows by end date">End ↕</th><th></th></tr></thead>
+      <tbody id="body"></tbody>
+    </table>
+  </div>
+
+  <div class="panel hidden" id="msPanel">
+    <h2>Milestones</h2>
+    <button class="add top" id="addMs">+ Add milestone</button>
+    <table><tbody id="msBody"></tbody></table>
+  </div>
+</div>
+<div id="toast"></div>
+
+<script id="savedPlan" type="application/json">{"nextId": 4, "title": "Project Title", "anchor": "2026-11-17", "phases": [{"id": 1, "name": "Task 1 · drag bar to move", "who": "Person A", "pred": [], "start": "2026-10-27", "end": "2026-12-21", "dur": 56, "color": "#2c4a6b", "part": "Team A"}, {"id": 2, "name": "Task 2 · right-click to edit", "who": "Person B, Person C", "pred": [1], "start": "2026-12-22", "end": "2027-01-25", "dur": 35, "color": "#a8514a", "part": "Team B"}, {"id": 3, "name": "Task 3 · click to rename", "who": "Person A", "pred": [], "start": "2027-01-05", "end": "2027-02-01", "dur": 28, "color": "#2c4a6b", "part": "Team A"}], "milestones": [{"date": "2026-12-01", "label": "Milestone · double-click to rename", "color": "#2c4a6b"}, {"date": "2026-12-22", "label": "Milestone · drag to move", "color": "#a8514a"}, {"date": "2027-01-12", "label": "Milestone · right-click to edit", "color": "#2c4a6b"}], "colorLabels": {"#2c4a6b": "Work package 1 · click to rename", "#a8514a": "Work package 2 · right-click to edit"}, "ganttSort": "start", "tableSort": "start", "savedAt": 0}</script>
+<script>
+const DEFAULTS=[];
+const DAY=864e5;
+const COLORS={ // dark = phase has dates, light = no dates yet
+  blue:["#a6cbe8","#245d8f"], teal:["#a6dccf","#24806e"], green:["#c3dca4","#5a8230"], amber:["#f4d694","#ad7414"],
+  coral:["#f3bdad","#bc5236"], rose:["#edbdd0","#aa3f6b"], grey:["#ccd1d8","#59616d"]};
+const LEGACY={purple:"rose"};
+// A colour is either one of the named colours above or any "#rrggbb" you picked yourself.
+const colVal=k=>k&&COLORS[k]?COLORS[k][1]:(/^#[0-9a-f]{6}$/i.test(k||"")?k:null);
+const keyOf=c=>{c=LEGACY[c]||c;return colVal(c)?c:"";};                               // "" = black, no category
+const colOf=p=>keyOf(p.color);
+// The palette offers black + the colours currently in use + "new colour"; unused colours drop out.
+function usedColors(){const u=new Set();[...S.phases,...S.milestones].forEach(x=>{const k=keyOf(x.color);if(k)u.add(k);});
+  return [...Object.keys(COLORS).filter(k=>u.has(k)),...[...u].filter(k=>!COLORS[k])];}
+function swatches(cur){
+  return `<button data-c="" title="black (no category)" class="${!cur?"on":""}" style="background:var(--ms)"></button>`+
+    usedColors().map(k=>`<button data-c="${k}" title="${esc((S.colorLabels||{})[k]||k)}" class="${cur===k?"on":""}" style="background:${colVal(k)}"></button>`).join("")+
+    `<label class="newcol" title="Pick a new colour">+<input type="color" value="${colVal(cur)||"#3366cc"}"></label>`;
+}
+function wireSwatches(box,pick){
+  box.querySelectorAll("button[data-c]").forEach(b=>b.onclick=()=>pick(b.dataset.c||null));
+  const inp=box.querySelector(".newcol input");if(inp)inp.onchange=()=>pick(inp.value.toLowerCase());
+}
+const NONE=["var(--none-l)","var(--ms)"];                                            // black: same light/dark logic
+const pairOf=p=>{const d=colVal(colOf(p))||"var(--ms)";return [d,d];};
+const MSCOL=k=>colVal(keyOf(k))||"var(--ms)";   // milestones: black by default
+const iso=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+const parse=s=>{const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec((s||"").trim());return m&&+m[1]>=2000?new Date(+m[1],+m[2]-1,+m[3]):null};
+const add=(d,n)=>{const r=new Date(d);r.setDate(r.getDate()+n);return r};
+const WD=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],MO=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const fmt=d=>`${WD[d.getDay()]} ${String(d.getDate()).padStart(2,"0")}.${String(d.getMonth()+1).padStart(2,"0")}.${d.getFullYear()}`;
+const short=d=>`${String(d.getDate()).padStart(2,"0")}.${String(d.getMonth()+1).padStart(2,"0")}.`;
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const people=p=>(p.who||"").split(",").map(x=>x.trim()).filter(Boolean);
+const $=id=>document.getElementById(id);
+const span=(s,e)=>Math.round((e-s)/DAY)+1;                            // start/end -> duration in days (inclusive)
+const BUILTIN=[["all","All"]];   // the only fixed team; "all" = belongs to every team
+// Teams = "All" + any team you typed in that is still used by a task or milestone (unused ones disappear).
+function TEAMS(){const t=new Map(BUILTIN);[...S.phases,...S.milestones].forEach(x=>{if(x.part&&!t.has(x.part))t.set(x.part,x.part);});return [...t];}
+const teamOptions=cur=>TEAMS().map(([v,l])=>`<option value="${v}"${(cur||"all")===v?" selected":""}>${esc(l)}</option>`).join("")+`<option value="__new">+ New team…</option>`;
+// "+ New team…": swap the dropdown for a text field; Enter or leaving the field confirms, Esc cancels.
+function askTeam(sel,done){
+  const inp=document.createElement("input");inp.placeholder="Team name";inp.className="newteam";
+  sel.style.display="none";sel.after(inp);inp.focus();
+  let finished=false;
+  const finish=ok=>{if(finished)return;finished=true;
+    const name=inp.value.trim();inp.remove();sel.style.display="";
+    if(!ok||!name){done(null);return;}
+    const hit=TEAMS().find(([v,l])=>l.toLowerCase()===name.toLowerCase()||v===name.toLowerCase());   // reuse an existing team
+    done(hit?hit[0]:name);};
+  inp.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();e.stopPropagation();finish(true);}if(e.key==="Escape")finish(false);});
+  inp.addEventListener("blur",()=>finish(true));
+}
+const setTeam=(x,v)=>{x.part=(!v||v==="all")?undefined:v;};
+function renderMs(){
+  $("msBody").innerHTML=S.milestones.map((m,i)=>`<tr data-i="${i}">
+    <td style="width:34px"><button class="sw msw" title="Line colour" style="background:${MSCOL(m.color)}"></button></td>
+    <td style="width:82px"><select data-m="part">${teamOptions(m.part)}</select></td>
+    <td style="width:160px"><input type="date" data-m="date" value="${m.date||""}"></td>
+    <td><input data-m="label" placeholder="Label, e.g. Survey start" value="${esc(m.label||"")}"></td>
+    <td style="width:40px"><button class="x" title="Delete">✕</button></td></tr>`).join("");
+}
+
+function defaults(){
+  const t=new Date();t.setHours(0,0,0,0);
+  return {nextId:DEFAULTS.length+1,
+    phases:DEFAULTS.map(([name,weeks,pred],i)=>({id:i+1,name,who:"",dur:weeks*7,pred,start:null,end:null}))};
+}
+// A plan saved into this file is embedded in #savedPlan. Unsaved edits are kept in the browser
+// (per plan) and win if they are newer than the embedded version.
+let EMBED=null;try{EMBED=JSON.parse($("savedPlan").textContent);}catch(e){}
+const KEY="surveyPlanner.v6"+(EMBED&&EMBED.planId?":"+EMBED.planId:":new-"+Math.random().toString(36).slice(2,10));   // unsaved template: fresh slot each time
+let BASE=EMBED?(EMBED.savedAt||0):0;   // version of the file this browser backup belongs to
+function load(){
+  let local=null;try{local=JSON.parse(localStorage.getItem(KEY));}catch(e){}
+  if(EMBED){
+    // only restore unsaved edits that were made on exactly this file version (copies of a plan share an id)
+    if(local&&local.state&&local.base===BASE&&(local.state.savedAt||0)>(EMBED.savedAt||0))return local.state;
+    return EMBED;
+  }
+  return (local&&local.state)||defaults();
+}
+let S=load();
+if(S===EMBED&&!S.planId&&parse(S.anchor)){
+  const t=new Date();t.setHours(0,0,0,0);const sh=Math.round((t-parse(S.anchor))/DAY);
+  const mv=v=>parse(v)?iso(add(parse(v),sh)):v;
+  S.phases.forEach(p=>{p.start=mv(p.start);p.end=mv(p.end);});S.milestones.forEach(m=>m.date=mv(m.date));
+}
+delete S.anchor;
+if(!Array.isArray(S.milestones))S.milestones=[];
+S.phases.forEach(p=>{
+  if("locked" in p||"lockEnd" in p){
+    if(p.locked&&parse(p.lockEnd)){const e=parse(p.lockEnd);p.end=p.lockEnd;p.start=iso(add(e,-Math.max(0,Math.round(7*(+p.weeks||1)-3))));}
+    delete p.locked;delete p.lockEnd;
+  }
+  delete p.src;
+  if(!("dur" in p)){                                                       // old files: weeks -> days
+    p.dur=(parse(p.start)&&parse(p.end))?span(parse(p.start),parse(p.end)):(+p.weeks>0?Math.round(p.weeks*7):null);
+    delete p.weeks;
+  }
+});
+// teams used to be fixed keys (hu/focus/qual); now a team is stored by its name
+const OLDTEAM={quant:"HU",hu:"HU",focus:"Focus",qual:"Qual"};
+[...S.phases,...S.milestones].forEach(x=>{if(OLDTEAM[x.part])x.part=OLDTEAM[x.part];});
+let DIRTY=!!(EMBED&&S!==EMBED&&(S.savedAt||0)>(EMBED.savedAt||0)), LASTJ=null;
+const sig=()=>JSON.stringify({...S,savedAt:0});
+// undo / redo: snapshots of the plan; quick successive edits (e.g. typing a word) count as one step
+let UNDO=[],REDO=[],LASTPUSH=0;
+function histButtons(){document.querySelectorAll(".undo").forEach(b=>b.disabled=!UNDO.length);document.querySelectorAll(".redo").forEach(b=>b.disabled=!REDO.length);}
+const save=()=>{
+  const j=sig(); if(j===LASTJ)return;
+  if(LASTJ!==null){
+    const now=Date.now();
+    if(!UNDO.length||now-LASTPUSH>700){UNDO.push(LASTJ);if(UNDO.length>200)UNDO.shift();}
+    LASTPUSH=now;REDO=[];histButtons();
+    S.savedAt=Date.now();DIRTY=true;
+  }
+  LASTJ=j; showDirty();
+  try{localStorage.setItem(KEY,JSON.stringify({base:BASE,state:S}))}catch(e){}
+};
+function showDirty(){const b=$("saveFile");if(b)b.textContent=DIRTY?"Save file •":"Save file";}
+
+/* ---------- save the plan into an HTML file ---------- */
+let HANDLE=null;
+const slug=t=>(t||"survey-timeline").trim().replace(/[\\/:*?"<>|]+/g,"").replace(/\s+/g,"-")||"survey-timeline";
+// Writes a file: with a file picker where the browser has one (Chrome/Edge), otherwise as a download.
+async function writeFile(content,suggested,mime,ext,handle){
+  if(window.self!==window.top){toast("Download the page first, open the file, then save from there");return null;}
+  if(window.showSaveFilePicker){
+    const h=handle||await showSaveFilePicker({suggestedName:suggested,types:[{description:ext.toUpperCase()+" file",accept:{[mime]:["."+ext]}}]});
+    const w=await h.createWritable();await w.write(content);await w.close();return h;
+  }
+  let name=suggested;
+  if(!handle){try{name=prompt("File name (it will go to your Downloads folder):",suggested);}catch(e){}if(!name)return null;if(!name.toLowerCase().endsWith("."+ext))name+="."+ext;}
+  const a=document.createElement("a");a.href=URL.createObjectURL(content instanceof Blob?content:new Blob([content],{type:mime}));a.download=name;
+  document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),2000);
+  return "download";
+}
+function planHtml(){
+  S.savedAt=Date.now();
+  const clone=document.documentElement.cloneNode(true);
+  clone.querySelector("#savedPlan").textContent=JSON.stringify(S).replace(/</g,"\\u003c");
+  ["#body","#msBody","#gantt","#summary","#warnings","#legend"].forEach(sel=>{const el=clone.querySelector(sel);if(el)el.innerHTML="";});
+  return "<!DOCTYPE html>\n"+clone.outerHTML;
+}
+function afterSave(){
+  BASE=S.savedAt;
+  try{const v=JSON.stringify({base:BASE,state:S});localStorage.setItem(KEY,v);localStorage.setItem("surveyPlanner.v6:"+S.planId,v);}catch(e){}
+  DIRTY=false;showDirty();toast("Saved");
+}
+// Save file: writes to the file chosen the first time (the browser cannot write to the opened file without asking once).
+async function saveFile(){
+  if(!HANDLE||HANDLE==="download")return saveAs(true);
+  if(!S.planId)S.planId=Math.random().toString(36).slice(2,10);
+  try{await writeFile(planHtml(),"","text/html","html",HANDLE);afterSave();}
+  catch(e){if(e&&e.name!=="AbortError")toast("Could not save: "+(e.message||e));}
+}
+// Save as: always asks for a name and place; the copy gets its own identity so the two files don't mix.
+async function saveAs(first){
+  const oldId=S.planId;
+  if(!first||!S.planId)S.planId=Math.random().toString(36).slice(2,10);
+  try{
+    const h=await writeFile(planHtml(),slug(S.title)+".html","text/html","html",null);
+    if(!h){S.planId=oldId;return;}
+    HANDLE=h;afterSave();
+  }catch(e){S.planId=oldId;if(e&&e.name!=="AbortError")toast("Could not save: "+(e.message||e));}
+}
+
+/* ---------- dates ---------- */
+// Each phase has a start date, an end date and a duration in calendar days (start and end day both count).
+// Nothing is placed automatically: a phase appears in the chart once it has both dates.
+const validD=d=>Number.isInteger(d)&&d>0;
+const wkOf=p=>validD(p.dur)?Math.floor(p.dur/7):"";
+const dyOf=p=>validD(p.dur)?p.dur%7:"";
+const isDated=p=>!!(parse(p.start)&&parse(p.end));
+function schedule(){
+  const byId=new Map(S.phases.map(p=>[p.id,p]));
+  const res=new Map(), warns=[];
+  S.phases.filter(isDated).forEach(p=>{
+    const s=parse(p.start),e=parse(p.end);
+    if(e<s)warns.push(`“${esc(p.name)}” ends (${fmt(e)}) before it starts (${fmt(s)}).`);
+    res.set(p.id,{start:s,end:e});
+  });
+  S.phases.forEach(p=>{
+    const r=res.get(p.id); if(!r)return;
+    (p.pred||[]).map(id=>byId.get(id)).filter(Boolean).forEach(q=>{const rq=res.get(q.id);
+      if(rq&&rq.end>=r.start)warns.push(`Overlap: “${esc(p.name)}” starts ${fmt(r.start)}, but “${esc(q.name)}” (which it comes after) only ends ${fmt(rq.end)}.`);});
+  });
+  return {res,warns};
+}
+// Typing only stores what you typed; the ✓ button in each row fills in the rest.
+function applyEdit(p,f,val,tr){
+  if(f==="wk"||f==="dy"){
+    const num=k=>{const v=tr.querySelector(`[data-k="${k}"]`).value.trim();return v===""?null:Math.max(0,Math.floor(+v||0));};
+    const w=num("wk"),d=num("dy");
+    p.dur=(w===null&&d===null)?null:(w||0)*7+(d||0);
+    if(!validD(p.dur))p.dur=null;
+    return;
+  }
+  p[f]=parse(val)?val:null;
+}
+// ✓ Fill: both dates -> weeks/days; one date + weeks/days -> the other date.
+function fillRow(p){
+  const s=parse(p.start),e=parse(p.end);
+  if(s&&e){p.dur=span(s,e);return true;}
+  if(s&&validD(p.dur)){p.end=iso(add(s,p.dur-1));return true;}
+  if(e&&validD(p.dur)){p.start=iso(add(e,-(p.dur-1)));return true;}
+  return false;
+}
+
+/* ---------- editor ---------- */
+// Phase numbers always follow the start date; the table can be ordered by start or end date.
+let RANK=new Map(), BYRANK=[];
+function orderTable(){
+  const {res}=schedule(), idx=new Map(S.phases.map((p,i)=>[p.id,i]));
+  const cmp=(k,o)=>(a,b)=>{const ra=res.get(a.id),rb=res.get(b.id);
+    if(!ra||!rb)return (!ra&&!rb)?idx.get(a.id)-idx.get(b.id):(!ra?1:-1);   // undated phases at the bottom
+    return (ra[k]-rb[k])||(ra[o]-rb[o])||(idx.get(a.id)-idx.get(b.id));};
+  BYRANK=S.phases.slice().sort(cmp("start","end"));
+  RANK=new Map(BYRANK.map((p,i)=>[p.id,i+1]));
+  const key=S.tableSort==="end"?"end":"start";
+  const top=c=>(a,b)=>{const ra=res.get(a.id),rb=res.get(b.id);if(!ra!==!rb)return !ra?-1:1;return c(a,b);};   // tasks without dates first (new ones)
+  S.phases.sort(top(key==="end"?cmp("end","start"):cmp("start","end")));
+  document.querySelectorAll("th.sort").forEach(th=>th.classList.toggle("on",th.dataset.s===key));
+}
+function renderEditor(){
+  orderTable();
+  $("body").innerHTML=S.phases.map((p,i)=>{
+    const after=(p.pred||[]).map(id=>RANK.get(id)).filter(Boolean).sort((a,b)=>a-b).join(", ");
+    return `<tr data-id="${p.id}">
+      <td class="n">${RANK.get(p.id)}</td>
+      <td><button class="sw" title="Colour group" style="background:${pairOf(p)[1]}"></button></td>
+      <td><select data-k="part">${teamOptions(p.part)}</select></td>
+      <td><input data-k="name" value="${esc(p.name)}"></td>
+      <td><input data-k="who" placeholder="—" value="${esc(p.who||"")}"></td>
+      <td><input data-k="wk" type="number" min="0" step="1" placeholder="—" value="${wkOf(p)}"></td>
+      <td><input data-k="dy" type="number" min="0" step="1" placeholder="—" value="${dyOf(p)}"></td>
+      <td><input data-k="pred" placeholder="—" value="${after}"></td>
+      <td class="start"><input data-k="start" type="date"></td>
+      <td><input data-k="end" type="date"></td>
+      <td style="white-space:nowrap"><button class="fill" title="Fill in the rest: from both dates, or from one date + weeks/days">✓</button><button class="x" title="Delete">✕</button></td></tr>`;}).join("");
+}
+const phaseOf=el=>S.phases.find(q=>q.id===+el.closest("tr").dataset.id);
+$("body").addEventListener("input",e=>{
+  const k=e.target.dataset.k,p=phaseOf(e.target);
+  if(k==="name")p.name=e.target.value;
+  else if(k==="who")p.who=e.target.value;
+  else if(k==="part"){
+    if(e.target.value==="__new"){askTeam(e.target,v=>{if(v)setTeam(p,v);renderEditor();renderMs();update();});return;}
+    setTeam(p,e.target.value);renderEditor();renderMs();update();return;   // re-render: unused teams drop out of every list
+  }
+  else if(k==="start"||k==="end"||k==="wk"||k==="dy"){e.target.dataset.touched="1";return;}   // applied when leaving the field
+  else if(k==="pred")p.pred=[...new Set(e.target.value.split(/[ ,;]+/).map(Number).filter(n=>n>=1&&n<=BYRANK.length).map(n=>BYRANK[n-1].id).filter(id=>id!==p.id))];
+  else return;
+  update();
+});
+$("body").addEventListener("focusout",e=>{
+  const k=e.target.dataset.k,p=phaseOf(e.target);
+  if(k==="pred"){renderEditor();update();return;}
+  if(k!=="start"&&k!=="end"&&k!=="wk"&&k!=="dy")return;
+  if(!e.target.dataset.touched)return;              // only fields you actually typed in
+  delete e.target.dataset.touched;
+  applyEdit(p,k,e.target.value,e.target.closest("tr"));
+  update();
+});
+$("body").addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.tagName==="INPUT")e.target.blur();});
+$("body").addEventListener("click",e=>{
+  const b=e.target.closest("button");if(!b)return;
+  const p=phaseOf(b);
+  if(b.classList.contains("sw")){openPal(b,p);return;}
+  if(b.classList.contains("fill")){
+    if(!fillRow(p)){toast("Enter both dates, or one date plus weeks/days");return;}
+    LASTPUSH=0;
+    renderEditor();update();
+    const tr=document.querySelector(`#body tr[data-id="${p.id}"]`);if(tr){tr.classList.add("flash");setTimeout(()=>tr.classList.remove("flash"),700);}
+    return;
+  }
+  if(b.classList.contains("x")){S.phases=S.phases.filter(q=>q!==p);S.phases.forEach(q=>q.pred=(q.pred||[]).filter(id=>id!==p.id));}
+  renderEditor();update();
+});
+let PAL=null;
+function closePal(){if(PAL){PAL.remove();PAL=null;}}
+function openPal(btn,p){
+  closePal();
+  PAL=document.createElement("div");PAL.className="pal";
+  PAL.innerHTML=swatches(colOf(p));
+  document.body.appendChild(PAL);
+  const r=btn.getBoundingClientRect();PAL.style.left=(r.left+window.scrollX-8)+"px";PAL.style.top=(r.bottom+window.scrollY+6)+"px";
+  wireSwatches(PAL,c=>{LASTPUSH=0;p.color=c;closePal();renderEditor();update();});
+}
+function openMsPal(btn,m){
+  closePal();
+  PAL=document.createElement("div");PAL.className="pal";
+  PAL.innerHTML=swatches(keyOf(m.color));
+  document.body.appendChild(PAL);
+  const r=btn.getBoundingClientRect();PAL.style.left=(r.left+window.scrollX-8)+"px";PAL.style.top=(r.bottom+window.scrollY+6)+"px";
+  wireSwatches(PAL,c=>{LASTPUSH=0;m.color=c;closePal();renderMs();update();});
+}
+document.addEventListener("click",e=>{if(PAL&&!PAL.contains(e.target)&&!e.target.closest(".sw"))closePal();});
+document.querySelectorAll("th.sort").forEach(th=>th.onclick=()=>{S.tableSort=th.dataset.s;renderEditor();update();});
+$("gsort").onclick=e=>{const o=e.target.dataset.o;if(!o)return;S.ganttSort=o;update();};
+$("add").onclick=()=>{
+  const id=S.nextId++;
+  S.phases.unshift({id,name:"New task",who:"",dur:null,pred:[],start:null,end:null});   // empty: no dates, no dependency
+  renderEditor();update();
+  const inp=document.querySelector(`#body tr[data-id="${id}"] [data-k="name"]`);if(inp){inp.focus();inp.select();}
+};
+$("msBody").addEventListener("input",e=>{
+  const k=e.target.dataset.m;if(!k)return;
+  const m=S.milestones[+e.target.closest("tr").dataset.i];
+  if(k==="part"){
+    if(e.target.value==="__new"){askTeam(e.target,v=>{if(v)setTeam(m,v);renderEditor();renderMs();update();});return;}
+    setTeam(m,e.target.value);renderEditor();renderMs();update();return;
+  }
+  else if(k==="date"){if(e.target.value&&!parse(e.target.value))return;m.date=e.target.value;} else m.label=e.target.value;
+  update();
+});
+$("msBody").addEventListener("click",e=>{
+  const sw=e.target.closest(".msw");
+  if(sw){openMsPal(sw,S.milestones[+sw.closest("tr").dataset.i]);return;}
+  if(!e.target.closest(".x"))return;
+  S.milestones.splice(+e.target.closest("tr").dataset.i,1);renderMs();update();
+});
+$("addMs").onclick=()=>{S.milestones.unshift({date:"",label:""});renderMs();$("msBody").firstElementChild.querySelector('[data-m="date"]').focus();save();};
+
+function restore(snap){
+  S=JSON.parse(snap);S.savedAt=Date.now();
+  LASTJ=sig();DIRTY=true;showDirty();
+  try{localStorage.setItem(KEY,JSON.stringify({base:BASE,state:S}))}catch(e){}
+  closePal();LEGKEY="";renderTitle();renderEditor();renderMs();update();histButtons();
+}
+function undo(){if(!UNDO.length)return;if(document.activeElement)document.activeElement.blur();REDO.push(sig());restore(UNDO.pop());LASTPUSH=0;}
+function redo(){if(!REDO.length)return;if(document.activeElement)document.activeElement.blur();UNDO.push(sig());restore(REDO.pop());LASTPUSH=0;}
+document.querySelectorAll(".undo").forEach(b=>b.onclick=undo);document.querySelectorAll(".redo").forEach(b=>b.onclick=redo);
+window.addEventListener("keydown",e=>{
+  if(!(e.ctrlKey||e.metaKey)||e.key.toLowerCase()!=="z")return;
+  if(/INPUT|SELECT|TEXTAREA/.test((document.activeElement||{}).tagName||""))return;   // inside a field the browser's own undo applies
+  e.preventDefault();e.shiftKey?redo():undo();
+});
+
+/* ---------- title ---------- */
+const TITLE_DEFAULT="Project Title";
+function renderTitle(){$("title").value=S.title||TITLE_DEFAULT;document.title=S.title||TITLE_DEFAULT;}
+$("title").addEventListener("input",e=>{S.title=e.target.value;document.title=S.title||TITLE_DEFAULT;save();});
+$("title").addEventListener("blur",e=>{if(!e.target.value.trim()){S.title="";renderTitle();save();}});
+$("title").addEventListener("keydown",e=>{if(e.key==="Enter")e.target.blur();});
+
+/* ---------- output ---------- */
+let LAST=new Map(), ROWS=[], LEGKEY="";
+// "your name" is personal: kept in this browser only, never saved into the file
+let ME="";try{ME=localStorage.getItem("surveyPlanner.me")||"";}catch(e){}
+$("me").value=ME;
+$("me").addEventListener("input",e=>{ME=e.target.value;try{localStorage.setItem("surveyPlanner.me",ME)}catch(err){}update();});
+// Team filters (multi-select): nothing ticked = show everything; otherwise show items whose team is ticked.
+// Kept in this browser only, like "Your name".
+function multiFilter(id,key){
+  // sel.inc = teams to show (empty = all), sel.exc = teams to hide
+  let sel={inc:[],exc:[]};
+  try{const v=JSON.parse(localStorage.getItem(key));if(Array.isArray(v))sel.inc=v;else if(v&&v.inc)sel={inc:v.inc||[],exc:v.exc||[]};}catch(e){}
+  const el=$(id);let built="";
+  el.innerHTML=`<button type="button" class="mbtn"></button><div class="mpop"><div class="mhead"><span>Show</span><span>Hide</span></div><div class="mlist"></div><button type="button" class="mclear">Show everything</button></div>`;
+  const names=a=>TEAMS().filter(([v])=>a.includes(v)).map(([,l])=>l).join(", ");
+  const label=()=>!sel.inc.length&&!sel.exc.length?"Everything"
+    :sel.inc.length&&!sel.exc.length?names(sel.inc)
+    :!sel.inc.length?"All except "+names(sel.exc)
+    :names(sel.inc)+" · not "+names(sel.exc);
+  const store=()=>{try{localStorage.setItem(key,JSON.stringify(sel))}catch(e){};refresh();update();};
+  function refresh(){
+    const t=TEAMS(),sig=JSON.stringify(t),ok=v=>t.some(([k])=>k===v);
+    sel.inc=sel.inc.filter(ok);sel.exc=sel.exc.filter(ok);          // a team that no longer exists is unticked
+    if(sig!==built){built=sig;
+      el.querySelector(".mlist").innerHTML=t.map(([v,l])=>`<div class="mrow"><label><input type="checkbox" class="inc" value="${esc(v)}">${esc(l)}</label><label class="xbox" title="Hide only ${esc(l)}"><input type="checkbox" class="exc" value="${esc(v)}"></label></div>`).join("");
+      el.querySelectorAll(".mlist input").forEach(c=>c.onchange=()=>{
+        const v=c.value,on=c.checked,mine=c.classList.contains("inc")?"inc":"exc",other=mine==="inc"?"exc":"inc";
+        sel[mine]=on?[...new Set([...sel[mine],v])]:sel[mine].filter(x=>x!==v);
+        if(on)sel[other]=sel[other].filter(x=>x!==v);              // a team can't be shown and hidden at once
+        store();});}
+    el.querySelectorAll(".mlist input.inc").forEach(c=>c.checked=sel.inc.includes(c.value));
+    el.querySelectorAll(".mlist input.exc").forEach(c=>c.checked=sel.exc.includes(c.value));
+    el.querySelector(".mbtn").textContent=label();
+  }
+  el.querySelector(".mbtn").onclick=e=>{e.stopPropagation();document.querySelectorAll(".multi.open").forEach(o=>o!==el&&o.classList.remove("open"));el.classList.toggle("open");};
+  el.querySelector(".mpop").addEventListener("click",e=>e.stopPropagation());
+  el.querySelector(".mclear").onclick=()=>{sel={inc:[],exc:[]};store();};
+  const get=()=>sel;get.refresh=refresh;return get;
+}
+document.addEventListener("click",()=>document.querySelectorAll(".multi.open").forEach(o=>o.classList.remove("open")));
+const PARTSEL=multiFilter("partFilter","surveyPlanner.part3"), MSPARTSEL=multiFilter("msPartFilter","surveyPlanner.msPart3");
+const partMatch=(sel,x)=>{const t=x.part&&x.part!=="all"?x.part:"all";return (!sel.inc.length||sel.inc.includes(t))&&!sel.exc.includes(t);};
+const shownMs=m=>partMatch(MSPARTSEL(),m);   // milestones have their own part filter
+const shown=p=>partMatch(PARTSEL(),p);
+const mine=p=>{const m=ME.trim().toLowerCase();if(!m)return true;return people(p).some(n=>{n=n.toLowerCase();return n===m||n==="all";});};
+function renderLegend(){
+  if(!S.colorLabels)S.colorLabels={};
+  const u=usedColors(),ord=(GX.colorOrder||[]).filter(k=>u.includes(k));
+  const used=[...ord,...u.filter(k=>!ord.includes(k))];             // same order as in the chart; others (e.g. only milestones) after
+  const key=used.join(",");if(key===LEGKEY)return;LEGKEY=key;
+  document.querySelector(".legtitle").style.display=used.length?"":"none";   // no title while there are no work packages
+  $("legend").innerHTML=used.map(k=>`<label data-k="${k}" title="Right-click to change the colour of this whole work package"><i style="background:${colVal(k)}"></i><input data-c="${k}" placeholder="Label this colour…" value="${esc(S.colorLabels[k]||"")}"></label>`).join("");
+}
+$("legend").addEventListener("input",e=>{const k=e.target.dataset.c;if(!k)return;S.colorLabels[k]=e.target.value;save();});
+function update(){
+  renderLegend();
+  PARTSEL.refresh();MSPARTSEL.refresh();
+  save();
+  const {res,warns}=schedule();
+  LAST=res;
+  ROWS=S.phases.filter(p=>res.has(p.id)&&shown(p)).map(p=>({p,...res.get(p.id)}));
+  document.querySelectorAll("#body tr").forEach(tr=>{
+    const p=S.phases.find(q=>q.id===+tr.dataset.id); if(!p)return;
+    tr.classList.toggle("dim",!mine(p));
+    tr.style.display=shown(p)?"":"none";
+    [["start",p.start||""],["end",p.end||""],["wk",wkOf(p)],["dy",dyOf(p)]].forEach(([k,v])=>{const i=tr.querySelector(`[data-k="${k}"]`);if(document.activeElement!==i)i.value=v;});
+  });
+  const today=new Date();today.setHours(0,0,0,0);
+  // the chart is always drawn, even with no phases (e.g. only milestones)
+  const has=ROWS.length>0;
+  const start=has?ROWS.reduce((m,r)=>r.start<m?r.start:m,ROWS[0].start):null;
+  const end=has?ROWS.reduce((m,r)=>r.end>m?r.end:m,ROWS[0].end):null;
+  $("warnings").innerHTML=[...new Set(warns)].map(w=>`<div class="warn">${w}</div>`).join("");
+  const daysLeft=has?Math.round((start-today)/DAY):-1;
+  $("summary").innerHTML=!has?"":`<span>Start<b>${fmt(start)}</b></span><span>End<b>${fmt(end)}</b></span><span>Total<b>${(()=>{const d=span(start,end),w=Math.floor(d/7),r=d%7;return `${w} ${w===1?"week":"weeks"}${r?` ${r} ${r===1?"day":"days"}`:""}`;})()}</b></span>`+
+    (daysLeft>=0?`<span>Until start<b>${daysLeft} ${daysLeft===1?"day":"days"}</b></span>`:"");
+  document.querySelectorAll("#msBody tr").forEach(tr=>{const m=S.milestones[+tr.dataset.i];if(m)tr.style.display=shownMs(m)?"":"none";});
+  const ms=S.milestones.filter(m=>parse(m.date)&&shownMs(m)).map(m=>({d:parse(m.date),label:m.label||"",c:MSCOL(m.color),i:S.milestones.indexOf(m)})).sort((a,b)=>a.d-b.d);
+  let gA=start,gB=end;
+  ms.forEach(m=>{if(!gA||m.d<gA)gA=m.d;if(!gB||m.d>gB)gB=m.d;});
+  if(!gA){gA=today;gB=add(today,12*7);}           // nothing at all yet: show the next 12 weeks
+  // by default the chart starts one week before today; the button on the today line shows everything
+  const hasPast=gA<add(today,-7), clipped=hasPast&&!SHOWPAST;
+  if(clipped)gA=today;
+  if(gB<gA)gB=gA;
+  if((gB-gA)/DAY<28)gB=add(gA,28);                  // keep a readable minimum width
+  // zoom: show a window of the full range (ZOOM.span days starting ZOOM.from days after the full start)
+  let full0=add(gA,-7),full1=add(gB,14);ZOOM.base0=full0;ZOOM.base1=full1;
+  if(ZOOM.ext){if(ZOOM.ext[0]<full0)full0=ZOOM.ext[0];if(ZOOM.ext[1]>full1)full1=ZOOM.ext[1];}   // typed dates may lie outside the plan
+  const fullDays=Math.round((full1-full0)/DAY);
+  if(ZOOM.want){ZOOM.from=Math.round((ZOOM.want[0]-full0)/DAY);ZOOM.span=Math.round((ZOOM.want[1]-ZOOM.want[0])/DAY);ZOOM.want=null;}
+  let exact=null;
+  if(ZOOM.span&&ZOOM.span<fullDays){
+    ZOOM.from=Math.min(Math.max(0,ZOOM.from),fullDays-ZOOM.span);
+    exact=[add(full0,ZOOM.from),add(full0,ZOOM.from+ZOOM.span)];
+  } else {ZOOM.span=0;ZOOM.from=0;}
+  ZOOM.fullDays=fullDays;ZOOM.full0=full0;
+  const th=document.querySelector(".zthumb");
+  th.style.left=(ZOOM.span?ZOOM.from/fullDays*100:0)+"%";th.style.width=(ZOOM.span?ZOOM.span/fullDays*100:100)+"%";
+  // the two date fields show the first and last date currently visible
+  const shown0=exact?exact[0]:full0, shown1=exact?exact[1]:full1;
+  [["zFrom",shown0],["zTo",shown1]].forEach(([id,d])=>{if(document.activeElement!==$(id))$(id).value=iso(d);});
+  gantt(gA,gB,today,ms,{hasPast,clipped,exact,full0,full1,cut:clipped?full0:null});
+  renderLegend();                                   // after the chart, so the legend can follow its order
+}
+// Drag a bar to move it (same duration); drag its left/right edge to change start/end. A plain click shows the dates.
+const GX={px:1};
+let DRAG=null;
+$("gantt").addEventListener("pointerdown",e=>{
+  const bar=e.target.closest(".bar");if(!bar||e.button!==0)return;
+  const p=S.phases.find(q=>q.id===+bar.dataset.id);if(!p||!isDated(p))return;
+  e.preventDefault();bar.setPointerCapture(e.pointerId);
+  const mode=e.target.classList.contains("l")?"l":e.target.classList.contains("r")?"r":"m";
+  DRAG={bar,p,mode,x0:e.clientX,s0:parse(p.start),e0:parse(p.end),L0:parseFloat(bar.style.left),moved:false,ns:parse(p.start),ne:parse(p.end)};
+  bar.classList.add("dragging");
+});
+$("gantt").addEventListener("pointermove",e=>{
+  if(!DRAG)return;
+  const dx=e.clientX-DRAG.x0;if(Math.abs(dx)>3)DRAG.moved=true;
+  const dd=Math.round(dx/GX.px);let ns=DRAG.s0,ne=DRAG.e0;
+  if(DRAG.mode==="m"){ns=add(DRAG.s0,dd);ne=add(DRAG.e0,dd);}
+  else if(DRAG.mode==="l"){ns=add(DRAG.s0,dd);if(ns>DRAG.e0)ns=new Date(DRAG.e0);}
+  else{ne=add(DRAG.e0,dd);if(ne<DRAG.s0)ne=new Date(DRAG.s0);}
+  DRAG.ns=ns;DRAG.ne=ne;
+  DRAG.bar.style.left=(DRAG.L0+Math.round((ns-DRAG.s0)/DAY)*GX.px)+"px";
+  DRAG.bar.style.width=(span(ns,ne)*GX.px)+"px";
+  const dt=DRAG.bar.querySelector(".dt");if(dt)dt.textContent=`${short(ns)}–${short(ne)} · ${span(ns,ne)} days`;
+  DRAG.bar.classList.add("open");
+});
+function endDrag(){
+  if(!DRAG)return;const d=DRAG;DRAG=null;d.bar.classList.remove("dragging");
+  if(!d.moved){d.bar.classList.toggle("open");return;}
+  LASTPUSH=0;                                    // every drag is its own undo step
+  d.p.start=iso(d.ns);d.p.end=iso(d.ne);d.p.dur=span(d.ns,d.ne);
+  renderEditor();update();
+}
+$("gantt").addEventListener("pointerup",endDrag);
+// Drag a milestone by its label to change its date.
+let MDRAG=null;
+$("gantt").addEventListener("pointerdown",e=>{
+  const lab=e.target.closest(".msl");if(!lab||e.button!==0||lab.isContentEditable)return;
+  const m=S.milestones[+lab.dataset.mi];if(!m||!parse(m.date))return;
+  e.preventDefault();lab.setPointerCapture(e.pointerId);
+  MDRAG={lab,m,x0:e.clientX,d0:parse(m.date),nd:parse(m.date),L0:parseFloat(lab.style.left),
+    lines:[...document.querySelectorAll(`#gantt .ms[data-mi="${lab.dataset.mi}"]`)].map(el=>({el,L:parseFloat(el.style.left)}))};
+  lab.classList.add("dragging");
+});
+$("gantt").addEventListener("pointermove",e=>{
+  if(!MDRAG)return;
+  const dd=Math.round((e.clientX-MDRAG.x0)/GX.px),off=dd*GX.px;MDRAG.nd=add(MDRAG.d0,dd);
+  MDRAG.lab.style.left=(MDRAG.L0+off)+"px";MDRAG.lines.forEach(o=>o.el.style.left=(o.L+off)+"px");
+  MDRAG.lab.textContent=`${short(MDRAG.nd)} ${MDRAG.m.label||""}`;
+});
+function endMsDrag(){
+  if(!MDRAG)return;const d=MDRAG;MDRAG=null;d.lab.classList.remove("dragging");
+  if(iso(d.nd)===d.m.date)return;
+  LASTPUSH=0;d.m.date=iso(d.nd);renderMs();update();
+}
+$("gantt").addEventListener("pointerup",endMsDrag);
+$("gantt").addEventListener("pointercancel",endMsDrag);
+$("gantt").addEventListener("pointercancel",endDrag);
+let SHOWPAST=false;try{SHOWPAST=localStorage.getItem("surveyPlanner.showPast")==="1";}catch(e){}
+const ZOOM={span:0,from:0,fullDays:0};
+// Changing the visible window glides there (~0.6 s) instead of jumping.
+let TWEEN=0;
+function tweenTo(tFrom,tSpan,done){
+  const f0=ZOOM.span?ZOOM.from:0, s0=ZOOM.span||ZOOM.fullDays, t0=performance.now(), id=++TWEEN, D=600;
+  const ease=k=>k<.5?4*k*k*k:1-Math.pow(-2*k+2,3)/2;
+  const step=now=>{
+    if(id!==TWEEN)return;                                 // a newer change took over
+    const k=Math.min(1,(now-t0)/D),e=ease(k);
+    ZOOM.from=Math.round(f0+(tFrom-f0)*e);ZOOM.span=Math.max(1,Math.round(s0+(tSpan-s0)*e));
+    update();
+    if(k<1)requestAnimationFrame(step);else if(done)done();
+  };
+  requestAnimationFrame(step);
+}
+function zoomBy(f){
+  const full=ZOOM.fullDays||1,span=ZOOM.span||full,center=(ZOOM.span?ZOOM.from:0)+span/2;
+  const ns=Math.round(Math.min(full,Math.max(14,span*f)));
+  if(ns>=full)tweenTo(0,full,()=>{ZOOM.span=0;ZOOM.from=0;update();});
+  else tweenTo(Math.min(Math.max(0,Math.round(center-ns/2)),full-ns),ns);
+}
+// pull bar: drag the thumb to move the visible window, or drag its left / right end to zoom
+let ZDRAG=null;
+document.querySelector(".zscroll").addEventListener("pointerdown",e=>{
+  const bar=e.currentTarget,w=bar.getBoundingClientRect().width,full=ZOOM.fullDays;
+  const mode=e.target.classList.contains("l")?"l":e.target.classList.contains("r")?"r":"m";
+  if(mode==="m"&&!ZOOM.span)return;                  // whole plan visible: nothing to move (the ends still work)
+  if(!ZOOM.span){ZOOM.span=full;ZOOM.from=0;}
+  if(mode==="m"&&!e.target.closest(".zthumb")){       // click beside the thumb: centre the window there
+    ZOOM.from=Math.round((e.clientX-bar.getBoundingClientRect().left)/w*full-ZOOM.span/2);update();}
+  e.preventDefault();bar.setPointerCapture(e.pointerId);bar.classList.add("drag");
+  TWEEN++;ZDRAG={mode,x0:e.clientX,f0:ZOOM.from,s0:ZOOM.span,w};
+});
+document.querySelector(".zscroll").addEventListener("pointermove",e=>{
+  if(!ZDRAG)return;
+  const full=ZOOM.fullDays,dd=Math.round((e.clientX-ZDRAG.x0)/ZDRAG.w*full),MIN=14;
+  let f=ZDRAG.f0,sp=ZDRAG.s0;
+  if(ZDRAG.mode==="m")f=ZDRAG.f0+dd;
+  else if(ZDRAG.mode==="l"){f=Math.min(ZDRAG.f0+ZDRAG.s0-MIN,Math.max(0,ZDRAG.f0+dd));sp=ZDRAG.f0+ZDRAG.s0-f;}
+  else sp=Math.max(MIN,Math.min(full-ZDRAG.f0,ZDRAG.s0+dd));
+  if(f!==ZOOM.from||sp!==ZOOM.span){ZOOM.from=f;ZOOM.span=sp;update();}
+});
+const zEnd=e=>{if(!ZDRAG)return;ZDRAG=null;e.currentTarget.classList.remove("drag");if(ZOOM.span>=ZOOM.fullDays){ZOOM.span=0;ZOOM.from=0;update();}};
+document.querySelector(".zscroll").addEventListener("pointerup",zEnd);
+document.querySelector(".zscroll").addEventListener("pointercancel",zEnd);
+function zoomFit(){
+  if(!ZOOM.span){if(ZOOM.ext){ZOOM.ext=null;update();}return;}
+  tweenTo(0,ZOOM.fullDays,()=>{ZOOM.span=0;ZOOM.from=0;ZOOM.ext=null;update();});
+}
+// typing a first / last date: show exactly that period
+function zoomToDates(){
+  const a=parse($("zFrom").value),b=parse($("zTo").value);
+  if(!a||!b||b<=a){update();return;}
+  // the range may grow to include the typed dates: keep the current view where it is in the new coordinates
+  const n0=a<ZOOM.base0?a:ZOOM.base0, shift=Math.round((ZOOM.full0-n0)/DAY);
+  if(!ZOOM.span){ZOOM.span=ZOOM.fullDays;ZOOM.from=0;}
+  ZOOM.from+=shift;ZOOM.ext=[a,b];
+  tweenTo(Math.round((a-n0)/DAY),Math.round((b-a)/DAY));
+}
+["zFrom","zTo"].forEach(id=>{$(id).addEventListener("change",zoomToDates);$(id).addEventListener("keydown",e=>{if(e.key==="Enter")e.target.blur();});});
+document.querySelector(".zoombar").addEventListener("click",e=>{
+  const z=e.target.dataset.z;if(!z)return;
+  if(z==="in")zoomBy(.5);else if(z==="out")zoomBy(2);else zoomFit();
+});
+$("gantt").addEventListener("dblclick",e=>{if(!e.target.closest(".bar,.msl,.gname,button,.g-track.draw"))zoomFit();});
+function gantt(a,b,today,ms,view){
+  const ex=view&&view.exact, g0=ex?ex[0]:add(a,-7), g1=ex?ex[1]:add(b,14);
+  if(view&&view.cut)ms=ms.filter(m=>m.d>=view.cut);  // past milestones hidden (unless "Show all")
+  // height of the milestone row is taken from the whole plan, so zooming/moving never changes the chart height
+  let fullLevels=0;
+  if(ex){const fp=Math.max(1,Math.min(16,(Math.max(500,($("gantt").parentElement.clientWidth||900)-222))/(Math.round((view.full1-view.full0)/DAY)+1))),fe=[];
+    ms.forEach(m=>{const t=`${short(m.d)} ${m.label}`,a=Math.round((m.d-view.full0)/DAY)*fp,b=a+t.length*6.2+10;let l=fe.findIndex(e=>e<a);if(l<0){l=fe.length;fe.push(-1e9);}fe[l]=b;});
+    fullLevels=fe.length;}
+  const msAll=ms;ms=ms.filter(m=>m.d>=g0&&m.d<=g1);   // only milestones inside the visible window are drawn
+  const days=Math.round((g1-g0)/DAY)+1;
+  const avail=Math.max(500,($("gantt").parentElement.clientWidth||900)-222);
+  const px=Math.max(1,Math.min(16,avail/days));let W=Math.ceil(days*px);GX.px=px;GX.g0=g0;const x=d=>Math.round((d-g0)/DAY)*px;
+  let grid="";
+  for(let d=new Date(g0);d<=g1;d=add(d,1)) if(d.getDay()===1)grid+=`<div class="wk" style="left:${x(d)}px"></div>`;
+  ms.forEach(m=>grid+=`<div class="ms" data-mi="${m.i}" style="left:${x(m.d)}px;border-color:${m.c}" title="${esc(m.label)} · ${fmt(m.d)}"></div>`);
+  const ends=[];let lab="";
+  ms.forEach(m=>{const t=`${short(m.d)} ${m.label}`,L=x(m.d),w=t.length*6.2+10,flip=false;
+    const a=L,b=L+w;
+    let lv=ends.findIndex(e=>e<a);if(lv<0){lv=ends.length;ends.push(-1e9);}ends[lv]=b;
+    lab+=`<div class="msl${flip?" flip":""}" data-mi="${m.i}" style="${flip?`right:${W-L}px`:`left:${L}px`};top:${3+lv*17}px;${m.c.startsWith("var")?"":"--ms:"+m.c}" title="${esc(m.label)} · ${fmt(m.d)}">${esc(t)}</div>`;});
+  if(ends.length&&!ex)W=Math.max(W,Math.ceil(Math.max(...ends))+10); // labels always to the right; scroll if needed (not when zoomed)
+  const levels=Math.max(ends.length,fullLevels);
+  const msRow=msAll.length?`<div class="g-row${ex?" clip":""}" style="height:${levels*17+6}px"><div class="g-label"></div><div class="g-track" style="width:${W}px">${lab}</div></div>`:"";
+  if(today>=g0&&today<=g1)grid+=`<div class="vline today" style="left:${x(today)}px"></div>`;
+  let mo="";
+  for(let d=new Date(g0.getFullYear(),g0.getMonth()+1,1);d<=g1;d=new Date(d.getFullYear(),d.getMonth()+1,1))
+    mo+=`<div class="mo" style="left:${x(d)}px">${MO[d.getMonth()]} ${px*30<62?"’"+String(d.getFullYear()).slice(2):d.getFullYear()}</div>`;   // shorter year when months are narrow
+  let h=msRow+`<div class="g-row" style="height:26px"><div class="g-label"><button class="add" id="gAdd" style="padding:0">+ Add task</button><button class="add" id="gAddMs" style="padding:0 0 0 14px">+ Add milestone</button></div><div class="g-track" style="width:${W}px">${mo}${ms.map(m=>`<div class="ms" data-mi="${m.i}" style="left:${x(m.d)}px;border-color:${m.c}"></div>`).join("")}</div></div>`;
+  const gStart={};ROWS.forEach(r=>{const c=colOf(r.p);if(!gStart[c]||r.start<gStart[c])gStart[c]=r.start;});
+  const mode=["group","team"].includes(S.ganttSort)?S.ganttSort:"start", byGroup=mode!=="start";
+  document.querySelectorAll("#gsort button").forEach(b=>b.classList.toggle("on",b.dataset.o===mode));
+  // grouping key: colour (work package) or team; "All" first, then the teams in the order they appear
+  const TL=TEAMS(),TEAMORD=TL.map(([v])=>v), teamOf=p=>p.part&&TEAMORD.includes(p.part)?p.part:"all";
+  const key=p=>mode==="team"?teamOf(p):colOf(p);
+  // work packages are kept together by the team most of their tasks belong to (teams in list order), then by start
+  const dom={};{const cnt={};ROWS.forEach(r=>{const c=colOf(r.p),t=teamOf(r.p);(cnt[c]=cnt[c]||{})[t]=(cnt[c][t]||0)+1;});
+    Object.entries(cnt).forEach(([c,o])=>{dom[c]=Object.entries(o).sort((x,y)=>y[1]-x[1]||TEAMORD.indexOf(x[0])-TEAMORD.indexOf(y[0]))[0][0];});}
+  const gcmp=(a,b)=>mode==="team"?TEAMORD.indexOf(teamOf(a.p))-TEAMORD.indexOf(teamOf(b.p))
+    :(TEAMORD.indexOf(dom[colOf(a.p)])-TEAMORD.indexOf(dom[colOf(b.p)]))||(gStart[colOf(a.p)]-gStart[colOf(b.p)])||(colOf(a.p)<colOf(b.p)?-1:colOf(a.p)>colOf(b.p)?1:0);
+  let prevGroup=null;GX.view={g0,g1,ms,order:[]};
+  const SORTED=ROWS.slice().sort((a,b)=>(byGroup?gcmp(a,b):0)||(a.start-b.start)||(a.end-b.end));
+  GX.colorOrder=[...new Set(SORTED.map(r=>colOf(r.p)).filter(Boolean))];   // the legend follows this order
+  SORTED.forEach(r=>{
+    if(view&&view.cut&&r.end<view.cut)return;         // past tasks hidden (unless "Show all"); zooming never hides rows
+    const head=g=>mode==="team"?{name:(TL.find(([v])=>v===g)||["","All"])[1]}
+      :{name:(S.colorLabels||{})[g]||(g?"Unnamed work package":"No work package"),color:colVal(g)||"var(--ms)"};
+    if(byGroup){const g=key(r.p);if(g!==prevGroup)GX.view.order.push({head:head(g)});}
+    GX.view.order.push(r);
+    if(byGroup){const g=key(r.p);
+      if(g!==prevGroup){const hd=head(g);
+        h+=`<div class="g-row g-team"><div class="g-label">${hd.color?`<i class="gdot" style="background:${hd.color}"></i>`:""}${esc(hd.name)}</div><div class="g-track" style="width:${W}px">${grid}</div></div>`;}
+      prevGroup=g;}
+    const who=people(r.p).length?" · "+esc(people(r.p).join(", ")):"";
+    h+=`<div class="g-row"><div class="g-label${mine(r.p)?"":" dim"}" title="${esc(r.p.name)}"><span class="gname" contenteditable="plaintext-only" spellcheck="false" data-id="${r.p.id}">${esc(r.p.name)}</span></div>
+      <div class="g-track" style="width:${W}px">${grid}
+      ${r.end<g0||r.start>g1?"":`<div class="bar${mine(r.p)?"":" dim"}${x(r.start)<0?" cut":""}${x(add(r.end,1))>W?" cutr":""}" data-id="${r.p.id}" style="background:${pairOf(r.p)[1]};left:${Math.max(0,x(r.start))}px;width:${Math.max(px,Math.min(W,x(add(r.end,1)))-Math.max(0,x(r.start)))}px" title="${esc(r.p.name)}: ${fmt(r.start)} – ${fmt(r.end)}"><i class="h l"></i><i class="h r"></i><span><em class="dt">${short(r.start)}–${short(r.end)}${who}</em></span></div>`}
+      </div></div>`;
+  });
+  S.phases.filter(p=>!isDated(p)&&shown(p)).forEach(p=>{
+    h+=`<div class="g-row"><div class="g-label${mine(p)?"":" dim"}"><span class="gname" contenteditable="plaintext-only" spellcheck="false" data-id="${p.id}">${esc(p.name)}</span></div>
+      <div class="g-track draw" data-id="${p.id}" style="width:${W}px" title="Drag here to set the dates">${grid}</div></div>`;
+  });
+  if(view&&view.hasPast&&today>=g0&&today<=g1)   // "Show all / Hide past" stays at the bottom of the today line
+    h+=`<div class="g-row"><div class="g-label"></div><div class="g-track" style="width:${W}px"><button class="pastbtn" style="left:${x(today)}px" title="${view.clipped?"Show the whole plan, including what is already over":"Start the chart at today again"}">${view.clipped?"◀ Show all":"Hide past ▶"}</button></div></div>`;
+  if(!ROWS.length&&!S.phases.some(p=>!isDated(p)&&shown(p)))h+=`<div class="g-row" style="height:120px"><div class="g-label" style="color:var(--muted);font-size:12px">${!PARTSEL().inc.length&&!PARTSEL().exc.length?"No tasks yet":"No tasks for this team"}</div><div class="g-track" style="width:${W}px">${grid}</div></div>`;
+  // remember where each task row was, so rows that change place can glide to their new spot
+  const before=new Map();
+  $("gantt").querySelectorAll(".gname[data-id]").forEach(n=>before.set(n.dataset.id,n.closest(".g-row").getBoundingClientRect().top));
+  $("gantt").innerHTML=h;
+  if(before.size){
+    let big=null,bigD=0;
+    $("gantt").querySelectorAll(".gname[data-id]").forEach(n=>{
+      const row=n.closest(".g-row"),old=before.get(n.dataset.id);if(old===undefined)return;
+      const dy=old-row.getBoundingClientRect().top;if(Math.abs(dy)<1)return;
+      row.animate([{transform:`translateY(${dy}px)`},{transform:"none"}],{duration:650,easing:"cubic-bezier(.4,0,.2,1)"});
+      if(Math.abs(dy)>bigD){bigD=Math.abs(dy);big=row;}
+    });
+    if(big&&bigD>40){big.classList.remove("moved");void big.offsetWidth;big.classList.add("moved");}   // the row that jumped furthest gets a short highlight
+  }
+
+}
+
+$("gantt").addEventListener("click",e=>{
+  if(!e.target.closest(".pastbtn"))return;
+  SHOWPAST=!SHOWPAST;try{localStorage.setItem("surveyPlanner.showPast",SHOWPAST?"1":"0")}catch(err){}update();
+});
+
+/* ---------- editing directly in the chart ---------- */
+// Task names: click and type; Enter or clicking elsewhere saves, Esc cancels.
+$("gantt").addEventListener("keydown",e=>{
+  const n=e.target.closest(".gname,.msl[contenteditable]");if(!n)return;
+  if(e.key==="Enter"){e.preventDefault();n.blur();}
+  if(e.key==="Escape"){n.dataset.cancel="1";n.blur();}
+});
+$("gantt").addEventListener("focusout",e=>{
+  const n=e.target.closest(".gname");if(!n)return;
+  const p=S.phases.find(q=>q.id===+n.dataset.id);if(!p)return;
+  const t=n.textContent.replace(/\s+/g," ").trim();
+  if(!n.dataset.cancel&&t&&t!==p.name){LASTPUSH=0;p.name=t;}
+  renderEditor();update();
+});
+// Milestone labels: double-click to rename.
+$("gantt").addEventListener("dblclick",e=>{const lab=e.target.closest(".msl");if(lab)renameMs(lab);});
+function renameMs(lab){
+  const m=S.milestones[+lab.dataset.mi];if(!m)return;
+  lab.textContent=m.label||"";lab.contentEditable="plaintext-only";lab.focus();
+  const r=document.createRange();r.selectNodeContents(lab);const sl=getSelection();sl.removeAllRanges();sl.addRange(r);
+  lab.addEventListener("blur",()=>{const t=lab.textContent.replace(/\s+/g," ").trim();
+    if(!lab.dataset.cancel&&t!==(m.label||"")){LASTPUSH=0;m.label=t;}renderMs();update();},{once:true});
+}
+// "+ Add task" in the chart: new empty row; type its name, then drag across its row to set the dates.
+$("gantt").addEventListener("click",e=>{
+  if(!e.target.closest("#gAdd"))return;
+  const id=S.nextId++;LASTPUSH=0;
+  S.phases.unshift({id,name:"New task",who:"",dur:null,pred:[],start:null,end:null});
+  renderEditor();update();
+  const n=document.querySelector(`#gantt .gname[data-id="${id}"]`);
+  if(n){n.focus();const r=document.createRange();r.selectNodeContents(n);const sl=getSelection();sl.removeAllRanges();sl.addRange(r);}
+});
+// Drawing the bar of a task without dates: press, drag, release.
+let DRAW=null;
+const dayAt=(track,clientX)=>add(GX.g0,Math.max(0,Math.floor((clientX-track.getBoundingClientRect().left)/GX.px)));
+$("gantt").addEventListener("pointerdown",e=>{
+  const tr=e.target.closest(".g-track.draw");if(!tr||e.button!==0)return;
+  e.preventDefault();tr.setPointerCapture(e.pointerId);
+  const d0=dayAt(tr,e.clientX),bar=document.createElement("div");bar.className="bar dragging";
+  bar.style.background="var(--muted)";tr.appendChild(bar);
+  DRAW={tr,d0,d1:d0,bar};drawPaint();
+});
+function drawPaint(){const a=DRAW.d0<DRAW.d1?DRAW.d0:DRAW.d1,b=DRAW.d0<DRAW.d1?DRAW.d1:DRAW.d0;
+  DRAW.bar.style.left=(Math.round((a-GX.g0)/DAY)*GX.px)+"px";DRAW.bar.style.width=(span(a,b)*GX.px)+"px";
+  DRAW.bar.innerHTML=`<span><em class="dt" style="display:inline">${short(a)}–${short(b)} · ${span(a,b)} days</em></span>`;}
+$("gantt").addEventListener("pointermove",e=>{if(!DRAW)return;DRAW.d1=dayAt(DRAW.tr,e.clientX);drawPaint();});
+$("gantt").addEventListener("pointerup",()=>{
+  if(!DRAW)return;const d=DRAW;DRAW=null;
+  const p=S.phases.find(q=>q.id===+d.tr.dataset.id);if(!p)return;
+  const a=d.d0<d.d1?d.d0:d.d1,b=d.d0<d.d1?d.d1:d.d0;
+  LASTPUSH=0;p.start=iso(a);p.end=iso(b);p.dur=span(a,b);renderEditor();update();
+});
+
+$("gantt").addEventListener("click",e=>{
+  if(!e.target.closest("#gAddMs"))return;
+  const t=new Date();t.setHours(0,0,0,0);
+  LASTPUSH=0;S.milestones.unshift({date:iso(t),label:"New milestone"});   // today; drag it or rename it right away
+  renderMs();update();
+  const lab=document.querySelector('#gantt .msl[data-mi="0"]');if(lab)renameMs(lab);
+});
+
+/* ---------- right-click menu in the chart: colour, team, assigned to ---------- */
+let CTX=null;
+function closeCtx(){if(CTX){CTX.el.remove();CTX=null;}}
+function openCtx(x,y,item,isMs){
+  closeCtx();
+  const el=document.createElement("div");el.className="ctx";document.body.appendChild(el);
+  CTX={el,item,isMs};
+  const paint=()=>{
+    const cur=keyOf(item.color);
+    el.innerHTML=`<div class="ctx-t">${esc(isMs?(item.label||"Milestone"):item.name)}</div>
+      <div class="ctx-l">Colour</div>
+      <div class="ctx-c">${swatches(cur)}</div>
+      <div class="ctx-l">Team</div>
+      <select class="ctx-team">${teamOptions(item.part)}</select>
+      ${isMs?"":`<div class="ctx-l">Assigned to</div><input class="ctx-who" placeholder="names, comma-separated" value="${esc(item.who||"")}">`}
+      <button class="ctx-del">Delete ${isMs?"milestone":"task"}</button>`;
+    wireSwatches(el.querySelector(".ctx-c"),c=>{LASTPUSH=0;item.color=c;renderEditor();renderMs();update();paint();});
+    el.querySelector(".ctx-del").onclick=()=>{
+      LASTPUSH=0;
+      if(isMs)S.milestones=S.milestones.filter(m=>m!==item);
+      else{S.phases=S.phases.filter(q=>q!==item);S.phases.forEach(q=>q.pred=(q.pred||[]).filter(id=>id!==item.id));}
+      closeCtx();renderEditor();renderMs();update();toast(`${isMs?"Milestone":"Task"} deleted – undo with ↶`);
+    };
+    const sel=el.querySelector(".ctx-team");
+    sel.onchange=()=>{
+      if(sel.value==="__new"){askTeam(sel,v=>{if(v){LASTPUSH=0;setTeam(item,v);}renderEditor();renderMs();update();paint();});return;}
+      LASTPUSH=0;setTeam(item,sel.value);renderEditor();renderMs();update();paint();};
+    const who=el.querySelector(".ctx-who");
+    if(who){who.oninput=()=>{item.who=who.value;update();};who.onchange=()=>{renderEditor();update();};
+      who.onkeydown=e=>{if(e.key==="Enter")closeCtx();};}
+  };
+  paint();
+  const r=el.getBoundingClientRect();
+  el.style.left=Math.min(x,window.innerWidth-r.width-8)+window.scrollX+"px";
+  el.style.top=Math.min(y,window.innerHeight-r.height-8)+window.scrollY+"px";
+}
+$("gantt").addEventListener("contextmenu",e=>{
+  const ml=e.target.closest(".msl");
+  if(ml){const m=S.milestones[+ml.dataset.mi];if(m){e.preventDefault();openCtx(e.clientX,e.clientY,m,true);}return;}
+  const t=e.target.closest(".gname,.bar,.g-track.draw,.g-label");
+  const idEl=t&&(t.dataset.id?t:t.querySelector("[data-id]"));
+  const p=idEl&&S.phases.find(q=>q.id===+idEl.dataset.id);
+  if(p){e.preventDefault();openCtx(e.clientX,e.clientY,p,false);}
+});
+document.addEventListener("pointerdown",e=>{if(CTX&&!CTX.el.contains(e.target)&&!e.target.classList.contains("newteam"))closeCtx();});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&CTX&&!e.target.classList.contains("newteam"))closeCtx();});
+window.addEventListener("scroll",()=>{if(CTX&&!CTX.el.contains(document.activeElement))closeCtx();},true);
+
+/* ---------- show / hide the task list and milestone list (remembered in this browser) ---------- */
+function panelToggle(btn,panel,key,name){
+  let open=false;try{open=localStorage.getItem(key)==="1";}catch(e){}
+  const paint=()=>{$(panel).classList.toggle("hidden",!open);$(btn).textContent=(open?"Hide ":"Show ")+name;};
+  $(btn).onclick=()=>{open=!open;try{localStorage.setItem(key,open?"1":"0")}catch(e){};paint();update();};
+  paint();
+}
+panelToggle("tglTasks","taskPanel","surveyPlanner.showTasks","task list");
+panelToggle("tglMs","msPanel","surveyPlanner.showMs","milestones");
+
+/* ---------- credit line ---------- */
+const VERSION="1.1", VERSION_DATE="17.11.2026";
+function creditText(){return `© Created by Jan Menzner · Version ${VERSION} · ${VERSION_DATE}`;}
+$("credit").textContent=creditText();
+
+/* ---------- right-click a work package in the legend: recolour the whole package ---------- */
+function recolourPackage(from,to){
+  if(!to||to===from)return;
+  const merge=usedColors().includes(to);
+  LASTPUSH=0;
+  [...S.phases,...S.milestones].forEach(x=>{if(keyOf(x.color)===from)x.color=to;});
+  const lab=S.colorLabels||{};
+  if(!merge||!lab[to])lab[to]=lab[from]||"";        // the label goes with the colour (an existing package keeps its own label)
+  delete lab[from];
+  LEGKEY="";closeCtx();renderEditor();renderMs();update();
+  if(merge)toast("Merged into the existing work package with that colour – undo with ↶");
+}
+$("legend").addEventListener("contextmenu",e=>{
+  const l=e.target.closest("label[data-k]");if(!l)return;e.preventDefault();
+  const from=l.dataset.k;closeCtx();
+  const el=document.createElement("div");el.className="ctx";document.body.appendChild(el);
+  CTX={el,item:null,isMs:false};
+  const all=[...new Set([...Object.keys(COLORS),...usedColors()])];
+  el.innerHTML=`<div class="ctx-t">${esc((S.colorLabels||{})[from]||"Work package")}</div><div class="ctx-l">Colour for the whole package</div>
+    <div class="ctx-c">${all.map(k=>`<button data-c="${k}" title="${esc((S.colorLabels||{})[k]||k)}${usedColors().includes(k)&&k!==from?" (in use – merges)":""}" class="${k===from?"on":""}" style="background:${colVal(k)}"></button>`).join("")}<label class="newcol" title="Pick a new colour">+<input type="color" value="${colVal(from)||"#3366cc"}"></label></div>`;
+  el.querySelectorAll("button[data-c]").forEach(b=>b.onclick=()=>recolourPackage(from,b.dataset.c));
+  el.querySelector(".newcol input").onchange=ev=>recolourPackage(from,ev.target.value.toLowerCase());
+  const r=el.getBoundingClientRect();
+  el.style.left=Math.min(e.clientX,window.innerWidth-r.width-8)+window.scrollX+"px";
+  el.style.top=Math.min(e.clientY,window.innerHeight-r.height-8)+window.scrollY+"px";
+});
+
+/* ---------- export ---------- */
+function toast(t){const e=$("toast");e.textContent=t;e.classList.add("show");setTimeout(()=>e.classList.remove("show"),1600)}
+async function copy(t){try{await navigator.clipboard.writeText(t);toast("Copied")}catch(e){toast("Copy blocked by the browser")}}
+const q=s=>`"${String(s).replace(/"/g,'""')}"`;
+$("saveFile").onclick=()=>saveFile();
+$("saveAs").onclick=()=>saveAs(false);
+window.addEventListener("keydown",e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="s"){e.preventDefault();e.shiftKey?saveAs(false):saveFile();}});
+
+/* Export table: the phases currently shown in the list, as CSV for Excel (semicolon-separated, German date format). */
+$("exportTable").onclick=async()=>{
+  const d=x=>{const t=parse(x);return t?`${String(t.getDate()).padStart(2,"0")}.${String(t.getMonth()+1).padStart(2,"0")}.${t.getFullYear()}`:"";};
+  const c=v=>{v=String(v??"");return /[;"\n]/.test(v)?`"${v.replace(/"/g,'""')}"`:v;};
+  const partName=v=>(TEAMS().find(([k])=>k===(v||"all"))||["",v])[1];
+  const rows=S.phases.filter(shown).map(p=>[RANK.get(p.id),partName(p.part),p.name,p.who||"",wkOf(p),dyOf(p),
+    (p.pred||[]).map(id=>RANK.get(id)).filter(Boolean).sort((a,b)=>a-b).join(", "),d(p.start),d(p.end),(S.colorLabels||{})[colOf(p)]||""]);
+  const csv="﻿"+[["Nr","Team","Task","Assigned to","Weeks","Days","After #","Start","End","Work package"],...rows].map(r=>r.map(c).join(";")).join("\r\n");
+  try{if(await writeFile(new Blob([csv],{type:"text/csv"}),slug(S.title)+"-phases.csv","text/csv","csv",null))toast("Table exported");}
+  catch(e){if(e&&e.name!=="AbortError")toast("Could not export: "+(e.message||e));}
+};
+
+/* Export Gantt: draws the chart as it is currently displayed (filters, order) into a PNG. */
+function ganttCanvas(){
+  const V=GX.view;if(!V)return null;
+  const solid=c=>!c||String(c).startsWith("var")?"#1d1f22":c;
+  const days=Math.round((V.g1-V.g0)/DAY)+1, P=Math.min(10,Math.max(2,1600/days));
+  const LW=250, PAD=24, W=LW+Math.ceil(days*P)+PAD*2, x=d=>PAD+LW+Math.round((d-V.g0)/DAY)*P;
+  const F=(w,sz)=>`${w} ${sz}px "IBM Plex Sans", system-ui, sans-serif`;
+  const meas=document.createElement("canvas").getContext("2d");meas.font=F(500,11);
+  // milestone label levels (same stacking as on screen)
+  const lv=[],ends=[];V.ms.forEach(m=>{const t=`${short(m.d)} ${m.label}`,a=x(m.d),b=a+meas.measureText(t).width+12;let l=ends.findIndex(e=>e<a);if(l<0){l=ends.length;ends.push(-1e9);}ends[l]=b;lv.push({m,t,l});});
+  const extra=Math.max(0,...ends)-W+PAD; const Wt=W+Math.max(0,extra);
+  const legend=[...$("legend").querySelectorAll("label[data-k]")].map(l=>l.dataset.k).filter(k=>V.order.some(r=>r&&r.p&&colOf(r.p)===k)||V.ms.some(m=>m.c===colVal(k)));
+  const TITLE=44, MSH=ends.length?ends.length*17+8:0, MON=24, RH=26, SEP=12;
+  const HEAD=24;
+  const body=V.order.reduce((s,r)=>s+(r&&r.head?HEAD:r?RH:SEP),0)||RH;
+  const LEG=legend.length?legend.length*18+16+18:0;
+  const H=PAD+TITLE+MSH+MON+body+LEG+PAD+18;
+  const k=2,cv=document.createElement("canvas");cv.width=Wt*k;cv.height=H*k;
+  const g=cv.getContext("2d");g.scale(k,k);g.fillStyle="#fff";g.fillRect(0,0,Wt,H);g.textBaseline="middle";
+  g.fillStyle="#1d1f22";g.font=F(600,18);g.fillText(S.title||TITLE_DEFAULT,PAD,PAD+14);
+  const top=PAD+TITLE, chartTop=top+MSH, rowsTop=chartTop+MON, bottom=rowsTop+body;
+  // week grid
+  g.strokeStyle="#e4e2dd";g.lineWidth=1;
+  for(let d=new Date(V.g0);d<=V.g1;d=add(d,1))if(d.getDay()===1){g.beginPath();g.moveTo(x(d)+.5,chartTop);g.lineTo(x(d)+.5,bottom);g.stroke();}
+  // months
+  g.fillStyle="#71757c";g.font=F(400,11);
+  for(let d=new Date(V.g0.getFullYear(),V.g0.getMonth()+1,1);d<=V.g1;d=new Date(d.getFullYear(),d.getMonth()+1,1))g.fillText(`${MO[d.getMonth()]} ${d.getFullYear()}`,x(d)+4,chartTop+12);
+  // milestones
+  lv.forEach(({m,t,l})=>{const c=solid(m.c),y=top+3+l*17;g.strokeStyle=c;g.lineWidth=2;g.beginPath();g.moveTo(x(m.d)+1,y);g.lineTo(x(m.d)+1,bottom);g.stroke();
+    g.fillStyle=c;g.font=F(500,11);g.fillText(t,x(m.d)+6,y+8);});
+  // today
+  const today=new Date();today.setHours(0,0,0,0);
+  if(today>=V.g0&&today<=V.g1){g.save();g.setLineDash([4,3]);g.strokeStyle="#71757c";g.lineWidth=1.5;g.beginPath();g.moveTo(x(today)+.5,chartTop);g.lineTo(x(today)+.5,bottom);g.stroke();g.restore();}
+  // rows
+  let y=rowsTop;
+  V.order.forEach(r=>{
+    if(!r){g.strokeStyle="#c9c6bf";g.lineWidth=1;g.beginPath();g.moveTo(PAD,y+SEP/2+.5);g.lineTo(Wt-PAD,y+SEP/2+.5);g.stroke();y+=SEP;return;}
+    if(r.head){g.strokeStyle="#e4e2dd";g.lineWidth=1;g.beginPath();g.moveTo(PAD,y+.5);g.lineTo(Wt-PAD,y+.5);g.stroke();
+      let tx=PAD;if(r.head.color){g.fillStyle=solid(r.head.color);g.fillRect(PAD,y+HEAD/2-4,9,9);tx+=16;}
+      g.fillStyle="#71757c";g.font=F(600,10.5);g.fillText(r.head.name.toUpperCase(),tx,y+HEAD/2+1);y+=HEAD;return;}
+    g.globalAlpha=mine(r.p)?1:.35;
+    g.fillStyle="#1d1f22";g.font=F(400,12.5);
+    let nm=r.p.name;while(g.measureText(nm).width>LW-14&&nm.length>3)nm=nm.slice(0,-2);if(nm!==r.p.name)nm+="…";
+    g.fillText(nm,PAD,y+RH/2);
+    if(r.end<V.g0||r.start>V.g1){g.globalAlpha=1;y+=RH;return;}
+    const bx=Math.max(PAD+LW,x(r.start)),bw=Math.max(P,Math.min(x(add(V.g1,1)),x(add(r.end,1)))-bx),by=y+6,bh=RH-12,rad=Math.min(4,bw/2);
+    g.fillStyle=solid(pairOf(r.p)[1]);g.beginPath();g.moveTo(bx+rad,by);g.arcTo(bx+bw,by,bx+bw,by+bh,rad);g.arcTo(bx+bw,by+bh,bx,by+bh,rad);g.arcTo(bx,by+bh,bx,by,rad);g.arcTo(bx,by,bx+bw,by,rad);g.fill();
+    g.globalAlpha=1;y+=RH;
+  });
+  if(!V.order.length){g.fillStyle="#71757c";g.font=F(400,12);g.fillText("No phases",PAD,rowsTop+RH/2);}
+  // legend
+  let ly=bottom+16;
+  if(legend.length){g.fillStyle="#71757c";g.font=F(600,10.5);g.fillText("WORK PACKAGE",PAD,ly+8);ly+=20;}
+  legend.forEach(k2=>{g.fillStyle=colVal(k2);g.fillRect(PAD,ly+3,14,12);g.fillStyle="#1d1f22";g.font=F(400,12);g.fillText((S.colorLabels||{})[k2]||"",PAD+22,ly+9);ly+=18;});
+  g.fillStyle="#9a9ea5";g.font=F(400,10);g.textAlign="center";g.fillText(creditText(),Wt/2,H-PAD/2-6);g.textAlign="left";
+  return cv;
+}
+$("exportPng").onclick=async()=>{
+  const cv=ganttCanvas();if(!cv){toast("Nothing to export");return;}
+  try{await document.fonts.ready;}catch(e){}
+  const blob=await new Promise(r=>ganttCanvas().toBlob(r,"image/png"));
+  try{if(await writeFile(blob,slug(S.title)+"-gantt.png","image/png","png",null))toast("Gantt chart exported");}
+  catch(e){if(e&&e.name!=="AbortError")toast("Could not export: "+(e.message||e));}
+};
+window.addEventListener("beforeunload",e=>{if(DIRTY&&window.self===window.top){e.preventDefault();e.returnValue="";}});
+window.addEventListener("resize",update);
+
+renderTitle();renderEditor();renderMs();update();showDirty();histButtons();
+</script>
+
+
+</body></html>
