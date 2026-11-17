@@ -908,6 +908,25 @@
   }
   .copy-btn:hover{background:var(--brass); color:#fff; border-color:var(--brass);}
 
+  /* ---------- Tools ---------- */
+  .tools-wrap{margin-top:80px;}
+  .tool-head{display:flex; justify-content:space-between; align-items:flex-start; gap:24px 40px; flex-wrap:wrap;}
+  .tool-head > div:first-child{flex:1 1 420px;}
+  .tool h3{font-size:1.12rem; font-weight:500; margin:0 0 8px;}
+  .tool-desc{margin:0; color:var(--slate); font-size:.93rem; max-width:72ch;}
+  .tool-actions{display:flex; gap:10px; flex-wrap:wrap;}
+  .tool-note{
+    margin:22px 0 10px;
+    font-family:'IBM Plex Mono',monospace; font-size:.7rem; letter-spacing:.08em;
+    text-transform:uppercase; color:var(--slate-soft);
+  }
+  .tool-frame{border:1px solid var(--rule-strong); background:var(--paper-alt);}
+  .tool-frame iframe{display:block; width:100%; height:720px; border:0;}
+  @media (max-width:720px){
+    .tools-wrap{margin-top:56px;}
+    .tool-frame iframe{height:520px;}
+  }
+
   /* ---------- Footer ---------- */
   footer{
     border-top:1px solid var(--rule);
@@ -975,7 +994,7 @@
         <li><a href="#about">About</a></li>
         <li><a href="#publications">Publications</a></li>
         <li><a href="#research">Current Research</a></li>
-        <li><a href="#data">Data</a></li>
+        <li><a href="#data">Data &amp; Tools</a></li>
         <li><a href="#teaching">Teaching</a></li>
         <li><a href="#cv">CV &amp; Contact</a></li>
       </ul>
@@ -1385,6 +1404,30 @@
         I am always happy to share data and ideas. Please get in touch via
         <a href="mailto:jan.menzner@hu-berlin.de">jan.menzner@hu-berlin.de</a><button type="button" class="copy-btn" data-copy="jan.menzner@hu-berlin.de">Copy</button>
       </div>
+      </div>
+    </div>
+
+    <div class="wrap tools-wrap">
+      <div class="block">
+      <div class="section-head">
+        <h2>Tools</h2>
+      </div>
+      <article class="tool">
+        <div class="tool-head">
+          <div>
+            <h3>Gantt Chart Planner</h3>
+            <p class="tool-desc">A planner for research project timelines, such as survey fieldwork. Tasks, milestones, work packages and teams are edited directly in the chart. Plans can be exported as PNG or CSV and are saved into the HTML file itself. It runs in any browser, with no installation or account, and your plans stay on your computer.</p>
+          </div>
+          <div class="tool-actions">
+            <a class="btn primary" href="files/Gantt-Chart_Tool.html" download="Gantt-Chart_Tool.html">Download</a>
+            <a class="btn" href="files/Gantt-Chart_Tool.html" target="_blank" rel="noopener noreferrer">Open full screen</a>
+          </div>
+        </div>
+        <p class="tool-note">Try it below. To save or export your plan, download the file first and open it from your computer.</p>
+        <div class="tool-frame">
+          <iframe src="files/Gantt-Chart_Tool.html" title="Gantt Chart Planner preview" loading="lazy"></iframe>
+        </div>
+      </article>
       </div>
     </div>
   </section>
