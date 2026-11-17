@@ -986,8 +986,8 @@ panelToggle("tglTasks","taskPanel","surveyPlanner.showTasks","task list");
 panelToggle("tglMs","msPanel","surveyPlanner.showMs","milestones");
 
 /* ---------- credit line ---------- */
-const VERSION="1.1";
-function creditText(){const t=new Date();return `© Created by Jan Menzner · Version ${VERSION} · ${String(t.getDate()).padStart(2,"0")}.${String(t.getMonth()+1).padStart(2,"0")}.${t.getFullYear()}`;}
+const VERSION="1.1", VERSION_DATE="17.11.2026";
+function creditText(){return `© Created by Jan Menzner · Version ${VERSION} · ${VERSION_DATE}`;}
 $("credit").textContent=creditText();
 
 /* ---------- right-click a work package in the legend: recolour the whole package ---------- */
