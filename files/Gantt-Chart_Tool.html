@@ -3,11 +3,24 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Project Title</title>
+<script>/* light / dark mode: ?theme= from the website, otherwise the last choice in this browser, otherwise the system setting */
+(function(){var t=null;try{t=new URLSearchParams(location.search).get("theme");}catch(e){}
+  if(t!=="dark"&&t!=="light"){try{t=localStorage.getItem("surveyPlanner.theme");}catch(e){}}
+  if(t==="dark"||t==="light")document.documentElement.setAttribute("data-theme",t);})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@400&amp;display=swap" rel="stylesheet">
 <style>
   :root{--bg:#f7f6f3;--panel:#fff;--ink:#1d1f22;--muted:#71757c;--line:#e4e2dd;--accent:#1f5f8b;--soft:#e3edf5;--warn:#8a5a00;--warn-bg:#fff4d6;--dl:#b5532b;--bar:#9cc3e0;--bar-lock:#1a4a73;--ms:#1d1f22;--none-l:#a9adb3}
-  @media (prefers-color-scheme:dark){:root{--bg:#16181b;--panel:#1f2226;--ink:#e8e8e6;--muted:#9a9ea5;--line:#33373d;--accent:#6fa8d6;--soft:#24384a;--warn:#f0c46a;--warn-bg:#3a3020;--dl:#e08a62;--bar:#3f6f94;--bar-lock:#9fcbef;--ms:#e8e8e6;--none-l:#5c6066}}
+  :root{color-scheme:light}
+  @media (prefers-color-scheme:dark){:root:not([data-theme=light]){color-scheme:dark;--bg:#16181b;--panel:#1f2226;--ink:#e8e8e6;--muted:#9a9ea5;--line:#33373d;--accent:#6fa8d6;--soft:#24384a;--warn:#f0c46a;--warn-bg:#3a3020;--dl:#e08a62;--bar:#3f6f94;--bar-lock:#9fcbef;--ms:#e8e8e6;--none-l:#5c6066}}
+  :root[data-theme=dark]{color-scheme:dark;--bg:#16181b;--panel:#1f2226;--ink:#e8e8e6;--muted:#9a9ea5;--line:#33373d;--accent:#6fa8d6;--soft:#24384a;--warn:#f0c46a;--warn-bg:#3a3020;--dl:#e08a62;--bar:#3f6f94;--bar-lock:#9fcbef;--ms:#e8e8e6;--none-l:#5c6066}
+  .themebtn{all:unset;cursor:pointer;display:inline-grid;place-items:center;width:30px;height:30px;border:1px solid var(--line);border-radius:50%;color:var(--muted)}
+  .themebtn:hover{color:var(--ink);border-color:var(--muted)}
+  .themebtn svg{width:15px;height:15px}
+  .themebtn .sun{display:none}
+  :root.dark .themebtn .sun{display:block}
+  :root.dark .themebtn .moon{display:none}
+  :root.dark .ctx-del:hover{background:#3a2424}
   *{box-sizing:border-box}
   body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 "IBM Plex Sans",system-ui,sans-serif}
   .wrap{max-width:1200px;margin:0 auto;padding:32px 20px 60px}
@@ -170,6 +183,7 @@
       <span class="me">Tasks <span class="multi" id="partFilter"></span></span>
       <span class="me">Milestones <span class="multi" id="msPartFilter"></span></span>
       <label class="me">Your name <input id="me" placeholder="type your name to highlight your tasks"></label>
+      <button class="themebtn" id="themeBtn" type="button" title="Switch dark / light mode" aria-label="Switch dark / light mode"><svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg><svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>
     </div>
   </header>
 
@@ -345,7 +359,7 @@ async function writeFile(content,suggested,mime,ext,handle){
 }
 function planHtml(){
   S.savedAt=Date.now();
-  const clone=document.documentElement.cloneNode(true);
+  const clone=document.documentElement.cloneNode(true);clone.removeAttribute("data-theme");clone.classList.remove("dark");if(!clone.getAttribute("class"))clone.removeAttribute("class");
   clone.querySelector("#savedPlan").textContent=JSON.stringify(S).replace(/</g,"\\u003c");
   ["#body","#msBody","#gantt","#summary","#warnings","#legend"].forEach(sel=>{const el=clone.querySelector(sel);if(el)el.innerHTML="";});
   return "<!DOCTYPE html>\n"+clone.outerHTML;
@@ -984,6 +998,17 @@ function panelToggle(btn,panel,key,name){
 }
 panelToggle("tglTasks","taskPanel","surveyPlanner.showTasks","task list");
 panelToggle("tglMs","msPanel","surveyPlanner.showMs","milestones");
+
+/* ---------- light / dark mode ---------- */
+const DARKQ=window.matchMedia?matchMedia("(prefers-color-scheme: dark)"):null;
+function isDark(){const a=document.documentElement.getAttribute("data-theme");return a?a==="dark":!!(DARKQ&&DARKQ.matches);}
+function paintTheme(){document.documentElement.classList.toggle("dark",isDark());}
+function setTheme(t,remember){document.documentElement.setAttribute("data-theme",t);if(remember){try{localStorage.setItem("surveyPlanner.theme",t)}catch(e){}}paintTheme();}
+$("themeBtn").onclick=()=>setTheme(isDark()?"light":"dark",true);
+if(DARKQ&&DARKQ.addEventListener)DARKQ.addEventListener("change",paintTheme);
+// the website can switch the embedded preview along with its own dark mode
+window.addEventListener("message",e=>{if(e.source!==window.parent||e.origin!==location.origin)return;const t=e.data&&e.data.theme;if(t==="dark"||t==="light")setTheme(t,false);});
+paintTheme();
 
 /* ---------- credit line ---------- */
 const VERSION="1.1", VERSION_DATE="17.11.2026";
