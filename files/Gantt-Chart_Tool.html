@@ -309,7 +309,7 @@ const DE={
  "Copied":"Kopiert","Copy blocked by the browser":"Kopieren vom Browser blockiert","Table exported":"Tabelle exportiert","Could not export: ":"Export fehlgeschlagen: ",
  "Gantt chart exported":"Gantt-Diagramm exportiert","Nothing to export":"Nichts zu exportieren","No phases":"Keine Aufgaben","Nr":"Nr.",
  "© Created by Jan Menzner · Version {0} · {1}":"© Erstellt von Jan Menzner · Version {0} · {1}","Project Title":"Projekttitel",
- "Switch to German":"Auf Deutsch umschalten","By {0}":"Nach {0}","Add person":"Person hinzufügen","New person":"Neue Person",
+ "Switch to German":"Auf Deutsch umschalten","By {0}":"Nach {0}","Everyone: shown for every name typed in “Your name”":"Alle: wird bei jedem Namen unter „Dein Name“ angezeigt","Add person":"Person hinzufügen","New person":"Neue Person",
  "Delete – removed from all its tasks":"Löschen – wird aus allen Aufgaben entfernt","Merged into the existing name – undo with ↶":"Mit dem bestehenden Namen zusammengeführt – rückgängig mit ↶","Deleted – undo with ↶":"Gelöscht – rückgängig mit ↶","Delete – its tasks and milestones get no colour":"Löschen – zugehörige Aufgaben und Meilensteine werden farblos","Delete – its tasks and milestones go back to “All”":"Löschen – zugehörige Aufgaben und Meilensteine kommen zu „Alle“","Choose font":"Schrift wählen","System font":"Systemschrift","Reset {0}":"{0} zurücksetzen","Enter a name…":"Namen eingeben…","Unnamed":"Ohne Namen","None":"Ohne Zuordnung","Add {0}":"{0} hinzufügen","+ Add {0}…":"+ {0} hinzufügen…",
  "Click to rename (applies to this project)":"Klicken zum Umbenennen (gilt für dieses Projekt)","Click to rename everywhere":"Klicken, um überall umzubenennen","Show / hide":"Zeigen / ausblenden","Add colour":"Farbe hinzufügen","Add label":"Label hinzufügen",
  "New label":"Neues Label","Remove (not used anywhere)":"Entfernen (nirgends verwendet)","Rename this label everywhere":"Label überall umbenennen",
@@ -741,7 +741,8 @@ const partMatch=(sel,x)=>{const t=x.part&&x.part!=="all"?x.part:"all",c=keyOf(x.
   return (!sel.inc.length||sel.inc.includes(t))&&!sel.exc.includes(t)&&(!sel.cinc.length||sel.cinc.includes(c))&&!sel.cexc.includes(c);};
 const shownMs=m=>partMatch(MSPARTSEL(),m);   // milestones have their own part filter
 const shown=p=>partMatch(PARTSEL(),p);
-const mine=p=>{const m=ME.trim().toLowerCase();if(!m)return true;return people(p).some(n=>{n=n.toLowerCase();return n===m||n==="all";});};
+const EVERYONE=["all","alle"];   // "All" / "Alle" as a name = everyone, whatever the language
+const mine=p=>{const m=ME.trim().toLowerCase();if(!m)return true;return people(p).some(n=>{n=n.toLowerCase();return n===m||EVERYONE.includes(n);});};
 function renderLegend(){
   if(!S.colorLabels)S.colorLabels={};
   const u=usedColors(),ord=(GX.colorOrder||[]).filter(k=>u.includes(k));
@@ -811,9 +812,9 @@ $("teamLegend").addEventListener("click",e=>{const b=e.target.closest("[data-rmt
   S.teams=(S.teams||[]).filter(x=>x!==v);TEAMKEY="";renderEditor();renderMs();update();
   if(used.length)toast(t("Deleted – undo with ↶"));});
 /* ---------- people legend (Assigned to): rename everywhere, add, delete ---------- */
-const isAllName=n=>n.toLowerCase()==="all"||n.toLowerCase()===t("All").toLowerCase();   // "All" = everyone, not a person
+const isAllName=n=>EVERYONE.includes(n.toLowerCase());   // "All" / "Alle" = everyone
 function PEOPLE(){const m=new Map();
-  S.phases.forEach(p=>people(p).forEach(n=>{if(!isAllName(n)&&!m.has(n.toLowerCase()))m.set(n.toLowerCase(),n);}));
+  S.phases.forEach(p=>people(p).forEach(n=>{if(!m.has(n.toLowerCase()))m.set(n.toLowerCase(),n);}));
   (S.people||[]).forEach(n=>{if(!m.has(n.toLowerCase()))m.set(n.toLowerCase(),n);});
   return [...m.values()];}
 const personUsed=n=>S.phases.some(p=>people(p).some(x=>x.toLowerCase()===n.toLowerCase()));
@@ -822,11 +823,11 @@ function renderPeople(){
   const list=PEOPLE();
   const key=JSON.stringify(list.map(n=>[n,personUsed(n)]))+LANG;if(key===WHOKEY)return;WHOKEY=key;
   document.querySelector("#whoBlock .legcount").textContent=list.length?`(${list.length})`:"";
-  $("whoLegend").innerHTML=list.map(n=>`<label title="${t("Click to rename everywhere")}"><i class="pm"></i><input data-who="${esc(n)}" value="${esc(n)}"><button type="button" class="rm" data-rmw="${esc(n)}" title="${t(personUsed(n)?"Delete – removed from all its tasks":"Remove (not used anywhere)")}">×</button></label>`).join("");
+  $("whoLegend").innerHTML=list.map(n=>`<label title="${isAllName(n)?t("Everyone: shown for every name typed in “Your name”"):t("Click to rename everywhere")}"><i class="pm"></i><input data-who="${esc(n)}" value="${esc(n)}"><button type="button" class="rm" data-rmw="${esc(n)}" title="${t(personUsed(n)?"Delete – removed from all its tasks":"Remove (not used anywhere)")}">×</button></label>`).join("");
 }
 function renamePerson(old,nw){
   nw=(nw||"").replace(/[\s,]+/g," ").trim();                      // a name can't contain a comma (that separates names)
-  if(!nw||nw===old||isAllName(nw)){WHOKEY="";renderPeople();return;}
+  if(!nw||nw===old){WHOKEY="";renderPeople();return;}
   const hit=PEOPLE().find(n=>n!==old&&n.toLowerCase()===nw.toLowerCase()), to=hit||nw, o=old.toLowerCase();
   LASTPUSH=0;
   S.phases.forEach(p=>{if(people(p).some(x=>x.toLowerCase()===o))setWho(p,people(p).map(x=>x.toLowerCase()===o?to:x));});
