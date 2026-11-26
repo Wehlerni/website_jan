@@ -6,7 +6,19 @@
 <script>/* light / dark mode: ?theme= from the website, otherwise the last choice in this browser, otherwise the system setting */
 (function(){var t=null;try{t=new URLSearchParams(location.search).get("theme");}catch(e){}
   if(t!=="dark"&&t!=="light"){try{t=localStorage.getItem("surveyPlanner.theme");}catch(e){}}
-  if(t==="dark"||t==="light")document.documentElement.setAttribute("data-theme",t);})();</script>
+  if(t==="dark"||t==="light")document.documentElement.setAttribute("data-theme",t);})();
+/* font: the last choice in this browser (personal, like dark / light and language) */
+window.FONTS=[["plex","IBM Plex Sans",'"IBM Plex Sans",system-ui,sans-serif',"IBM+Plex+Sans:wght@400;500;600"],
+  ["inter","Inter",'"Inter",system-ui,sans-serif',"Inter:wght@400;500;600"],
+  ["source","Source Sans 3",'"Source Sans 3",system-ui,sans-serif',"Source+Sans+3:wght@400;500;600"],
+  ["serif","Source Serif 4",'"Source Serif 4",Georgia,serif',"Source+Serif+4:wght@400;500;600"],
+  ["system","System font",'system-ui,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif',""]];
+window.loadFonts=function(list){list.forEach(function(f){if(!f[3]||document.getElementById("font-"+f[0]))return;
+  var l=document.createElement("link");l.id="font-"+f[0];l.className="fontlink";l.rel="stylesheet";l.href="https://fonts.googleapis.com/css2?family="+f[3]+"&display=swap";document.head.appendChild(l);});};
+window.useFont=function(id){var f=FONTS.find(function(x){return x[0]===id;})||FONTS[0];
+  if(f[0]==="plex")document.documentElement.style.removeProperty("--font");else document.documentElement.style.setProperty("--font",f[2]);
+  loadFonts([f]);return f[0];};
+(function(){var id=null;try{id=localStorage.getItem("surveyPlanner.font");}catch(e){}if(id)useFont(id);})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@400&amp;display=swap" rel="stylesheet">
 <style>
@@ -17,19 +29,28 @@
   .themebtn{all:unset;cursor:pointer;display:inline-grid;place-items:center;width:30px;height:30px;border:1px solid var(--line);border-radius:50%;color:var(--muted)}
   .themebtn:hover{color:var(--ink);border-color:var(--muted)}
   .themebtn svg{width:15px;height:15px}
+  #langBtn{font-size:11px;font-weight:600;letter-spacing:.03em}
+  .modebtns{display:inline-flex;gap:6px}
+  #fontBtn{font-size:12px;font-weight:600}
+  .fontwrap{position:relative;display:inline-block}
+  .fontpop{display:none;position:absolute;right:0;top:calc(100% + 6px);z-index:45;background:var(--panel);border:1px solid var(--line);border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,.12);padding:6px;min-width:190px}
+  .fontwrap.open .fontpop{display:block}
+  .fontpop button{all:unset;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:12px;width:calc(100% - 20px);padding:6px 10px;border-radius:5px;font-size:14px;color:var(--ink)}
+  .fontpop button:hover{background:var(--soft)}
+  .fontpop button .ok{color:var(--accent);font-size:12px}
   .themebtn .sun{display:none}
   :root.dark .themebtn .sun{display:block}
   :root.dark .themebtn .moon{display:none}
   :root.dark .ctx-del:hover{background:#3a2424}
   *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 "IBM Plex Sans",system-ui,sans-serif}
+  body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 var(--font,"IBM Plex Sans",system-ui,sans-serif)}
   .wrap{max-width:1200px;margin:0 auto;padding:32px 20px 60px}
   header{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;margin:-32px -20px 22px;padding:16px 20px 12px;position:sticky;top:0;z-index:30;background:var(--bg);border-bottom:1px solid var(--line)}
-  h1{font-size:22px;font-weight:600;margin:0;flex:1;min-width:260px}
+  h1{font-size:22px;font-weight:600;margin:0;flex:1;min-width:180px}
   #title{font:inherit;padding:2px 6px;margin-left:-7px;max-width:640px}
   .dl{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--muted)}
   .me{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)}
-  .me input{width:260px;border-color:var(--line)}
+  .me input{width:200px;border-color:var(--line);text-overflow:ellipsis}
   select{font:inherit;color:var(--ink);background:transparent;border:1px solid transparent;border-radius:6px;padding:5px 4px;cursor:pointer}
   select:hover{border-color:var(--line)}
   select:focus{outline:none;border-color:var(--accent);background:var(--bg)}
@@ -42,13 +63,24 @@
   .multi.open .mpop{display:block}
   .mpop label{display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:5px;cursor:pointer;color:var(--ink);font-size:13px}
   .mpop label:hover{background:var(--soft)}
-  .mpop input{width:auto;margin:0}
+  .mpop input{width:auto;margin:0;flex:none}
   .mhead{display:flex;justify-content:space-between;padding:0 8px 4px;font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
   .mrow{display:flex;align-items:center;justify-content:space-between;border-radius:5px}
   .mrow:hover{background:var(--soft)}
   .mrow label:hover{background:none}
   .mrow .xbox{padding:5px 10px}
   .mrow input.exc{accent-color:#b5332b}
+  .mcols{display:flex;gap:6px}
+  .mcol{min-width:170px;max-width:280px}
+  .mrow label:first-child{min-width:0}
+  .mrow .mtx{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .mcol+.mcol{border-left:1px solid var(--line);padding-left:6px}
+  .mtitle{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--ink);padding:4px 8px 4px}
+  .mlist{max-height:340px;overflow:auto}
+  .mdot{display:inline-block;width:10px;height:10px;border-radius:3px;flex:none}
+  .mbtn{max-width:170px;overflow:hidden;text-overflow:ellipsis}
+  .mreset{all:unset;cursor:pointer;display:block;margin:2px 0 2px;padding:4px 8px;color:var(--accent);font-size:12px;border-radius:5px}
+  .mreset:hover{background:var(--soft)}
   .mclear{all:unset;cursor:pointer;display:block;margin-top:4px;padding:5px 8px;border-top:1px solid var(--line);color:var(--accent);font-size:12px;width:calc(100% - 16px)}
   .btns .hist{vertical-align:middle;margin-right:6px}
   .hist{display:inline-flex;border:1px solid var(--line);border-radius:6px;overflow:hidden}
@@ -158,12 +190,30 @@
   .bar span{position:absolute;left:100%;margin-left:6px;background:var(--panel);padding:0 3px;border-radius:3px;font-size:11px;color:var(--muted);white-space:nowrap;line-height:16px}
   .vline{position:absolute;top:0;bottom:0;border-left:2px solid var(--dl);z-index:1}
   .vline.today{border-left:2px dashed var(--muted)}
-  .legtitle{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:0 0 6px 2px}
-  .legend{display:grid;grid-template-rows:repeat(5,auto);grid-auto-flow:column;gap:2px 28px;align-items:center;justify-content:start}   /* max. 5 per column */
+  .legtitle{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:0 0 6px 0;display:flex;align-items:center;gap:4px}
+  .legwrap{display:flex;gap:44px;align-items:flex-start;flex-wrap:wrap}
+  .legtog{all:unset;cursor:pointer;display:flex;align-items:center;gap:5px;border-radius:4px;padding:1px 2px}
+  .legtog:hover{color:var(--ink)}
+  .legtog .chev{display:block;width:13px;height:13px;flex:none;transition:transform .15s}
+  .legblock.closed .legtog .chev{transform:rotate(-90deg)}
+  .legcount{font-weight:400;letter-spacing:0;cursor:pointer}
+  .legname{outline:none;border-radius:4px;padding:1px 4px;margin-left:-2px;cursor:text;min-width:20px}
+  .legname:hover{background:var(--soft);color:var(--ink)}
+  .legname:focus{background:var(--bg);box-shadow:0 0 0 1px var(--accent);color:var(--ink)}
+  .legadd{all:unset;cursor:pointer;color:var(--accent);font-size:15px;font-weight:500;line-height:1;padding:0 5px;border-radius:4px}
+  .legadd:hover{background:var(--soft)}
+  .legblock.closed .legend{display:none}
+  .legend .rm{all:unset;cursor:pointer;color:var(--muted);opacity:.6;padding:0 4px;font-size:13px}
+  .legend .rm:hover{opacity:1;color:var(--ink)}
+  .legend i.tm{background:none;border:1.5px solid var(--muted);border-radius:50%;width:10px;height:10px;margin:0 2px}
+  #teamLegend input,#whoLegend input{width:170px}
+  .legend i.pm{background:none;border:1.5px solid var(--muted);border-radius:3px;width:10px;height:10px;margin:0 2px}
+  .legend{display:flex;flex-direction:column;gap:2px;align-items:flex-start}   /* one column each */
   .legend label{display:flex;align-items:center;gap:6px}
   .legend i{display:inline-block;width:14px;height:12px;border-radius:3px;flex:none}
   .legend input{width:220px;padding:3px 6px;font-size:12px}
-  .foot{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-top:14px;font-size:12px;color:var(--muted)}
+  .foot{display:flex;flex-direction:column;gap:16px;margin-top:14px;font-size:12px;color:var(--muted)}
+  .foot .btns{align-self:flex-end}
   .btn{all:unset;cursor:pointer;border:1px solid var(--line);border-radius:6px;padding:6px 12px;font-size:13px;color:var(--ink)}
   .btn:hover{border-color:var(--muted)}
   .credit{margin:-10px 0 16px;text-align:center;font-size:11px;color:var(--muted)}
@@ -177,50 +227,107 @@
 <body>
 <div class="wrap">
   <header>
-    <h1><input id="title" spellcheck="false" title="Click to rename"></h1>
+    <h1><input id="title" spellcheck="false" data-tt="Click to rename" title="Click to rename"></h1>
     <div class="filters">
-      <span class="hist"><button class="undo" title="Undo (Ctrl/Cmd+Z)">↶</button><button class="redo" title="Redo (Ctrl/Cmd+Shift+Z)" disabled="">↷</button></span>
-      <span class="me">Tasks <span class="multi" id="partFilter"></span></span>
-      <span class="me">Milestones <span class="multi" id="msPartFilter"></span></span>
-      <label class="me">Your name <input id="me" placeholder="type your name to highlight your tasks"></label>
-      <button class="themebtn" id="themeBtn" type="button" title="Switch dark / light mode" aria-label="Switch dark / light mode"><svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg><svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>
+      <span class="hist"><button class="undo" data-tt="Undo (Ctrl/Cmd+Z)" title="Undo (Ctrl/Cmd+Z)">↶</button><button class="redo" data-tt="Redo (Ctrl/Cmd+Shift+Z)" title="Redo (Ctrl/Cmd+Shift+Z)" disabled="">↷</button></span>
+      <span class="me"><span data-t="Tasks">Tasks</span> <span class="multi" id="partFilter"></span></span>
+      <span class="me"><span data-t="Milestones">Milestones</span> <span class="multi" id="msPartFilter"></span></span>
+      <label class="me"><span data-t="Your name">Your name</span> <input id="me" data-tp="type your name to highlight your tasks" placeholder="type your name to highlight your tasks"></label>
+      <span class="modebtns"><span class="fontwrap"><button class="themebtn" id="fontBtn" type="button" data-tt="Choose font" title="Choose font" aria-haspopup="true">Aa</button><div class="fontpop" id="fontPop"></div></span><button class="themebtn" id="langBtn" type="button" title="Deutsch / English" aria-label="Deutsch / English">DE</button>
+      <button class="themebtn" id="themeBtn" type="button" data-tt="Switch dark / light mode" data-ta="Switch dark / light mode" title="Switch dark / light mode" aria-label="Switch dark / light mode"><svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg><svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button></span>
     </div>
   </header>
 
   <div class="panel">
     <div id="warnings"></div>
     <div class="sumrow"><div class="summary" id="summary"></div>
-      <div class="seg" id="gsort"><button data-o="start" class="on">By start date</button><button data-o="group">By work package</button><button data-o="team">By team</button></div></div>
+      <div class="seg" id="gsort"><button data-o="start" class="on" data-t="By start date">By start date</button><button data-o="group">By colour</button><button data-o="team">By label</button></div></div>
     <div class="gantt"><div id="gantt"></div></div>
-    <div class="zoombar"><input type="date" id="zFrom" title="First date shown"><button data-z="out" title="Zoom out">−</button><div class="zscroll" title="Drag to move earlier / later"><div class="zthumb" style="left: 0%; width: 100%;"><i class="zh l" title="Drag to change the first date shown"></i><i class="zh r" title="Drag to change the last date shown"></i></div></div><button data-z="in" title="Zoom in">+</button><button data-z="fit" title="Whole plan (or double-click an empty spot in the chart)">Fit</button><input type="date" id="zTo" title="Last date shown"></div>
+    <div class="zoombar"><input type="date" id="zFrom" data-tt="First date shown" title="First date shown"><button data-z="out" data-tt="Zoom out" title="Zoom out">−</button><div class="zscroll" data-tt="Drag to move earlier / later" title="Drag to move earlier / later"><div class="zthumb" style="left: 0%; width: 100%;"><i class="zh l" data-tt="Drag to change the first date shown" title="Drag to change the first date shown"></i><i class="zh r" data-tt="Drag to change the last date shown" title="Drag to change the last date shown"></i></div></div><button data-z="in" data-tt="Zoom in" title="Zoom in">+</button><button data-z="fit" data-t="Fit" data-tt="Whole plan (or double-click an empty spot in the chart)" title="Whole plan (or double-click an empty spot in the chart)">Fit</button><input type="date" id="zTo" data-tt="Last date shown" title="Last date shown"></div>
     <div class="foot">
-      <div class="legwrap"><div class="legtitle">Work Package</div><div class="legend" id="legend"></div></div>
-      <span class="btns"><span class="hist"><button class="undo" title="Undo (Ctrl/Cmd+Z)">↶</button><button class="redo" title="Redo (Ctrl/Cmd+Shift+Z)" disabled="">↷</button></span> <button class="btn" id="exportTable">Export table</button> <button class="btn" id="exportPng">Export Gantt (PNG)</button> <button class="btn" id="saveAs">Save as…</button> <button class="btn" id="saveFile">Save file</button></span>
+      <div class="legwrap">
+        <div class="legblock" id="pkgBlock"><div class="legtitle"><button type="button" class="legtog" data-tt="Show / hide" title="Show / hide"><svg class="chev" viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button><span class="legname" data-dim="color" contenteditable="plaintext-only" spellcheck="false">Colour</span><span class="legcount" data-tt="Show / hide" title="Show / hide"></span><button type="button" class="legadd" id="addPkg">+</button></div><div class="legend" id="legend"></div></div>
+        <div class="legblock" id="teamBlock"><div class="legtitle"><button type="button" class="legtog" data-tt="Show / hide" title="Show / hide"><svg class="chev" viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button><span class="legname" data-dim="label" contenteditable="plaintext-only" spellcheck="false">Label</span><span class="legcount" data-tt="Show / hide" title="Show / hide"></span><button type="button" class="legadd" id="addTeam">+</button></div><div class="legend" id="teamLegend"></div></div>
+        <div class="legblock" id="whoBlock"><div class="legtitle"><button type="button" class="legtog" data-tt="Show / hide" title="Show / hide"><svg class="chev" viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button><span class="legname" data-dim="who" contenteditable="plaintext-only" spellcheck="false">Assigned to</span><span class="legcount" data-tt="Show / hide" title="Show / hide"></span><button type="button" class="legadd" id="addWho">+</button></div><div class="legend" id="whoLegend"></div></div>
+      </div>
+      <span class="btns"><span class="hist"><button class="undo" data-tt="Undo (Ctrl/Cmd+Z)" title="Undo (Ctrl/Cmd+Z)">↶</button><button class="redo" data-tt="Redo (Ctrl/Cmd+Shift+Z)" title="Redo (Ctrl/Cmd+Shift+Z)" disabled="">↷</button></span> <button class="btn" id="exportTable" data-t="Export table">Export table</button> <button class="btn" id="exportPng" data-t="Export Gantt (PNG)">Export Gantt (PNG)</button> <button class="btn" id="saveAs" data-t="Save as…">Save as…</button> <button class="btn" id="saveFile">Save file</button></span>
     </div>
   </div>
 
-  <div class="credit" id="credit">© Created by Jan Menzner · Version 1.1 · 17.11.2026</div>
+  <div class="credit" id="credit">© Created by Jan Menzner · Version 1.2 · 26.11.2026</div>
   <div class="toggles"><button class="btn" id="tglTasks">Show task list</button> <button class="btn" id="tglMs">Show milestones</button></div>
 
   <div class="panel hidden" id="taskPanel">
-    <button class="add top" id="add">+ Add task</button>
+    <button class="add top" id="add" data-t="+ Add task">+ Add task</button>
     <table>
-      <thead><tr><th></th><th style="width:30px"></th><th style="width:82px">Team</th><th>Task</th><th>Assigned to</th><th style="width:64px">Weeks</th><th style="width:64px">Days</th><th style="width:90px" title="Numbers of phases that must finish first">After #</th><th class="sort on" data-s="start" style="width:150px" title="Order rows by start date">Start ↕</th><th class="sort" data-s="end" style="width:150px" title="Order rows by end date">End ↕</th><th></th></tr></thead>
+      <thead><tr><th></th><th style="width:30px"></th><th style="width:82px" data-dim="label">Label</th><th data-t="Task">Task</th><th data-dim="who">Assigned to</th><th style="width:64px" data-t="Weeks">Weeks</th><th style="width:64px" data-t="Days">Days</th><th style="width:90px" data-t="After #" data-tt="Numbers of phases that must finish first" title="Numbers of phases that must finish first">After #</th><th class="sort on" data-s="start" style="width:150px" data-t="Start ↕" data-tt="Order rows by start date" title="Order rows by start date">Start ↕</th><th class="sort" data-s="end" style="width:150px" data-t="End ↕" data-tt="Order rows by end date" title="Order rows by end date">End ↕</th><th></th></tr></thead>
       <tbody id="body"></tbody>
     </table>
   </div>
 
   <div class="panel hidden" id="msPanel">
-    <h2>Milestones</h2>
-    <button class="add top" id="addMs">+ Add milestone</button>
+    <h2 data-t="Milestones">Milestones</h2>
+    <button class="add top" id="addMs" data-t="+ Add milestone">+ Add milestone</button>
     <table><tbody id="msBody"></tbody></table>
   </div>
 </div>
 <div id="toast"></div>
 
-<script id="savedPlan" type="application/json">{"nextId": 4, "title": "Project Title", "anchor": "2026-11-17", "phases": [{"id": 1, "name": "Task 1 · drag bar to move", "who": "Person A", "pred": [], "start": "2026-10-27", "end": "2026-12-21", "dur": 56, "color": "#2c4a6b", "part": "Team A"}, {"id": 2, "name": "Task 2 · right-click to edit", "who": "Person B, Person C", "pred": [1], "start": "2026-12-22", "end": "2027-01-25", "dur": 35, "color": "#a8514a", "part": "Team B"}, {"id": 3, "name": "Task 3 · click to rename", "who": "Person A", "pred": [], "start": "2027-01-05", "end": "2027-02-01", "dur": 28, "color": "#2c4a6b", "part": "Team A"}], "milestones": [{"date": "2026-12-01", "label": "Milestone · double-click to rename", "color": "#2c4a6b"}, {"date": "2026-12-22", "label": "Milestone · drag to move", "color": "#a8514a"}, {"date": "2027-01-12", "label": "Milestone · right-click to edit", "color": "#2c4a6b"}], "colorLabels": {"#2c4a6b": "Work package 1 · click to rename", "#a8514a": "Work package 2 · right-click to edit"}, "ganttSort": "start", "tableSort": "start", "savedAt": 0}</script>
+<script id="savedPlan" type="application/json">{"nextId": 4, "title": "Project Title", "anchor": "2026-11-17", "phases": [{"id": 1, "name": "Task 1 · drag bar to move", "who": "Person A", "pred": [], "start": "2026-10-27", "end": "2026-12-21", "dur": 56, "color": "#2c4a6b", "part": "Label A"}, {"id": 2, "name": "Task 2 · right-click to edit", "who": "Person B, Person C", "pred": [1], "start": "2026-12-22", "end": "2027-01-25", "dur": 35, "color": "#a8514a", "part": "Label B"}, {"id": 3, "name": "Task 3 · click to rename", "who": "Person A", "pred": [], "start": "2027-01-05", "end": "2027-02-01", "dur": 28, "color": "#2c4a6b", "part": "Label A"}], "milestones": [{"date": "2026-12-01", "label": "Milestone · double-click to rename", "color": "#2c4a6b"}, {"date": "2026-12-22", "label": "Milestone · drag to move", "color": "#a8514a"}, {"date": "2027-01-12", "label": "Milestone · right-click to edit", "color": "#2c4a6b"}], "colorLabels": {"#2c4a6b": "Colour 1 · click to rename", "#a8514a": "Colour 2 · right-click to edit"}, "ganttSort": "start", "tableSort": "start", "savedAt": 0}</script>
 <script>
 const DEFAULTS=[];
+/* ---------- language: only the tool's own wording is translated, never what people type ---------- */
+const DE={
+ "Click to rename":"Klicken zum Umbenennen","Undo (Ctrl/Cmd+Z)":"Rückgängig (Strg/Cmd+Z)","Redo (Ctrl/Cmd+Shift+Z)":"Wiederholen (Strg/Cmd+Umschalt+Z)",
+ "Tasks":"Aufgaben","Milestones":"Meilensteine","Your name":"Dein Name","type your name to highlight your tasks":"Namen eingeben, um deine Aufgaben hervorzuheben",
+ "Switch dark / light mode":"Dunkel / hell umschalten","By start date":"Nach Startdatum","By colour":"Nach Farbe","By label":"Nach Label",
+ "First date shown":"Erstes angezeigtes Datum","Last date shown":"Letztes angezeigtes Datum","Zoom out":"Herauszoomen","Zoom in":"Hineinzoomen",
+ "Drag to move earlier / later":"Ziehen, um früher / später zu zeigen","Drag to change the first date shown":"Ziehen, um das erste angezeigte Datum zu ändern",
+ "Drag to change the last date shown":"Ziehen, um das letzte angezeigte Datum zu ändern","Fit":"Alles","Whole plan (or double-click an empty spot in the chart)":"Ganzer Plan (oder Doppelklick auf eine leere Stelle im Diagramm)",
+ "Export table":"Tabelle exportieren","Export Gantt (PNG)":"Gantt exportieren (PNG)","Save as…":"Speichern unter…","Save file":"Datei speichern",
+ "+ Add task":"+ Aufgabe hinzufügen","+ Add milestone":"+ Meilenstein hinzufügen","Label":"Label","Task":"Aufgabe","Assigned to":"Zuständig","Weeks":"Wochen","Days":"Tage",
+ "After #":"Nach #","Numbers of phases that must finish first":"Nummern der Aufgaben, die vorher enden müssen","Start ↕":"Start ↕","End ↕":"Ende ↕",
+ "Order rows by start date":"Zeilen nach Startdatum ordnen","Order rows by end date":"Zeilen nach Enddatum ordnen",
+ "All":"Alle","+ New label…":"+ Neues Label…","Label name":"Labelname","Line colour":"Linienfarbe","Name, e.g. Kick-off":"Bezeichnung, z. B. Kick-off","Delete":"Löschen",
+ "Download the page first, open the file, then save from there":"Erst die Seite herunterladen, die Datei öffnen und dort speichern",
+ "File name (it will go to your Downloads folder):":"Dateiname (wird im Download-Ordner gespeichert):","Saved":"Gespeichert","Could not save: ":"Speichern fehlgeschlagen: ",
+ "“{0}” ends ({1}) before it starts ({2}).":"„{0}“ endet ({1}), bevor es beginnt ({2}).",
+ "Overlap: “{0}” starts {1}, but “{2}” (which it comes after) only ends {3}.":"Überschneidung: „{0}“ beginnt {1}, aber „{2}“ (das davor liegen soll) endet erst {3}.",
+ "Colour":"Farbe","Fill in the rest: from both dates, or from one date + weeks/days":"Rest ausfüllen: aus beiden Daten oder aus einem Datum + Wochen/Tagen",
+ "Enter both dates, or one date plus weeks/days":"Beide Daten oder ein Datum plus Wochen/Tage eingeben",
+ "Show":"Zeigen","Hide":"Ausblenden","Show everything":"Alles zeigen","Everything":"Alles","All except ":"Alle außer "," · not ":" · nicht ","Hide only {0}":"Nur {0} ausblenden",
+ "Right-click to change this colour everywhere":"Rechtsklick: diese Farbe überall ändern","Name this colour…":"Farbe benennen…",
+ "Start":"Start","End":"Ende","Total":"Gesamt","Until start":"Bis zum Start","week":"Woche","weeks":"Wochen","day":"Tag","days":"Tage",
+ "Drag here to set the dates":"Hier ziehen, um die Daten festzulegen","Show the whole plan, including what is already over":"Ganzen Plan zeigen, auch Vergangenes",
+ "Start the chart at today again":"Diagramm wieder bei heute beginnen","◀ Show all":"◀ Alles zeigen","Hide past ▶":"Vergangenes ausblenden ▶",
+ "No tasks yet":"Noch keine Aufgaben","No tasks match this filter":"Keine Aufgaben für diese Auswahl","Unnamed colour":"Unbenannte Farbe","No colour":"Keine Farbe",
+ "New task":"Neue Aufgabe","New milestone":"Neuer Meilenstein","Milestone":"Meilenstein","Colour":"Farbe","names, comma-separated":"Namen, durch Komma getrennt",
+ "Delete task":"Aufgabe löschen","Delete milestone":"Meilenstein löschen","Task deleted – undo with ↶":"Aufgabe gelöscht – rückgängig mit ↶","Milestone deleted – undo with ↶":"Meilenstein gelöscht – rückgängig mit ↶",
+ "Show task list":"Aufgabenliste zeigen","Hide task list":"Aufgabenliste ausblenden","Show milestones":"Meilensteine zeigen","Hide milestones":"Meilensteine ausblenden",
+ "Merged with the colour already in use – undo with ↶":"Mit der bereits verwendeten Farbe zusammengeführt – rückgängig mit ↶",
+ "New colour for all its tasks and milestones":"Neue Farbe für alle zugehörigen Aufgaben und Meilensteine"," (in use – merges)":" (vergeben – wird zusammengeführt)","Pick a new colour":"Neue Farbe wählen","black (no category)":"Schwarz (keine Kategorie)",
+ "Copied":"Kopiert","Copy blocked by the browser":"Kopieren vom Browser blockiert","Table exported":"Tabelle exportiert","Could not export: ":"Export fehlgeschlagen: ",
+ "Gantt chart exported":"Gantt-Diagramm exportiert","Nothing to export":"Nichts zu exportieren","No phases":"Keine Aufgaben","Nr":"Nr.",
+ "© Created by Jan Menzner · Version {0} · {1}":"© Erstellt von Jan Menzner · Version {0} · {1}","Project Title":"Projekttitel",
+ "Switch to German":"Auf Deutsch umschalten","By {0}":"Nach {0}","Add person":"Person hinzufügen","New person":"Neue Person",
+ "Delete – removed from all its tasks":"Löschen – wird aus allen Aufgaben entfernt","Merged into the existing name – undo with ↶":"Mit dem bestehenden Namen zusammengeführt – rückgängig mit ↶","Deleted – undo with ↶":"Gelöscht – rückgängig mit ↶","Delete – its tasks and milestones get no colour":"Löschen – zugehörige Aufgaben und Meilensteine werden farblos","Delete – its tasks and milestones go back to “All”":"Löschen – zugehörige Aufgaben und Meilensteine kommen zu „Alle“","Choose font":"Schrift wählen","System font":"Systemschrift","Reset {0}":"{0} zurücksetzen","Enter a name…":"Namen eingeben…","Unnamed":"Ohne Namen","None":"Ohne Zuordnung","Add {0}":"{0} hinzufügen","+ Add {0}…":"+ {0} hinzufügen…",
+ "Click to rename (applies to this project)":"Klicken zum Umbenennen (gilt für dieses Projekt)","Click to rename everywhere":"Klicken, um überall umzubenennen","Show / hide":"Zeigen / ausblenden","Add colour":"Farbe hinzufügen","Add label":"Label hinzufügen",
+ "New label":"Neues Label","Remove (not used anywhere)":"Entfernen (nirgends verwendet)","Rename this label everywhere":"Label überall umbenennen",
+ "Merged into the existing label with that name – undo with ↶":"Mit dem bestehenden Label dieses Namens zusammengeführt – rückgängig mit ↶","Switch to English":"Auf Englisch umschalten"
+};
+let LANG="en";try{const u=new URLSearchParams(location.search).get("lang");LANG=(u==="de"||u==="en")?u:(localStorage.getItem("surveyPlanner.lang")==="de"?"de":"en");}catch(e){}
+window.t=t;function t(k,...a){let r=(LANG==="de"&&DE[k])||k;a.forEach((v,i)=>{r=r.split("{"+i+"}").join(v);});return r;}
+const WDS=()=>LANG==="de"?["So","Mo","Di","Mi","Do","Fr","Sa"]:["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+const MOS=()=>LANG==="de"?["Jan","Feb","Mär","Apr","Mai","Jun","Jul","Aug","Sep","Okt","Nov","Dez"]:["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+// fixed wording in the page itself: data-t = text, data-tt = tooltip, data-tp = placeholder, data-ta = screen-reader label
+function applyStatic(){
+  document.documentElement.lang=LANG;
+  document.querySelectorAll("[data-t]").forEach(el=>el.textContent=t(el.dataset.t));
+  document.querySelectorAll("[data-tt]").forEach(el=>el.title=t(el.dataset.tt));
+  document.querySelectorAll("[data-tp]").forEach(el=>el.placeholder=t(el.dataset.tp));
+  document.querySelectorAll("[data-ta]").forEach(el=>el.setAttribute("aria-label",t(el.dataset.ta)));
+  const b=document.getElementById("langBtn");if(b){b.textContent=LANG==="de"?"EN":"DE";/* shows the language you switch to, like the moon / sun button */b.title=b.ariaLabel=LANG==="de"?t("Switch to English"):t("Switch to German");}
+}
 const DAY=864e5;
 const COLORS={ // dark = phase has dates, light = no dates yet
   blue:["#a6cbe8","#245d8f"], teal:["#a6dccf","#24806e"], green:["#c3dca4","#5a8230"], amber:["#f4d694","#ad7414"],
@@ -231,12 +338,12 @@ const colVal=k=>k&&COLORS[k]?COLORS[k][1]:(/^#[0-9a-f]{6}$/i.test(k||"")?k:null)
 const keyOf=c=>{c=LEGACY[c]||c;return colVal(c)?c:"";};                               // "" = black, no category
 const colOf=p=>keyOf(p.color);
 // The palette offers black + the colours currently in use + "new colour"; unused colours drop out.
-function usedColors(){const u=new Set();[...S.phases,...S.milestones].forEach(x=>{const k=keyOf(x.color);if(k)u.add(k);});
+function usedColors(){const u=new Set();[...S.phases,...S.milestones].forEach(x=>{const k=keyOf(x.color);if(k)u.add(k);});(S.packages||[]).forEach(k=>{if(colVal(k))u.add(k);});
   return [...Object.keys(COLORS).filter(k=>u.has(k)),...[...u].filter(k=>!COLORS[k])];}
 function swatches(cur){
-  return `<button data-c="" title="black (no category)" class="${!cur?"on":""}" style="background:var(--ms)"></button>`+
+  return `<button data-c="" title="${t("black (no category)")}" class="${!cur?"on":""}" style="background:var(--ms)"></button>`+
     usedColors().map(k=>`<button data-c="${k}" title="${esc((S.colorLabels||{})[k]||k)}" class="${cur===k?"on":""}" style="background:${colVal(k)}"></button>`).join("")+
-    `<label class="newcol" title="Pick a new colour">+<input type="color" value="${colVal(cur)||"#3366cc"}"></label>`;
+    `<label class="newcol" title="${t("Pick a new colour")}">+<input type="color" value="${colVal(cur)||"#3366cc"}"></label>`;
 }
 function wireSwatches(box,pick){
   box.querySelectorAll("button[data-c]").forEach(b=>b.onclick=()=>pick(b.dataset.c||null));
@@ -248,20 +355,19 @@ const MSCOL=k=>colVal(keyOf(k))||"var(--ms)";   // milestones: black by default
 const iso=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
 const parse=s=>{const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec((s||"").trim());return m&&+m[1]>=2000?new Date(+m[1],+m[2]-1,+m[3]):null};
 const add=(d,n)=>{const r=new Date(d);r.setDate(r.getDate()+n);return r};
-const WD=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],MO=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-const fmt=d=>`${WD[d.getDay()]} ${String(d.getDate()).padStart(2,"0")}.${String(d.getMonth()+1).padStart(2,"0")}.${d.getFullYear()}`;
+const fmt=d=>`${WDS()[d.getDay()]} ${String(d.getDate()).padStart(2,"0")}.${String(d.getMonth()+1).padStart(2,"0")}.${d.getFullYear()}`;
 const short=d=>`${String(d.getDate()).padStart(2,"0")}.${String(d.getMonth()+1).padStart(2,"0")}.`;
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const people=p=>(p.who||"").split(",").map(x=>x.trim()).filter(Boolean);
 const $=id=>document.getElementById(id);
 const span=(s,e)=>Math.round((e-s)/DAY)+1;                            // start/end -> duration in days (inclusive)
-const BUILTIN=[["all","All"]];   // the only fixed team; "all" = belongs to every team
+const BUILTIN=[["all","All"]];   // label is translated in TEAMS()   // the only fixed team; "all" = belongs to every team
 // Teams = "All" + any team you typed in that is still used by a task or milestone (unused ones disappear).
-function TEAMS(){const t=new Map(BUILTIN);[...S.phases,...S.milestones].forEach(x=>{if(x.part&&!t.has(x.part))t.set(x.part,x.part);});return [...t];}
-const teamOptions=cur=>TEAMS().map(([v,l])=>`<option value="${v}"${(cur||"all")===v?" selected":""}>${esc(l)}</option>`).join("")+`<option value="__new">+ New team…</option>`;
-// "+ New team…": swap the dropdown for a text field; Enter or leaving the field confirms, Esc cancels.
+function TEAMS(){const m=new Map(BUILTIN.map(([v,l])=>[v,t(l)]));[...S.phases,...S.milestones].forEach(x=>{if(x.part&&!m.has(x.part))m.set(x.part,x.part);});(S.teams||[]).forEach(v=>{if(!m.has(v))m.set(v,v);});return [...m];}   // teams added in the legend come after the ones in use
+const teamOptions=cur=>TEAMS().map(([v,l])=>`<option value="${v}"${(cur||"all")===v?" selected":""}>${esc(l)}</option>`).join("")+`<option value="__new">${dimCustom("label")?t("+ Add {0}…",dimName("label")):t("+ New label…")}</option>`;
+// "+ New label…": swap the dropdown for a text field; Enter or leaving the field confirms, Esc cancels.
 function askTeam(sel,done){
-  const inp=document.createElement("input");inp.placeholder="Team name";inp.className="newteam";
+  const inp=document.createElement("input");inp.placeholder=t("Label name");inp.className="newteam";
   sel.style.display="none";sel.after(inp);inp.focus();
   let finished=false;
   const finish=ok=>{if(finished)return;finished=true;
@@ -275,11 +381,11 @@ function askTeam(sel,done){
 const setTeam=(x,v)=>{x.part=(!v||v==="all")?undefined:v;};
 function renderMs(){
   $("msBody").innerHTML=S.milestones.map((m,i)=>`<tr data-i="${i}">
-    <td style="width:34px"><button class="sw msw" title="Line colour" style="background:${MSCOL(m.color)}"></button></td>
+    <td style="width:34px"><button class="sw msw" title="${t("Line colour")}" style="background:${MSCOL(m.color)}"></button></td>
     <td style="width:82px"><select data-m="part">${teamOptions(m.part)}</select></td>
     <td style="width:160px"><input type="date" data-m="date" value="${m.date||""}"></td>
-    <td><input data-m="label" placeholder="Label, e.g. Survey start" value="${esc(m.label||"")}"></td>
-    <td style="width:40px"><button class="x" title="Delete">✕</button></td></tr>`).join("");
+    <td><input data-m="label" placeholder="${t("Name, e.g. Kick-off")}" value="${esc(m.label||"")}"></td>
+    <td style="width:40px"><button class="x" title="${t("Delete")}">✕</button></td></tr>`).join("");
 }
 
 function defaults(){
@@ -339,42 +445,42 @@ const save=()=>{
   LASTJ=j; showDirty();
   try{localStorage.setItem(KEY,JSON.stringify({base:BASE,state:S}))}catch(e){}
 };
-function showDirty(){const b=$("saveFile");if(b)b.textContent=DIRTY?"Save file •":"Save file";}
+function showDirty(){const b=$("saveFile");if(b)b.textContent=t("Save file")+(DIRTY?" •":"");}
 
 /* ---------- save the plan into an HTML file ---------- */
 let HANDLE=null;
 const slug=t=>(t||"survey-timeline").trim().replace(/[\\/:*?"<>|]+/g,"").replace(/\s+/g,"-")||"survey-timeline";
 // Writes a file: with a file picker where the browser has one (Chrome/Edge), otherwise as a download.
 async function writeFile(content,suggested,mime,ext,handle){
-  if(window.self!==window.top){toast("Download the page first, open the file, then save from there");return null;}
+  if(window.self!==window.top){toast(t("Download the page first, open the file, then save from there"));return null;}
   if(window.showSaveFilePicker){
     const h=handle||await showSaveFilePicker({suggestedName:suggested,types:[{description:ext.toUpperCase()+" file",accept:{[mime]:["."+ext]}}]});
     const w=await h.createWritable();await w.write(content);await w.close();return h;
   }
   let name=suggested;
-  if(!handle){try{name=prompt("File name (it will go to your Downloads folder):",suggested);}catch(e){}if(!name)return null;if(!name.toLowerCase().endsWith("."+ext))name+="."+ext;}
+  if(!handle){try{name=prompt(t("File name (it will go to your Downloads folder):"),suggested);}catch(e){}if(!name)return null;if(!name.toLowerCase().endsWith("."+ext))name+="."+ext;}
   const a=document.createElement("a");a.href=URL.createObjectURL(content instanceof Blob?content:new Blob([content],{type:mime}));a.download=name;
   document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),2000);
   return "download";
 }
 function planHtml(){
   S.savedAt=Date.now();
-  const clone=document.documentElement.cloneNode(true);clone.removeAttribute("data-theme");clone.classList.remove("dark");if(!clone.getAttribute("class"))clone.removeAttribute("class");
+  const clone=document.documentElement.cloneNode(true);clone.style.removeProperty("--font");if(!clone.getAttribute("style"))clone.removeAttribute("style");clone.querySelectorAll(".fontlink").forEach(l=>l.remove());clone.querySelector(".fontwrap").classList.remove("open");clone.querySelector("#fontPop").innerHTML="";clone.removeAttribute("data-theme");clone.classList.remove("dark");if(!clone.getAttribute("class"))clone.removeAttribute("class");
   clone.querySelector("#savedPlan").textContent=JSON.stringify(S).replace(/</g,"\\u003c");
-  ["#body","#msBody","#gantt","#summary","#warnings","#legend"].forEach(sel=>{const el=clone.querySelector(sel);if(el)el.innerHTML="";});
+  ["#body","#msBody","#gantt","#summary","#warnings","#legend","#teamLegend","#whoLegend"].forEach(sel=>{const el=clone.querySelector(sel);if(el)el.innerHTML="";});
   return "<!DOCTYPE html>\n"+clone.outerHTML;
 }
 function afterSave(){
   BASE=S.savedAt;
   try{const v=JSON.stringify({base:BASE,state:S});localStorage.setItem(KEY,v);localStorage.setItem("surveyPlanner.v6:"+S.planId,v);}catch(e){}
-  DIRTY=false;showDirty();toast("Saved");
+  DIRTY=false;showDirty();toast(t("Saved"));
 }
 // Save file: writes to the file chosen the first time (the browser cannot write to the opened file without asking once).
 async function saveFile(){
   if(!HANDLE||HANDLE==="download")return saveAs(true);
   if(!S.planId)S.planId=Math.random().toString(36).slice(2,10);
   try{await writeFile(planHtml(),"","text/html","html",HANDLE);afterSave();}
-  catch(e){if(e&&e.name!=="AbortError")toast("Could not save: "+(e.message||e));}
+  catch(e){if(e&&e.name!=="AbortError")toast(t("Could not save: ")+(e.message||e));}
 }
 // Save as: always asks for a name and place; the copy gets its own identity so the two files don't mix.
 async function saveAs(first){
@@ -384,7 +490,7 @@ async function saveAs(first){
     const h=await writeFile(planHtml(),slug(S.title)+".html","text/html","html",null);
     if(!h){S.planId=oldId;return;}
     HANDLE=h;afterSave();
-  }catch(e){S.planId=oldId;if(e&&e.name!=="AbortError")toast("Could not save: "+(e.message||e));}
+  }catch(e){S.planId=oldId;if(e&&e.name!=="AbortError")toast(t("Could not save: ")+(e.message||e));}
 }
 
 /* ---------- dates ---------- */
@@ -399,13 +505,13 @@ function schedule(){
   const res=new Map(), warns=[];
   S.phases.filter(isDated).forEach(p=>{
     const s=parse(p.start),e=parse(p.end);
-    if(e<s)warns.push(`“${esc(p.name)}” ends (${fmt(e)}) before it starts (${fmt(s)}).`);
+    if(e<s)warns.push(t("“{0}” ends ({1}) before it starts ({2}).",esc(p.name),fmt(e),fmt(s)));
     res.set(p.id,{start:s,end:e});
   });
   S.phases.forEach(p=>{
     const r=res.get(p.id); if(!r)return;
     (p.pred||[]).map(id=>byId.get(id)).filter(Boolean).forEach(q=>{const rq=res.get(q.id);
-      if(rq&&rq.end>=r.start)warns.push(`Overlap: “${esc(p.name)}” starts ${fmt(r.start)}, but “${esc(q.name)}” (which it comes after) only ends ${fmt(rq.end)}.`);});
+      if(rq&&rq.end>=r.start)warns.push(t("Overlap: “{0}” starts {1}, but “{2}” (which it comes after) only ends {3}.",esc(p.name),fmt(r.start),esc(q.name),fmt(rq.end)));});
   });
   return {res,warns};
 }
@@ -450,7 +556,7 @@ function renderEditor(){
     const after=(p.pred||[]).map(id=>RANK.get(id)).filter(Boolean).sort((a,b)=>a-b).join(", ");
     return `<tr data-id="${p.id}">
       <td class="n">${RANK.get(p.id)}</td>
-      <td><button class="sw" title="Colour group" style="background:${pairOf(p)[1]}"></button></td>
+      <td><button class="sw" title="${esc(dimName("color"))}" style="background:${pairOf(p)[1]}"></button></td>
       <td><select data-k="part">${teamOptions(p.part)}</select></td>
       <td><input data-k="name" value="${esc(p.name)}"></td>
       <td><input data-k="who" placeholder="—" value="${esc(p.who||"")}"></td>
@@ -459,7 +565,7 @@ function renderEditor(){
       <td><input data-k="pred" placeholder="—" value="${after}"></td>
       <td class="start"><input data-k="start" type="date"></td>
       <td><input data-k="end" type="date"></td>
-      <td style="white-space:nowrap"><button class="fill" title="Fill in the rest: from both dates, or from one date + weeks/days">✓</button><button class="x" title="Delete">✕</button></td></tr>`;}).join("");
+      <td style="white-space:nowrap"><button class="fill" title="${t("Fill in the rest: from both dates, or from one date + weeks/days")}">✓</button><button class="x" title="${t("Delete")}">✕</button></td></tr>`;}).join("");
 }
 const phaseOf=el=>S.phases.find(q=>q.id===+el.closest("tr").dataset.id);
 $("body").addEventListener("input",e=>{
@@ -490,7 +596,7 @@ $("body").addEventListener("click",e=>{
   const p=phaseOf(b);
   if(b.classList.contains("sw")){openPal(b,p);return;}
   if(b.classList.contains("fill")){
-    if(!fillRow(p)){toast("Enter both dates, or one date plus weeks/days");return;}
+    if(!fillRow(p)){toast(t("Enter both dates, or one date plus weeks/days"));return;}
     LASTPUSH=0;
     renderEditor();update();
     const tr=document.querySelector(`#body tr[data-id="${p.id}"]`);if(tr){tr.classList.add("flash");setTimeout(()=>tr.classList.remove("flash"),700);}
@@ -522,7 +628,7 @@ document.querySelectorAll("th.sort").forEach(th=>th.onclick=()=>{S.tableSort=th.
 $("gsort").onclick=e=>{const o=e.target.dataset.o;if(!o)return;S.ganttSort=o;update();};
 $("add").onclick=()=>{
   const id=S.nextId++;
-  S.phases.unshift({id,name:"New task",who:"",dur:null,pred:[],start:null,end:null});   // empty: no dates, no dependency
+  S.phases.unshift({id,name:t("New task"),who:"",dur:null,pred:[],start:null,end:null});   // empty: no dates, no dependency
   renderEditor();update();
   const inp=document.querySelector(`#body tr[data-id="${id}"] [data-k="name"]`);if(inp){inp.focus();inp.select();}
 };
@@ -548,7 +654,7 @@ function restore(snap){
   S=JSON.parse(snap);S.savedAt=Date.now();
   LASTJ=sig();DIRTY=true;showDirty();
   try{localStorage.setItem(KEY,JSON.stringify({base:BASE,state:S}))}catch(e){}
-  closePal();LEGKEY="";renderTitle();renderEditor();renderMs();update();histButtons();
+  closePal();LEGKEY="";TEAMKEY="";WHOKEY="";renderDims();renderTitle();renderEditor();renderMs();update();histButtons();
 }
 function undo(){if(!UNDO.length)return;if(document.activeElement)document.activeElement.blur();REDO.push(sig());restore(UNDO.pop());LASTPUSH=0;}
 function redo(){if(!REDO.length)return;if(document.activeElement)document.activeElement.blur();UNDO.push(sig());restore(REDO.pop());LASTPUSH=0;}
@@ -560,14 +666,14 @@ window.addEventListener("keydown",e=>{
 });
 
 /* ---------- title ---------- */
-const TITLE_DEFAULT="Project Title";
-function renderTitle(){$("title").value=S.title||TITLE_DEFAULT;document.title=S.title||TITLE_DEFAULT;}
-$("title").addEventListener("input",e=>{S.title=e.target.value;document.title=S.title||TITLE_DEFAULT;save();});
+const TITLE_DEFAULT="Project Title";   // shown (translated) only while no title is set
+function renderTitle(){$("title").value=S.title||t(TITLE_DEFAULT);document.title=S.title||t(TITLE_DEFAULT);}
+$("title").addEventListener("input",e=>{S.title=e.target.value;document.title=S.title||t(TITLE_DEFAULT);save();});
 $("title").addEventListener("blur",e=>{if(!e.target.value.trim()){S.title="";renderTitle();save();}});
 $("title").addEventListener("keydown",e=>{if(e.key==="Enter")e.target.blur();});
 
 /* ---------- output ---------- */
-let LAST=new Map(), ROWS=[], LEGKEY="";
+let LAST=new Map(), ROWS=[], LEGKEY="", TEAMKEY="", WHOKEY="";
 // "your name" is personal: kept in this browser only, never saved into the file
 let ME="";try{ME=localStorage.getItem("surveyPlanner.me")||"";}catch(e){}
 $("me").value=ME;
@@ -575,39 +681,64 @@ $("me").addEventListener("input",e=>{ME=e.target.value;try{localStorage.setItem(
 // Team filters (multi-select): nothing ticked = show everything; otherwise show items whose team is ticked.
 // Kept in this browser only, like "Your name".
 function multiFilter(id,key){
-  // sel.inc = teams to show (empty = all), sel.exc = teams to hide
-  let sel={inc:[],exc:[]};
-  try{const v=JSON.parse(localStorage.getItem(key));if(Array.isArray(v))sel.inc=v;else if(v&&v.inc)sel={inc:v.inc||[],exc:v.exc||[]};}catch(e){}
+  // two groups side by side: labels (inc / exc) and colours (cinc / cexc); empty = no restriction
+  let sel={inc:[],exc:[],cinc:[],cexc:[]};
+  try{const v=JSON.parse(localStorage.getItem(key));if(Array.isArray(v))sel.inc=v;else if(v)sel={inc:v.inc||[],exc:v.exc||[],cinc:v.cinc||[],cexc:v.cexc||[]};}catch(e){}
   const el=$(id);let built="";
-  el.innerHTML=`<button type="button" class="mbtn"></button><div class="mpop"><div class="mhead"><span>Show</span><span>Hide</span></div><div class="mlist"></div><button type="button" class="mclear">Show everything</button></div>`;
-  const names=a=>TEAMS().filter(([v])=>a.includes(v)).map(([,l])=>l).join(", ");
-  const label=()=>!sel.inc.length&&!sel.exc.length?"Everything"
-    :sel.inc.length&&!sel.exc.length?names(sel.inc)
-    :!sel.inc.length?"All except "+names(sel.exc)
-    :names(sel.inc)+" · not "+names(sel.exc);
+  const col=g=>`<div class="mcol"><div class="mtitle"></div><div class="mhead"><span></span><span></span></div><div class="mlist" data-g="${g}"></div><button type="button" class="mreset" data-g="${g}"></button></div>`;
+  el.innerHTML=`<button type="button" class="mbtn"></button><div class="mpop"><div class="mcols">${col("t")}${col("c")}</div><button type="button" class="mclear"></button></div>`;
+  const tnames=a=>TEAMS().filter(([v])=>a.includes(v)).map(([,l])=>l).join(", ");
+  const cnames=a=>COLOPTS().filter(([v])=>a.includes(v)).map(([,l])=>l).join(", ");
+  const part=(inc,exc,nm)=>!inc.length&&!exc.length?"":inc.length&&!exc.length?nm(inc):!inc.length?t("All except ")+nm(exc):nm(inc)+t(" · not ")+nm(exc);
+  const label=()=>{const a=part(sel.inc,sel.exc,tnames),b=part(sel.cinc,sel.cexc,cnames);return a&&b?a+" · "+b:(a||b||t("Everything"));};
   const store=()=>{try{localStorage.setItem(key,JSON.stringify(sel))}catch(e){};refresh();update();};
+  const rows=(list,dot)=>list.map(([v,l])=>`<div class="mrow"><label><input type="checkbox" class="inc" value="${esc(v)}">${dot?dot(v):""}<span class="mtx" title="${esc(l)}">${esc(l)}</span></label><label class="xbox" title="${t("Hide only {0}",esc(l))}"><input type="checkbox" class="exc" value="${esc(v)}"></label></div>`).join("");
   function refresh(){
-    const t=TEAMS(),sig=JSON.stringify(t),ok=v=>t.some(([k])=>k===v);
-    sel.inc=sel.inc.filter(ok);sel.exc=sel.exc.filter(ok);          // a team that no longer exists is unticked
+    const tl=TEAMS(),cl=COLOPTS(),sig=JSON.stringify([tl,cl,dimName("label"),dimName("color")])+LANG;
+    const okT=v=>tl.some(([k])=>k===v),okC=v=>cl.some(([k])=>k===v);
+    sel.inc=sel.inc.filter(okT);sel.exc=sel.exc.filter(okT);sel.cinc=sel.cinc.filter(okC);sel.cexc=sel.cexc.filter(okC);   // entries that no longer exist are unticked
     if(sig!==built){built=sig;
-      el.querySelector(".mlist").innerHTML=t.map(([v,l])=>`<div class="mrow"><label><input type="checkbox" class="inc" value="${esc(v)}">${esc(l)}</label><label class="xbox" title="Hide only ${esc(l)}"><input type="checkbox" class="exc" value="${esc(v)}"></label></div>`).join("");
+      el.querySelectorAll(".mhead").forEach(h=>{h.children[0].textContent=t("Show");h.children[1].textContent=t("Hide");});
+      const ti=el.querySelectorAll(".mtitle");ti[0].textContent=dimName("label");ti[1].textContent=dimName("color");
+      el.querySelector(".mclear").textContent=t("Show everything");
+      el.querySelectorAll(".mreset").forEach(r=>r.textContent=t("Reset {0}",dimName(r.dataset.g==="c"?"color":"label")));
+      el.querySelector('.mlist[data-g="t"]').innerHTML=rows(tl);
+      el.querySelector('.mlist[data-g="c"]').innerHTML=rows(cl,v=>`<i class="mdot" style="background:${v===NOCOL?"var(--ms)":colVal(v)}"></i>`);
       el.querySelectorAll(".mlist input").forEach(c=>c.onchange=()=>{
-        const v=c.value,on=c.checked,mine=c.classList.contains("inc")?"inc":"exc",other=mine==="inc"?"exc":"inc";
+        const g=c.closest(".mlist").dataset.g==="c"?"c":"",v=c.value,on=c.checked,
+          mine=g+(c.classList.contains("inc")?"inc":"exc"),other=g+(c.classList.contains("inc")?"exc":"inc");
         sel[mine]=on?[...new Set([...sel[mine],v])]:sel[mine].filter(x=>x!==v);
-        if(on)sel[other]=sel[other].filter(x=>x!==v);              // a team can't be shown and hidden at once
+        if(on)sel[other]=sel[other].filter(x=>x!==v);              // can't be shown and hidden at once
         store();});}
-    el.querySelectorAll(".mlist input.inc").forEach(c=>c.checked=sel.inc.includes(c.value));
-    el.querySelectorAll(".mlist input.exc").forEach(c=>c.checked=sel.exc.includes(c.value));
-    el.querySelector(".mbtn").textContent=label();
+    el.querySelectorAll('.mlist[data-g="t"] input.inc').forEach(c=>c.checked=sel.inc.includes(c.value));
+    el.querySelectorAll('.mlist[data-g="t"] input.exc').forEach(c=>c.checked=sel.exc.includes(c.value));
+    el.querySelectorAll('.mlist[data-g="c"] input.inc').forEach(c=>c.checked=sel.cinc.includes(c.value));
+    el.querySelectorAll('.mlist[data-g="c"] input.exc').forEach(c=>c.checked=sel.cexc.includes(c.value));
+    el.querySelectorAll(".mreset").forEach(r=>{const c=r.dataset.g==="c";r.style.visibility=(c?sel.cinc.length||sel.cexc.length:sel.inc.length||sel.exc.length)?"":"hidden";});   // only when something is set
+    const lb=label();el.querySelector(".mbtn").textContent=lb;el.querySelector(".mbtn").title=lb;
   }
   el.querySelector(".mbtn").onclick=e=>{e.stopPropagation();document.querySelectorAll(".multi.open").forEach(o=>o!==el&&o.classList.remove("open"));el.classList.toggle("open");};
   el.querySelector(".mpop").addEventListener("click",e=>e.stopPropagation());
-  el.querySelector(".mclear").onclick=()=>{sel={inc:[],exc:[]};store();};
-  const get=()=>sel;get.refresh=refresh;return get;
+  el.querySelector(".mclear").onclick=()=>{sel={inc:[],exc:[],cinc:[],cexc:[]};store();};
+  el.querySelectorAll(".mreset").forEach(r=>r.onclick=()=>{if(r.dataset.g==="c"){sel.cinc=[];sel.cexc=[];}else{sel.inc=[];sel.exc=[];}store();});
+  const get=()=>sel;get.refresh=refresh;
+  const keep=()=>{try{localStorage.setItem(key,JSON.stringify(sel))}catch(e){}};
+  get.rename=(o,n)=>{const f=a=>[...new Set(a.map(v=>v===o?n:v))];sel.inc=f(sel.inc);sel.exc=f(sel.exc);keep();};
+  get.recolor=(o,n)=>{const f=a=>[...new Set(a.map(v=>v===o?n:v))];sel.cinc=f(sel.cinc);sel.cexc=f(sel.cexc);keep();};
+  return get;
+}
+// colour choices for the filters: every colour in use (incl. ones added in the legend) + "no colour" if something has none
+const NOCOL="_none";
+function COLOPTS(){
+  const L=S.colorLabels||{},un=t(dimCustom("color")?"Unnamed":"Unnamed colour");
+  const o=usedColors().map(k=>[k,L[k]||un]);
+  if([...S.phases,...S.milestones].some(x=>!keyOf(x.color)))o.push([NOCOL,t(dimCustom("color")?"None":"No colour")]);
+  return o;
 }
 document.addEventListener("click",()=>document.querySelectorAll(".multi.open").forEach(o=>o.classList.remove("open")));
 const PARTSEL=multiFilter("partFilter","surveyPlanner.part3"), MSPARTSEL=multiFilter("msPartFilter","surveyPlanner.msPart3");
-const partMatch=(sel,x)=>{const t=x.part&&x.part!=="all"?x.part:"all";return (!sel.inc.length||sel.inc.includes(t))&&!sel.exc.includes(t);};
+const partMatch=(sel,x)=>{const t=x.part&&x.part!=="all"?x.part:"all",c=keyOf(x.color)||NOCOL;
+  return (!sel.inc.length||sel.inc.includes(t))&&!sel.exc.includes(t)&&(!sel.cinc.length||sel.cinc.includes(c))&&!sel.cexc.includes(c);};
 const shownMs=m=>partMatch(MSPARTSEL(),m);   // milestones have their own part filter
 const shown=p=>partMatch(PARTSEL(),p);
 const mine=p=>{const m=ME.trim().toLowerCase();if(!m)return true;return people(p).some(n=>{n=n.toLowerCase();return n===m||n==="all";});};
@@ -615,11 +746,128 @@ function renderLegend(){
   if(!S.colorLabels)S.colorLabels={};
   const u=usedColors(),ord=(GX.colorOrder||[]).filter(k=>u.includes(k));
   const used=[...ord,...u.filter(k=>!ord.includes(k))];             // same order as in the chart; others (e.g. only milestones) after
-  const key=used.join(",");if(key===LEGKEY)return;LEGKEY=key;
-  document.querySelector(".legtitle").style.display=used.length?"":"none";   // no title while there are no work packages
-  $("legend").innerHTML=used.map(k=>`<label data-k="${k}" title="Right-click to change the colour of this whole work package"><i style="background:${colVal(k)}"></i><input data-c="${k}" placeholder="Label this colour…" value="${esc(S.colorLabels[k]||"")}"></label>`).join("");
+  const inUse=k=>[...S.phases,...S.milestones].some(x=>keyOf(x.color)===k);
+  const key=used.map(k=>k+(inUse(k)?"1":"0")).join(",")+LANG+dimName("color");if(key===LEGKEY)return;LEGKEY=key;
+  document.querySelector("#pkgBlock .legcount").textContent=used.length?`(${used.length})`:"";
+  $("legend").innerHTML=used.map(k=>`<label data-k="${k}" title="${t("Right-click to change this colour everywhere")}"><i style="background:${colVal(k)}"></i><input data-c="${k}" placeholder="${dimCustom("color")?t("Enter a name…"):t("Name this colour…")}" value="${esc(S.colorLabels[k]||"")}"><button type="button" class="rm" data-rmc="${k}" title="${t(inUse(k)?"Delete – its tasks and milestones get no colour":"Remove (not used anywhere)")}">×</button></label>`).join("");
 }
 $("legend").addEventListener("input",e=>{const k=e.target.dataset.c;if(!k)return;S.colorLabels[k]=e.target.value;save();});
+$("legend").addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.dataset.c)e.target.blur();});
+$("legend").addEventListener("click",e=>{const b=e.target.closest("[data-rmc]");if(!b)return;e.preventDefault();const k=b.dataset.rmc;
+  const used=[...S.phases,...S.milestones].filter(x=>keyOf(x.color)===k);
+  LASTPUSH=0;used.forEach(x=>x.color=null);                       // in use: those tasks / milestones go back to no colour
+  S.packages=(S.packages||[]).filter(x=>x!==k);if(S.colorLabels)delete S.colorLabels[k];LEGKEY="";renderEditor();renderMs();update();
+  if(used.length)toast(t("Deleted – undo with ↶"));});
+/* ---------- what this project calls its two groupings (default: Colour / Label) ---------- */
+const DIMDEF={color:"Colour",label:"Label",who:"Assigned to"};
+const dimCustom=k=>!!(S.names&&S.names[k]);
+const dimName=k=>dimCustom(k)?S.names[k]:t(DIMDEF[k]);
+function renderDims(){
+  document.querySelectorAll("[data-dim]").forEach(el=>{if(document.activeElement!==el)el.textContent=dimName(el.dataset.dim);});
+  document.querySelectorAll(".legname").forEach(el=>el.title=t("Click to rename (applies to this project)"));
+  const g=document.querySelector('#gsort [data-o="group"]'),m=document.querySelector('#gsort [data-o="team"]');
+  g.textContent=dimCustom("color")?t("By {0}",dimName("color")):t("By colour");
+  m.textContent=dimCustom("label")?t("By {0}",dimName("label")):t("By label");
+  $("addPkg").title=dimCustom("color")?t("Add {0}",dimName("color")):t("Add colour");
+  $("addTeam").title=dimCustom("label")?t("Add {0}",dimName("label")):t("Add label");
+  $("addWho").title=dimCustom("who")?t("Add {0}",dimName("who")):t("Add person");
+}
+document.querySelectorAll(".legname").forEach(el=>{
+  el.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();el.blur();}if(e.key==="Escape"){el.dataset.cancel="1";el.blur();}});
+  el.addEventListener("blur",()=>{
+    const k=el.dataset.dim,v=el.textContent.replace(/\s+/g," ").trim();
+    if(!el.dataset.cancel){
+      const nv=(!v||v===t(DIMDEF[k])||v===DIMDEF[k])?"":v;          // empty or the default wording = back to default
+      if(nv!==((S.names||{})[k]||"")){LASTPUSH=0;S.names={...(S.names||{}),[k]:nv};if(!nv)delete S.names[k];
+        TEAMKEY="";WHOKEY="";renderDims();renderEditor();renderMs();update();}
+    }
+    delete el.dataset.cancel;renderDims();
+  });
+});
+/* ---------- team legend: rename a team everywhere, add or remove teams ---------- */
+const teamUsed=v=>[...S.phases,...S.milestones].some(x=>x.part===v);
+function renderTeams(){
+  const list=TEAMS().filter(([v])=>v!=="all");
+  const key=JSON.stringify(list.map(([v])=>[v,teamUsed(v)]))+LANG;if(key===TEAMKEY)return;TEAMKEY=key;
+  document.querySelector("#teamBlock .legcount").textContent=list.length?`(${list.length})`:"";
+  $("teamLegend").innerHTML=list.map(([v])=>`<label title="${t("Click to rename everywhere")}"><i class="tm"></i><input data-team="${esc(v)}" value="${esc(v)}"><button type="button" class="rm" data-rmt="${esc(v)}" title="${t(teamUsed(v)?"Delete – its tasks and milestones go back to “All”":"Remove (not used anywhere)")}">×</button></label>`).join("");
+}
+function renameTeam(old,nw){
+  nw=(nw||"").replace(/\s+/g," ").trim();
+  if(!nw||nw===old||nw.toLowerCase()==="all"||nw.toLowerCase()===t("All").toLowerCase()){TEAMKEY="";renderTeams();return;}
+  const hit=TEAMS().find(([v])=>v!==old&&v!=="all"&&v.toLowerCase()===nw.toLowerCase()), to=hit?hit[0]:nw;
+  LASTPUSH=0;
+  [...S.phases,...S.milestones].forEach(x=>{if(x.part===old)x.part=to;});
+  S.teams=[...new Set((S.teams||[]).map(v=>v===old?to:v))];
+  PARTSEL.rename(old,to);MSPARTSEL.rename(old,to);
+  TEAMKEY="";renderEditor();renderMs();update();
+  if(hit)toast(t("Merged into the existing label with that name – undo with ↶"));
+}
+$("teamLegend").addEventListener("change",e=>{const v=e.target.dataset.team;if(v!==undefined)renameTeam(v,e.target.value);});
+$("teamLegend").addEventListener("keydown",e=>{if(!e.target.dataset.team)return;if(e.key==="Enter")e.target.blur();if(e.key==="Escape"){e.target.value=e.target.dataset.team;e.target.blur();}});
+$("teamLegend").addEventListener("click",e=>{const b=e.target.closest("[data-rmt]");if(!b)return;e.preventDefault();
+  const v=b.dataset.rmt,used=[...S.phases,...S.milestones].filter(x=>x.part===v);
+  LASTPUSH=0;used.forEach(x=>delete x.part);                       // in use: those tasks / milestones go back to "All"
+  S.teams=(S.teams||[]).filter(x=>x!==v);TEAMKEY="";renderEditor();renderMs();update();
+  if(used.length)toast(t("Deleted – undo with ↶"));});
+/* ---------- people legend (Assigned to): rename everywhere, add, delete ---------- */
+const isAllName=n=>n.toLowerCase()==="all"||n.toLowerCase()===t("All").toLowerCase();   // "All" = everyone, not a person
+function PEOPLE(){const m=new Map();
+  S.phases.forEach(p=>people(p).forEach(n=>{if(!isAllName(n)&&!m.has(n.toLowerCase()))m.set(n.toLowerCase(),n);}));
+  (S.people||[]).forEach(n=>{if(!m.has(n.toLowerCase()))m.set(n.toLowerCase(),n);});
+  return [...m.values()];}
+const personUsed=n=>S.phases.some(p=>people(p).some(x=>x.toLowerCase()===n.toLowerCase()));
+function setWho(p,list){const seen=new Set();p.who=list.filter(n=>{const k=n.toLowerCase();if(seen.has(k))return false;seen.add(k);return true;}).join(", ");}
+function renderPeople(){
+  const list=PEOPLE();
+  const key=JSON.stringify(list.map(n=>[n,personUsed(n)]))+LANG;if(key===WHOKEY)return;WHOKEY=key;
+  document.querySelector("#whoBlock .legcount").textContent=list.length?`(${list.length})`:"";
+  $("whoLegend").innerHTML=list.map(n=>`<label title="${t("Click to rename everywhere")}"><i class="pm"></i><input data-who="${esc(n)}" value="${esc(n)}"><button type="button" class="rm" data-rmw="${esc(n)}" title="${t(personUsed(n)?"Delete – removed from all its tasks":"Remove (not used anywhere)")}">×</button></label>`).join("");
+}
+function renamePerson(old,nw){
+  nw=(nw||"").replace(/[\s,]+/g," ").trim();                      // a name can't contain a comma (that separates names)
+  if(!nw||nw===old||isAllName(nw)){WHOKEY="";renderPeople();return;}
+  const hit=PEOPLE().find(n=>n!==old&&n.toLowerCase()===nw.toLowerCase()), to=hit||nw, o=old.toLowerCase();
+  LASTPUSH=0;
+  S.phases.forEach(p=>{if(people(p).some(x=>x.toLowerCase()===o))setWho(p,people(p).map(x=>x.toLowerCase()===o?to:x));});
+  S.people=[...new Set((S.people||[]).map(n=>n.toLowerCase()===o?to:n))];
+  if(ME.trim().toLowerCase()===o){ME=to;$("me").value=to;try{localStorage.setItem("surveyPlanner.me",to)}catch(e){}}   // keep "Your name" pointing at the same person
+  WHOKEY="";renderEditor();update();
+  if(hit)toast(t("Merged into the existing name – undo with ↶"));
+}
+$("whoLegend").addEventListener("change",e=>{const v=e.target.dataset.who;if(v!==undefined)renamePerson(v,e.target.value);});
+$("whoLegend").addEventListener("keydown",e=>{if(!e.target.dataset.who)return;if(e.key==="Enter")e.target.blur();if(e.key==="Escape"){e.target.value=e.target.dataset.who;e.target.blur();}});
+$("whoLegend").addEventListener("click",e=>{const b=e.target.closest("[data-rmw]");if(!b)return;e.preventDefault();
+  const o=b.dataset.rmw.toLowerCase(),hits=S.phases.filter(p=>people(p).some(x=>x.toLowerCase()===o));
+  LASTPUSH=0;hits.forEach(p=>setWho(p,people(p).filter(x=>x.toLowerCase()!==o)));
+  S.people=(S.people||[]).filter(n=>n.toLowerCase()!==o);WHOKEY="";renderEditor();update();
+  if(hits.length)toast(t("Deleted – undo with ↶"));});
+$("addWho").onclick=()=>{
+  const base=dimCustom("who")?dimName("who"):t("New person");let i=1,n=dimCustom("who")?base+" "+i:base;
+  while(PEOPLE().some(x=>x.toLowerCase()===n.toLowerCase()))n=base+" "+(++i);
+  LASTPUSH=0;S.people=[...(S.people||[]),n];openBlock("whoBlock");WHOKEY="";update();
+  const inp=[...document.querySelectorAll("#whoLegend input")].find(x=>x.dataset.who===n);if(inp){inp.focus();inp.select();}
+};
+/* "+" behind the titles: a new colour (one not in use yet) or a new label, ready to be named */
+function openBlock(id){const b=$(id);if(b.classList.contains("closed")){b.classList.remove("closed");try{localStorage.setItem("surveyPlanner."+id,"1")}catch(e){}}}
+$("addPkg").onclick=()=>{
+  const used=usedColors();let k=Object.keys(COLORS).find(c=>!used.includes(c));
+  if(!k){do{k="#"+Math.floor(Math.random()*0xffffff).toString(16).padStart(6,"0");}while(used.includes(k));}
+  LASTPUSH=0;S.packages=[...(S.packages||[]),k];if(!S.colorLabels)S.colorLabels={};S.colorLabels[k]=S.colorLabels[k]||"";
+  openBlock("pkgBlock");LEGKEY="";update();
+  const i=document.querySelector(`#legend input[data-c="${k}"]`);if(i)i.focus();
+};
+$("addTeam").onclick=()=>{
+  const base=dimCustom("label")?dimName("label"):t("New label");let i=1,n=dimCustom("label")?base+" "+i:base;while(TEAMS().some(([v])=>v.toLowerCase()===n.toLowerCase()))n=base+" "+(++i);
+  LASTPUSH=0;S.teams=[...(S.teams||[]),n];openBlock("teamBlock");TEAMKEY="";renderEditor();renderMs();update();
+  const inp=[...document.querySelectorAll("#teamLegend input")].find(x=>x.dataset.team===n);if(inp){inp.focus();inp.select();}
+};
+/* show / hide each legend (remembered in this browser) */
+["pkgBlock","teamBlock","whoBlock"].forEach(id=>{
+  const b=$(id);try{if(localStorage.getItem("surveyPlanner."+id)==="0")b.classList.add("closed");}catch(e){}
+  const tog=()=>{const c=b.classList.toggle("closed");try{localStorage.setItem("surveyPlanner."+id,c?"0":"1")}catch(e){}};
+  b.querySelector(".legtog").onclick=tog;b.querySelector(".legcount").onclick=tog;
+});
 function update(){
   renderLegend();
   PARTSEL.refresh();MSPARTSEL.refresh();
@@ -640,8 +888,8 @@ function update(){
   const end=has?ROWS.reduce((m,r)=>r.end>m?r.end:m,ROWS[0].end):null;
   $("warnings").innerHTML=[...new Set(warns)].map(w=>`<div class="warn">${w}</div>`).join("");
   const daysLeft=has?Math.round((start-today)/DAY):-1;
-  $("summary").innerHTML=!has?"":`<span>Start<b>${fmt(start)}</b></span><span>End<b>${fmt(end)}</b></span><span>Total<b>${(()=>{const d=span(start,end),w=Math.floor(d/7),r=d%7;return `${w} ${w===1?"week":"weeks"}${r?` ${r} ${r===1?"day":"days"}`:""}`;})()}</b></span>`+
-    (daysLeft>=0?`<span>Until start<b>${daysLeft} ${daysLeft===1?"day":"days"}</b></span>`:"");
+  $("summary").innerHTML=!has?"":`<span>${t("Start")}<b>${fmt(start)}</b></span><span>${t("End")}<b>${fmt(end)}</b></span><span>${t("Total")}<b>${(()=>{const d=span(start,end),w=Math.floor(d/7),r=d%7;return `${w} ${t(w===1?"week":"weeks")}${r?` ${r} ${t(r===1?"day":"days")}`:""}`;})()}</b></span>`+
+    (daysLeft>=0?`<span>${t("Until start")}<b>${daysLeft} ${t(daysLeft===1?"day":"days")}</b></span>`:"");
   document.querySelectorAll("#msBody tr").forEach(tr=>{const m=S.milestones[+tr.dataset.i];if(m)tr.style.display=shownMs(m)?"":"none";});
   const ms=S.milestones.filter(m=>parse(m.date)&&shownMs(m)).map(m=>({d:parse(m.date),label:m.label||"",c:MSCOL(m.color),i:S.milestones.indexOf(m)})).sort((a,b)=>a.d-b.d);
   let gA=start,gB=end;
@@ -670,6 +918,7 @@ function update(){
   [["zFrom",shown0],["zTo",shown1]].forEach(([id,d])=>{if(document.activeElement!==$(id))$(id).value=iso(d);});
   gantt(gA,gB,today,ms,{hasPast,clipped,exact,full0,full1,cut:clipped?full0:null});
   renderLegend();                                   // after the chart, so the legend can follow its order
+  renderTeams();renderPeople();
 }
 // Drag a bar to move it (same duration); drag its left/right edge to change start/end. A plain click shows the dates.
 const GX={px:1};
@@ -692,7 +941,7 @@ $("gantt").addEventListener("pointermove",e=>{
   DRAG.ns=ns;DRAG.ne=ne;
   DRAG.bar.style.left=(DRAG.L0+Math.round((ns-DRAG.s0)/DAY)*GX.px)+"px";
   DRAG.bar.style.width=(span(ns,ne)*GX.px)+"px";
-  const dt=DRAG.bar.querySelector(".dt");if(dt)dt.textContent=`${short(ns)}–${short(ne)} · ${span(ns,ne)} days`;
+  const dt=DRAG.bar.querySelector(".dt");if(dt)dt.textContent=`${short(ns)}–${short(ne)} · ${span(ns,ne)} ${t("days")}`;
   DRAG.bar.classList.add("open");
 });
 function endDrag(){
@@ -799,7 +1048,7 @@ function gantt(a,b,today,ms,view){
   // height of the milestone row is taken from the whole plan, so zooming/moving never changes the chart height
   let fullLevels=0;
   if(ex){const fp=Math.max(1,Math.min(16,(Math.max(500,($("gantt").parentElement.clientWidth||900)-222))/(Math.round((view.full1-view.full0)/DAY)+1))),fe=[];
-    ms.forEach(m=>{const t=`${short(m.d)} ${m.label}`,a=Math.round((m.d-view.full0)/DAY)*fp,b=a+t.length*6.2+10;let l=fe.findIndex(e=>e<a);if(l<0){l=fe.length;fe.push(-1e9);}fe[l]=b;});
+    ms.forEach(m=>{const t=`${short(m.d)} ${m.label}`,a=Math.round((m.d-view.full0)/DAY)*fp,b=a+textW(t)+10;let l=fe.findIndex(e=>e<a);if(l<0){l=fe.length;fe.push(-1e9);}fe[l]=b;});
     fullLevels=fe.length;}
   const msAll=ms;ms=ms.filter(m=>m.d>=g0&&m.d<=g1);   // only milestones inside the visible window are drawn
   const days=Math.round((g1-g0)/DAY)+1;
@@ -809,7 +1058,7 @@ function gantt(a,b,today,ms,view){
   for(let d=new Date(g0);d<=g1;d=add(d,1)) if(d.getDay()===1)grid+=`<div class="wk" style="left:${x(d)}px"></div>`;
   ms.forEach(m=>grid+=`<div class="ms" data-mi="${m.i}" style="left:${x(m.d)}px;border-color:${m.c}" title="${esc(m.label)} · ${fmt(m.d)}"></div>`);
   const ends=[];let lab="";
-  ms.forEach(m=>{const t=`${short(m.d)} ${m.label}`,L=x(m.d),w=t.length*6.2+10,flip=false;
+  ms.forEach(m=>{const t=`${short(m.d)} ${m.label}`,L=x(m.d),w=textW(t)+10,flip=false;
     const a=L,b=L+w;
     let lv=ends.findIndex(e=>e<a);if(lv<0){lv=ends.length;ends.push(-1e9);}ends[lv]=b;
     lab+=`<div class="msl${flip?" flip":""}" data-mi="${m.i}" style="${flip?`right:${W-L}px`:`left:${L}px`};top:${3+lv*17}px;${m.c.startsWith("var")?"":"--ms:"+m.c}" title="${esc(m.label)} · ${fmt(m.d)}">${esc(t)}</div>`;});
@@ -819,8 +1068,8 @@ function gantt(a,b,today,ms,view){
   if(today>=g0&&today<=g1)grid+=`<div class="vline today" style="left:${x(today)}px"></div>`;
   let mo="";
   for(let d=new Date(g0.getFullYear(),g0.getMonth()+1,1);d<=g1;d=new Date(d.getFullYear(),d.getMonth()+1,1))
-    mo+=`<div class="mo" style="left:${x(d)}px">${MO[d.getMonth()]} ${px*30<62?"’"+String(d.getFullYear()).slice(2):d.getFullYear()}</div>`;   // shorter year when months are narrow
-  let h=msRow+`<div class="g-row" style="height:26px"><div class="g-label"><button class="add" id="gAdd" style="padding:0">+ Add task</button><button class="add" id="gAddMs" style="padding:0 0 0 14px">+ Add milestone</button></div><div class="g-track" style="width:${W}px">${mo}${ms.map(m=>`<div class="ms" data-mi="${m.i}" style="left:${x(m.d)}px;border-color:${m.c}"></div>`).join("")}</div></div>`;
+    mo+=`<div class="mo" style="left:${x(d)}px">${MOS()[d.getMonth()]} ${px*30<62?"’"+String(d.getFullYear()).slice(2):d.getFullYear()}</div>`;   // shorter year when months are narrow
+  let h=msRow+`<div class="g-row" style="height:26px"><div class="g-label"><button class="add" id="gAdd" style="padding:0">${LANG==="de"?"+ Aufgabe":"+ Add task"}</button><button class="add" id="gAddMs" style="padding:0 0 0 14px">${LANG==="de"?"+ Meilenstein":"+ Add milestone"}</button></div><div class="g-track" style="width:${W}px">${mo}${ms.map(m=>`<div class="ms" data-mi="${m.i}" style="left:${x(m.d)}px;border-color:${m.c}"></div>`).join("")}</div></div>`;
   const gStart={};ROWS.forEach(r=>{const c=colOf(r.p);if(!gStart[c]||r.start<gStart[c])gStart[c]=r.start;});
   const mode=["group","team"].includes(S.ganttSort)?S.ganttSort:"start", byGroup=mode!=="start";
   document.querySelectorAll("#gsort button").forEach(b=>b.classList.toggle("on",b.dataset.o===mode));
@@ -837,8 +1086,8 @@ function gantt(a,b,today,ms,view){
   GX.colorOrder=[...new Set(SORTED.map(r=>colOf(r.p)).filter(Boolean))];   // the legend follows this order
   SORTED.forEach(r=>{
     if(view&&view.cut&&r.end<view.cut)return;         // past tasks hidden (unless "Show all"); zooming never hides rows
-    const head=g=>mode==="team"?{name:(TL.find(([v])=>v===g)||["","All"])[1]}
-      :{name:(S.colorLabels||{})[g]||(g?"Unnamed work package":"No work package"),color:colVal(g)||"var(--ms)"};
+    const head=g=>mode==="team"?{name:(TL.find(([v])=>v===g)||["",t("All")])[1]}
+      :{name:(S.colorLabels||{})[g]||(dimCustom("color")?t(g?"Unnamed":"None"):t(g?"Unnamed colour":"No colour")),color:colVal(g)||"var(--ms)"};
     if(byGroup){const g=key(r.p);if(g!==prevGroup)GX.view.order.push({head:head(g)});}
     GX.view.order.push(r);
     if(byGroup){const g=key(r.p);
@@ -853,11 +1102,11 @@ function gantt(a,b,today,ms,view){
   });
   S.phases.filter(p=>!isDated(p)&&shown(p)).forEach(p=>{
     h+=`<div class="g-row"><div class="g-label${mine(p)?"":" dim"}"><span class="gname" contenteditable="plaintext-only" spellcheck="false" data-id="${p.id}">${esc(p.name)}</span></div>
-      <div class="g-track draw" data-id="${p.id}" style="width:${W}px" title="Drag here to set the dates">${grid}</div></div>`;
+      <div class="g-track draw" data-id="${p.id}" style="width:${W}px" title="${t("Drag here to set the dates")}">${grid}</div></div>`;
   });
   if(view&&view.hasPast&&today>=g0&&today<=g1)   // "Show all / Hide past" stays at the bottom of the today line
-    h+=`<div class="g-row"><div class="g-label"></div><div class="g-track" style="width:${W}px"><button class="pastbtn" style="left:${x(today)}px" title="${view.clipped?"Show the whole plan, including what is already over":"Start the chart at today again"}">${view.clipped?"◀ Show all":"Hide past ▶"}</button></div></div>`;
-  if(!ROWS.length&&!S.phases.some(p=>!isDated(p)&&shown(p)))h+=`<div class="g-row" style="height:120px"><div class="g-label" style="color:var(--muted);font-size:12px">${!PARTSEL().inc.length&&!PARTSEL().exc.length?"No tasks yet":"No tasks for this team"}</div><div class="g-track" style="width:${W}px">${grid}</div></div>`;
+    h+=`<div class="g-row"><div class="g-label"></div><div class="g-track" style="width:${W}px"><button class="pastbtn" style="left:${x(today)}px" title="${t(view.clipped?"Show the whole plan, including what is already over":"Start the chart at today again")}">${t(view.clipped?"◀ Show all":"Hide past ▶")}</button></div></div>`;
+  if(!ROWS.length&&!S.phases.some(p=>!isDated(p)&&shown(p)))h+=`<div class="g-row" style="height:120px"><div class="g-label" style="color:var(--muted);font-size:12px">${t(Object.values(PARTSEL()).every(x=>!x.length)?"No tasks yet":"No tasks match this filter")}</div><div class="g-track" style="width:${W}px">${grid}</div></div>`;
   // remember where each task row was, so rows that change place can glide to their new spot
   const before=new Map();
   $("gantt").querySelectorAll(".gname[data-id]").forEach(n=>before.set(n.dataset.id,n.closest(".g-row").getBoundingClientRect().top));
@@ -907,7 +1156,7 @@ function renameMs(lab){
 $("gantt").addEventListener("click",e=>{
   if(!e.target.closest("#gAdd"))return;
   const id=S.nextId++;LASTPUSH=0;
-  S.phases.unshift({id,name:"New task",who:"",dur:null,pred:[],start:null,end:null});
+  S.phases.unshift({id,name:t("New task"),who:"",dur:null,pred:[],start:null,end:null});
   renderEditor();update();
   const n=document.querySelector(`#gantt .gname[data-id="${id}"]`);
   if(n){n.focus();const r=document.createRange();r.selectNodeContents(n);const sl=getSelection();sl.removeAllRanges();sl.addRange(r);}
@@ -924,7 +1173,7 @@ $("gantt").addEventListener("pointerdown",e=>{
 });
 function drawPaint(){const a=DRAW.d0<DRAW.d1?DRAW.d0:DRAW.d1,b=DRAW.d0<DRAW.d1?DRAW.d1:DRAW.d0;
   DRAW.bar.style.left=(Math.round((a-GX.g0)/DAY)*GX.px)+"px";DRAW.bar.style.width=(span(a,b)*GX.px)+"px";
-  DRAW.bar.innerHTML=`<span><em class="dt" style="display:inline">${short(a)}–${short(b)} · ${span(a,b)} days</em></span>`;}
+  DRAW.bar.innerHTML=`<span><em class="dt" style="display:inline">${short(a)}–${short(b)} · ${span(a,b)} ${t("days")}</em></span>`;}
 $("gantt").addEventListener("pointermove",e=>{if(!DRAW)return;DRAW.d1=dayAt(DRAW.tr,e.clientX);drawPaint();});
 $("gantt").addEventListener("pointerup",()=>{
   if(!DRAW)return;const d=DRAW;DRAW=null;
@@ -936,7 +1185,7 @@ $("gantt").addEventListener("pointerup",()=>{
 $("gantt").addEventListener("click",e=>{
   if(!e.target.closest("#gAddMs"))return;
   const t=new Date();t.setHours(0,0,0,0);
-  LASTPUSH=0;S.milestones.unshift({date:iso(t),label:"New milestone"});   // today; drag it or rename it right away
+  LASTPUSH=0;S.milestones.unshift({date:iso(t),label:window.t("New milestone")});   // today; drag it or rename it right away
   renderMs();update();
   const lab=document.querySelector('#gantt .msl[data-mi="0"]');if(lab)renameMs(lab);
 });
@@ -950,19 +1199,19 @@ function openCtx(x,y,item,isMs){
   CTX={el,item,isMs};
   const paint=()=>{
     const cur=keyOf(item.color);
-    el.innerHTML=`<div class="ctx-t">${esc(isMs?(item.label||"Milestone"):item.name)}</div>
-      <div class="ctx-l">Colour</div>
+    el.innerHTML=`<div class="ctx-t">${esc(isMs?(item.label||t("Milestone")):item.name)}</div>
+      <div class="ctx-l">${esc(dimName("color"))}</div>
       <div class="ctx-c">${swatches(cur)}</div>
-      <div class="ctx-l">Team</div>
+      <div class="ctx-l">${esc(dimName("label"))}</div>
       <select class="ctx-team">${teamOptions(item.part)}</select>
-      ${isMs?"":`<div class="ctx-l">Assigned to</div><input class="ctx-who" placeholder="names, comma-separated" value="${esc(item.who||"")}">`}
-      <button class="ctx-del">Delete ${isMs?"milestone":"task"}</button>`;
+      ${isMs?"":`<div class="ctx-l">${esc(dimName("who"))}</div><input class="ctx-who" placeholder="${t("names, comma-separated")}" value="${esc(item.who||"")}">`}
+      <button class="ctx-del">${t(isMs?"Delete milestone":"Delete task")}</button>`;
     wireSwatches(el.querySelector(".ctx-c"),c=>{LASTPUSH=0;item.color=c;renderEditor();renderMs();update();paint();});
     el.querySelector(".ctx-del").onclick=()=>{
       LASTPUSH=0;
       if(isMs)S.milestones=S.milestones.filter(m=>m!==item);
       else{S.phases=S.phases.filter(q=>q!==item);S.phases.forEach(q=>q.pred=(q.pred||[]).filter(id=>id!==item.id));}
-      closeCtx();renderEditor();renderMs();update();toast(`${isMs?"Milestone":"Task"} deleted – undo with ↶`);
+      closeCtx();renderEditor();renderMs();update();toast(t(isMs?"Milestone deleted – undo with ↶":"Task deleted – undo with ↶"));
     };
     const sel=el.querySelector(".ctx-team");
     sel.onchange=()=>{
@@ -990,9 +1239,11 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape"&&CTX&&!e.target.clas
 window.addEventListener("scroll",()=>{if(CTX&&!CTX.el.contains(document.activeElement))closeCtx();},true);
 
 /* ---------- show / hide the task list and milestone list (remembered in this browser) ---------- */
+const PANELPAINT=[];
 function panelToggle(btn,panel,key,name){
   let open=false;try{open=localStorage.getItem(key)==="1";}catch(e){}
-  const paint=()=>{$(panel).classList.toggle("hidden",!open);$(btn).textContent=(open?"Hide ":"Show ")+name;};
+  const paint=()=>{$(panel).classList.toggle("hidden",!open);$(btn).textContent=t((open?"Hide ":"Show ")+name);};
+  PANELPAINT.push(paint);
   $(btn).onclick=()=>{open=!open;try{localStorage.setItem(key,open?"1":"0")}catch(e){};paint();update();};
   paint();
 }
@@ -1011,8 +1262,8 @@ window.addEventListener("message",e=>{if(e.source!==window.parent||e.origin!==lo
 paintTheme();
 
 /* ---------- credit line ---------- */
-const VERSION="1.1", VERSION_DATE="17.11.2026";
-function creditText(){return `© Created by Jan Menzner · Version ${VERSION} · ${VERSION_DATE}`;}
+const VERSION="1.2", VERSION_DATE="26.11.2026";
+function creditText(){return t("© Created by Jan Menzner · Version {0} · {1}",VERSION,VERSION_DATE);}
 $("credit").textContent=creditText();
 
 /* ---------- right-click a work package in the legend: recolour the whole package ---------- */
@@ -1021,11 +1272,13 @@ function recolourPackage(from,to){
   const merge=usedColors().includes(to);
   LASTPUSH=0;
   [...S.phases,...S.milestones].forEach(x=>{if(keyOf(x.color)===from)x.color=to;});
+  S.packages=[...new Set((S.packages||[]).map(k=>k===from?to:k))];
+  PARTSEL.recolor(from,to);MSPARTSEL.recolor(from,to);
   const lab=S.colorLabels||{};
   if(!merge||!lab[to])lab[to]=lab[from]||"";        // the label goes with the colour (an existing package keeps its own label)
   delete lab[from];
   LEGKEY="";closeCtx();renderEditor();renderMs();update();
-  if(merge)toast("Merged into the existing work package with that colour – undo with ↶");
+  if(merge)toast(t("Merged with the colour already in use – undo with ↶"));
 }
 $("legend").addEventListener("contextmenu",e=>{
   const l=e.target.closest("label[data-k]");if(!l)return;e.preventDefault();
@@ -1033,8 +1286,8 @@ $("legend").addEventListener("contextmenu",e=>{
   const el=document.createElement("div");el.className="ctx";document.body.appendChild(el);
   CTX={el,item:null,isMs:false};
   const all=[...new Set([...Object.keys(COLORS),...usedColors()])];
-  el.innerHTML=`<div class="ctx-t">${esc((S.colorLabels||{})[from]||"Work package")}</div><div class="ctx-l">Colour for the whole package</div>
-    <div class="ctx-c">${all.map(k=>`<button data-c="${k}" title="${esc((S.colorLabels||{})[k]||k)}${usedColors().includes(k)&&k!==from?" (in use – merges)":""}" class="${k===from?"on":""}" style="background:${colVal(k)}"></button>`).join("")}<label class="newcol" title="Pick a new colour">+<input type="color" value="${colVal(from)||"#3366cc"}"></label></div>`;
+  el.innerHTML=`<div class="ctx-t">${esc((S.colorLabels||{})[from]||t("Colour"))}</div><div class="ctx-l">${t("New colour for all its tasks and milestones")}</div>
+    <div class="ctx-c">${all.map(k=>`<button data-c="${k}" title="${esc((S.colorLabels||{})[k]||k)}${usedColors().includes(k)&&k!==from?t(" (in use – merges)"):""}" class="${k===from?"on":""}" style="background:${colVal(k)}"></button>`).join("")}<label class="newcol" title="${t("Pick a new colour")}">+<input type="color" value="${colVal(from)||"#3366cc"}"></label></div>`;
   el.querySelectorAll("button[data-c]").forEach(b=>b.onclick=()=>recolourPackage(from,b.dataset.c));
   el.querySelector(".newcol input").onchange=ev=>recolourPackage(from,ev.target.value.toLowerCase());
   const r=el.getBoundingClientRect();
@@ -1044,7 +1297,7 @@ $("legend").addEventListener("contextmenu",e=>{
 
 /* ---------- export ---------- */
 function toast(t){const e=$("toast");e.textContent=t;e.classList.add("show");setTimeout(()=>e.classList.remove("show"),1600)}
-async function copy(t){try{await navigator.clipboard.writeText(t);toast("Copied")}catch(e){toast("Copy blocked by the browser")}}
+async function copy(t){try{await navigator.clipboard.writeText(t);toast(t("Copied"))}catch(e){toast(t("Copy blocked by the browser"))}}
 const q=s=>`"${String(s).replace(/"/g,'""')}"`;
 $("saveFile").onclick=()=>saveFile();
 $("saveAs").onclick=()=>saveAs(false);
@@ -1057,9 +1310,9 @@ $("exportTable").onclick=async()=>{
   const partName=v=>(TEAMS().find(([k])=>k===(v||"all"))||["",v])[1];
   const rows=S.phases.filter(shown).map(p=>[RANK.get(p.id),partName(p.part),p.name,p.who||"",wkOf(p),dyOf(p),
     (p.pred||[]).map(id=>RANK.get(id)).filter(Boolean).sort((a,b)=>a-b).join(", "),d(p.start),d(p.end),(S.colorLabels||{})[colOf(p)]||""]);
-  const csv="﻿"+[["Nr","Team","Task","Assigned to","Weeks","Days","After #","Start","End","Work package"],...rows].map(r=>r.map(c).join(";")).join("\r\n");
-  try{if(await writeFile(new Blob([csv],{type:"text/csv"}),slug(S.title)+"-phases.csv","text/csv","csv",null))toast("Table exported");}
-  catch(e){if(e&&e.name!=="AbortError")toast("Could not export: "+(e.message||e));}
+  const csv="﻿"+[["Nr",dimName("label"),"Task",dimName("who"),"Weeks","Days","After #","Start","End",dimName("color")].map((h,i)=>i===1||i===3||i===9?h:t(h)),...rows].map(r=>r.map(c).join(";")).join("\r\n");
+  try{if(await writeFile(new Blob([csv],{type:"text/csv"}),slug(S.title)+"-phases.csv","text/csv","csv",null))toast(t("Table exported"));}
+  catch(e){if(e&&e.name!=="AbortError")toast(t("Could not export: ")+(e.message||e));}
 };
 
 /* Export Gantt: draws the chart as it is currently displayed (filters, order) into a PNG. */
@@ -1068,7 +1321,7 @@ function ganttCanvas(){
   const solid=c=>!c||String(c).startsWith("var")?"#1d1f22":c;
   const days=Math.round((V.g1-V.g0)/DAY)+1, P=Math.min(10,Math.max(2,1600/days));
   const LW=250, PAD=24, W=LW+Math.ceil(days*P)+PAD*2, x=d=>PAD+LW+Math.round((d-V.g0)/DAY)*P;
-  const F=(w,sz)=>`${w} ${sz}px "IBM Plex Sans", system-ui, sans-serif`;
+  const F=(w,sz)=>`${w} ${sz}px ${fontCss()}`;
   const meas=document.createElement("canvas").getContext("2d");meas.font=F(500,11);
   // milestone label levels (same stacking as on screen)
   const lv=[],ends=[];V.ms.forEach(m=>{const t=`${short(m.d)} ${m.label}`,a=x(m.d),b=a+meas.measureText(t).width+12;let l=ends.findIndex(e=>e<a);if(l<0){l=ends.length;ends.push(-1e9);}ends[l]=b;lv.push({m,t,l});});
@@ -1088,7 +1341,7 @@ function ganttCanvas(){
   for(let d=new Date(V.g0);d<=V.g1;d=add(d,1))if(d.getDay()===1){g.beginPath();g.moveTo(x(d)+.5,chartTop);g.lineTo(x(d)+.5,bottom);g.stroke();}
   // months
   g.fillStyle="#71757c";g.font=F(400,11);
-  for(let d=new Date(V.g0.getFullYear(),V.g0.getMonth()+1,1);d<=V.g1;d=new Date(d.getFullYear(),d.getMonth()+1,1))g.fillText(`${MO[d.getMonth()]} ${d.getFullYear()}`,x(d)+4,chartTop+12);
+  for(let d=new Date(V.g0.getFullYear(),V.g0.getMonth()+1,1);d<=V.g1;d=new Date(d.getFullYear(),d.getMonth()+1,1))g.fillText(`${MOS()[d.getMonth()]} ${d.getFullYear()}`,x(d)+4,chartTop+12);
   // milestones
   lv.forEach(({m,t,l})=>{const c=solid(m.c),y=top+3+l*17;g.strokeStyle=c;g.lineWidth=2;g.beginPath();g.moveTo(x(m.d)+1,y);g.lineTo(x(m.d)+1,bottom);g.stroke();
     g.fillStyle=c;g.font=F(500,11);g.fillText(t,x(m.d)+6,y+8);});
@@ -1111,24 +1364,46 @@ function ganttCanvas(){
     g.fillStyle=solid(pairOf(r.p)[1]);g.beginPath();g.moveTo(bx+rad,by);g.arcTo(bx+bw,by,bx+bw,by+bh,rad);g.arcTo(bx+bw,by+bh,bx,by+bh,rad);g.arcTo(bx,by+bh,bx,by,rad);g.arcTo(bx,by,bx+bw,by,rad);g.fill();
     g.globalAlpha=1;y+=RH;
   });
-  if(!V.order.length){g.fillStyle="#71757c";g.font=F(400,12);g.fillText("No phases",PAD,rowsTop+RH/2);}
+  if(!V.order.length){g.fillStyle="#71757c";g.font=F(400,12);g.fillText(t("No phases"),PAD,rowsTop+RH/2);}
   // legend
   let ly=bottom+16;
-  if(legend.length){g.fillStyle="#71757c";g.font=F(600,10.5);g.fillText("WORK PACKAGE",PAD,ly+8);ly+=20;}
+  if(legend.length){g.fillStyle="#71757c";g.font=F(600,10.5);g.fillText(dimName("color").toUpperCase(),PAD,ly+8);ly+=20;}
   legend.forEach(k2=>{g.fillStyle=colVal(k2);g.fillRect(PAD,ly+3,14,12);g.fillStyle="#1d1f22";g.font=F(400,12);g.fillText((S.colorLabels||{})[k2]||"",PAD+22,ly+9);ly+=18;});
   g.fillStyle="#9a9ea5";g.font=F(400,10);g.textAlign="center";g.fillText(creditText(),Wt/2,H-PAD/2-6);g.textAlign="left";
   return cv;
 }
 $("exportPng").onclick=async()=>{
-  const cv=ganttCanvas();if(!cv){toast("Nothing to export");return;}
+  const cv=ganttCanvas();if(!cv){toast(t("Nothing to export"));return;}
   try{await document.fonts.ready;}catch(e){}
   const blob=await new Promise(r=>ganttCanvas().toBlob(r,"image/png"));
-  try{if(await writeFile(blob,slug(S.title)+"-gantt.png","image/png","png",null))toast("Gantt chart exported");}
-  catch(e){if(e&&e.name!=="AbortError")toast("Could not export: "+(e.message||e));}
+  try{if(await writeFile(blob,slug(S.title)+"-gantt.png","image/png","png",null))toast(t("Gantt chart exported"));}
+  catch(e){if(e&&e.name!=="AbortError")toast(t("Could not export: ")+(e.message||e));}
 };
 window.addEventListener("beforeunload",e=>{if(DIRTY&&window.self===window.top){e.preventDefault();e.returnValue="";}});
 window.addEventListener("resize",update);
 
+/* ---------- font (remembered in this browser, like dark / light and language) ---------- */
+const fontCss=()=>getComputedStyle(document.body).fontFamily||'"IBM Plex Sans",system-ui,sans-serif';
+function textW(s){const c=textW.c||(textW.c=document.createElement("canvas").getContext("2d"));c.font=`500 11px ${fontCss()}`;return c.measureText(s).width;}
+let FONT="plex";try{FONT=localStorage.getItem("surveyPlanner.font")||"plex";}catch(e){}
+function paintFonts(){
+  $("fontPop").innerHTML=FONTS.map(([id,name,css])=>`<button type="button" data-f="${id}" style="font-family:${esc(css)}"><span>${esc(t(name))}</span>${id===FONT?'<span class="ok">✓</span>':""}</button>`).join("");
+}
+$("fontBtn").onclick=e=>{e.stopPropagation();const w=$("fontBtn").parentElement;
+  if(!w.classList.contains("open")){loadFonts(FONTS);paintFonts();}w.classList.toggle("open");};
+$("fontPop").onclick=e=>{e.stopPropagation();const b=e.target.closest("[data-f]");if(!b)return;
+  FONT=useFont(b.dataset.f);try{localStorage.setItem("surveyPlanner.font",FONT)}catch(err){}
+  $("fontBtn").parentElement.classList.remove("open");update();};
+document.addEventListener("click",()=>$("fontBtn").parentElement.classList.remove("open"));
+document.addEventListener("keydown",e=>{if(e.key==="Escape")$("fontBtn").parentElement.classList.remove("open");});
+if(document.fonts&&document.fonts.addEventListener)document.fonts.addEventListener("loadingdone",()=>update());   // re-measure once a font has arrived
+
+/* ---------- language switch (remembered in this browser, like dark / light) ---------- */
+function setLang(l){LANG=l;try{localStorage.setItem("surveyPlanner.lang",l)}catch(e){}
+  closeCtx();closePal();LEGKEY="";TEAMKEY="";WHOKEY="";applyStatic();renderDims();PANELPAINT.forEach(f=>f());$("credit").textContent=creditText();
+  renderTitle();renderEditor();renderMs();update();showDirty();}
+$("langBtn").onclick=()=>setLang(LANG==="de"?"en":"de");
+applyStatic();renderDims();PANELPAINT.forEach(f=>f());$("credit").textContent=creditText();
 renderTitle();renderEditor();renderMs();update();showDirty();histButtons();
 </script>
 
